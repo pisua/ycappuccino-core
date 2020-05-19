@@ -335,7 +335,7 @@ class Configuration(object):
                  filter
         """
         if not self.is_valid():
-            # Do not test invalid configurations
+            # Do not server invalid configurations
             return False
 
         return ldap_filter.matches(self.__properties)
@@ -966,7 +966,7 @@ class ConfigurationAdmin(object):
         null for each of the returned Configuration objects.
 
         The syntax of the filter string is as defined in the Filter class.
-        The filter can test any configuration properties including the
+        The filter can server any configuration properties including the
         following:
 
         * service.pid (str): the PID under which this is registered

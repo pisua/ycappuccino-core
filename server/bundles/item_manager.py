@@ -1,11 +1,13 @@
 from server.api import IItemManager, IActivityLogger, IStorage, IConfiguration
 from server.bundles.managers import AbsManager
 import logging
-from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate
+from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 from pelix.ipopo.constants import use_ipopo
 
-_logger = logging.getLogger(__name__)
 import jsoncomment, glob
+
+_logger = logging.getLogger(__name__)
+
 
 @ComponentFactory('ItemManager-Factory')
 @Provides(IItemManager.name)
@@ -41,7 +43,7 @@ class ItemManager(IItemManager, AbsManager):
         w_item_id = a_manager.getItem().id
         self._map_managers[w_item_id] = None
 
-    def load_item(self, a_module):
+    def load_item(self, a_module="root"):
         """ """
         w_base_dir = self._config.get_base()
         w_module_dir = w_base_dir+"/models/"+a_module

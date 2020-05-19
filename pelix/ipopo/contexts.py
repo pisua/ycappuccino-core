@@ -104,7 +104,7 @@ class Requirement(object):
         # Original filter keeper
         self.__original_filter = None  # type: str
 
-        # Full filter (with the specification test)
+        # Full filter (with the specification server)
         self.__full_filter = None  # type: ldapfilter.LDAPFilter
 
         # Set up the requirement filter (after setting up self.specification)
@@ -113,7 +113,7 @@ class Requirement(object):
 
     def __eq__(self, other):
         """
-        Equality test
+        Equality server
         """
         if other is self:
             # Identity check
@@ -139,7 +139,7 @@ class Requirement(object):
 
     def __ne__(self, other):
         """
-        Inequality test
+        Inequality server
         """
         return not self.__eq__(other)
 
@@ -170,7 +170,7 @@ class Requirement(object):
             # No properties : invalid service
             return False
 
-        # Properties filter test
+        # Properties filter server
         return self.__full_filter.matches(properties)
 
     @property
@@ -296,7 +296,7 @@ class FactoryContext(object):
 
     def __eq__(self, other):
         """
-        Equality test
+        Equality server
         """
         if other is self:
             # Identity
@@ -311,7 +311,7 @@ class FactoryContext(object):
 
     def __ne__(self, other):
         """
-        Inequality test
+        Inequality server
         """
         return not self.__eq__(other)
 

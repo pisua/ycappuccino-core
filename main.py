@@ -52,7 +52,8 @@ def main():
         'server.bundles.item_manager',
         'server.bundles.storage',
         'server.bundles.configuration',
-        'server.bundles.endpoints'
+        'server.bundles.endpoints',
+        'client.bundles.indexEndpoint'
 
     ))
 
