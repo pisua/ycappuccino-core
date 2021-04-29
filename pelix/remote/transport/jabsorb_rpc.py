@@ -217,17 +217,17 @@ class JabsorbRpcServiceExporter(commons.AbstractRpcServiceExporter):
     def get_accesses(self):
         """
         Retrieves the URLs to access this component as a comma-separated list.
-        The first URL contains a '{server}' variable
+        The first URL contains a '{ycappuccino_core}' variable
         """
-        # Get HTTP server access
+        # Get HTTP ycappuccino_core access
         host, port = self._http.get_access()
         if ":" in host:
             # IPv6 address
             host = "[{0}]".format(host)
 
-        # Return two accesses: with a {server} variable and with the
+        # Return two accesses: with a {ycappuccino_core} variable and with the
         # bound address
-        model = "http{2}://{{server}}:{0}{1}".format(
+        model = "http{2}://{{ycappuccino_core}}:{0}{1}".format(
             port, self._path, "s" if self._http.is_https() else ""
         )
         return ",".join((model, model.format(server=host)))
@@ -353,7 +353,7 @@ class JabsorbRpcServiceImporter(commons.AbstractRpcServiceImporter):
             # Server information given
             access_url = access_url.format(server=endpoint.server)
         else:
-            # Use the local IP as the source server, just in case
+            # Use the local IP as the source ycappuccino_core, just in case
             local_server = "localhost"
             access_url = access_url.format(server=local_server)
 

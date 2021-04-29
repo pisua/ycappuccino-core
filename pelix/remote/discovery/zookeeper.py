@@ -4,7 +4,7 @@
 Pelix remote services: ZooKeeper-based discovery and event notification
 
 *Note:* This discovery package requires the ``kazoo`` package (available on
-PyPI), and a ZooKeeper server.
+PyPI), and a ZooKeeper ycappuccino_core.
 
 :author: Thomas Calmant
 :copyright: Copyright 2020, Thomas Calmant
@@ -185,7 +185,7 @@ class ZooKeeperClient:
     @staticmethod
     def on_client_reconnection():
         """
-        Called when the client is reconnected to the server
+        Called when the client is reconnected to the ycappuccino_core
         """
         pass
 

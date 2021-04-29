@@ -104,7 +104,7 @@ class Requirement(object):
         # Original filter keeper
         self.__original_filter = None  # type: str
 
-        # Full filter (with the specification server)
+        # Full filter (with the specification ycappuccino_core)
         self.__full_filter = None  # type: ldapfilter.LDAPFilter
 
         # Set up the requirement filter (after setting up self.specification)
@@ -113,7 +113,7 @@ class Requirement(object):
 
     def __eq__(self, other):
         """
-        Equality server
+        Equality ycappuccino_core
         """
         if other is self:
             # Identity check
@@ -139,7 +139,7 @@ class Requirement(object):
 
     def __ne__(self, other):
         """
-        Inequality server
+        Inequality ycappuccino_core
         """
         return not self.__eq__(other)
 
@@ -170,14 +170,14 @@ class Requirement(object):
             # No properties : invalid service
             return False
 
-        # Properties filter server
+        # Properties filter ycappuccino_core
         return self.__full_filter.matches(properties)
 
     @property
     def full_filter(self):
         # type: () -> ldapfilter.LDAPFilter
         """
-        The filter that tests both specification and properties
+        The filter that iotill both specification and properties
         """
         return self.__full_filter
 
@@ -296,7 +296,7 @@ class FactoryContext(object):
 
     def __eq__(self, other):
         """
-        Equality server
+        Equality ycappuccino_core
         """
         if other is self:
             # Identity
@@ -311,7 +311,7 @@ class FactoryContext(object):
 
     def __ne__(self, other):
         """
-        Inequality server
+        Inequality ycappuccino_core
         """
         return not self.__eq__(other)
 

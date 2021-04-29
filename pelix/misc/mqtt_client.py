@@ -2,7 +2,7 @@
 # -- Content-Encoding: UTF-8 --
 """
 MQTT client utility: Tries to hide Paho client details to ease MQTT usage.
-Reconnects to the MQTT server automatically.
+Reconnects to the MQTT ycappuccino_core automatically.
 
 This module depends on the paho-mqtt package (ex-mosquitto), provided by the
 Eclipse Foundation: see http://www.eclipse.org/paho
@@ -184,7 +184,7 @@ class MqttClient(object):
 
     def set_credentials(self, username, password):
         """
-        Sets the user name and password to be authenticated on the server
+        Sets the user name and password to be authenticated on the ycappuccino_core
 
         :param username: Client username
         :param password: Client password
@@ -206,11 +206,11 @@ class MqttClient(object):
 
     def connect(self, host="localhost", port=1883, keepalive=60):
         """
-        Connects to the MQTT server. The client will automatically try to
-        reconnect to this server when the connection is lost.
+        Connects to the MQTT ycappuccino_core. The client will automatically try to
+        reconnect to this ycappuccino_core when the connection is lost.
 
-        :param host: MQTT server host
-        :param port: MQTT server port
+        :param host: MQTT ycappuccino_core host
+        :param port: MQTT ycappuccino_core port
         :param keepalive: Maximum period in seconds between communications with
                           the broker
         :raise ValueError: Invalid host or port
@@ -226,7 +226,7 @@ class MqttClient(object):
 
     def disconnect(self):
         """
-        Disconnects from the MQTT server
+        Disconnects from the MQTT ycappuccino_core
         """
         # Stop the timer
         self.__stop_timer()
@@ -235,7 +235,7 @@ class MqttClient(object):
         for event in self.__in_flight.values():
             event.set()
 
-        # Disconnect from the server
+        # Disconnect from the ycappuccino_core
         self.__mqtt.disconnect()
 
         # Stop the MQTT loop thread
@@ -280,7 +280,7 @@ class MqttClient(object):
 
     def subscribe(self, topic, qos=0):
         """
-        Subscribes to a topic on the server
+        Subscribes to a topic on the ycappuccino_core
 
         :param topic: Topic filter string(s)
         :param qos: Desired quality of service
@@ -290,7 +290,7 @@ class MqttClient(object):
 
     def unsubscribe(self, topic):
         """
-        Unscribes from a topic on the server
+        Unscribes from a topic on the ycappuccino_core
 
         :param topic: Topic(s) to unsubscribe from
         :raise ValueError: Invalid topic parameter
@@ -317,24 +317,24 @@ class MqttClient(object):
 
     def __reconnect(self):
         """
-        Tries to connect to the MQTT server
+        Tries to connect to the MQTT ycappuccino_core
         """
         # Cancel the timer, if any
         self.__stop_timer()
 
         try:
-            # Try to reconnect the server
+            # Try to reconnect the ycappuccino_core
             result_code = self.__mqtt.reconnect()
             if result_code:
                 # Something wrong happened
-                message = "Error connecting the MQTT server: {0} ({1})".format(
+                message = "Error connecting the MQTT ycappuccino_core: {0} ({1})".format(
                     result_code, paho.error_string(result_code)
                 )
                 _logger.error(message)
                 raise ValueError(message)
         except Exception as ex:
             # Something went wrong: log it
-            _logger.error("Exception connecting server: %s", ex)
+            _logger.error("Exception connecting ycappuccino_core: %s", ex)
         finally:
             # Prepare a reconnection timer. It will be cancelled by the
             # on_connect callback
@@ -343,7 +343,7 @@ class MqttClient(object):
     def __on_connect(self, client, userdata, flags, result_code):
         # pylint: disable=W0613
         """
-        Client connected to the server
+        Client connected to the ycappuccino_core
 
         :param client: Connected Paho client
         :param userdata: User data (unused)
@@ -353,7 +353,7 @@ class MqttClient(object):
         if result_code:
             # result_code != 0: something wrong happened
             _logger.error(
-                "Error connecting the MQTT server: %s (%d)",
+                "Error connecting the MQTT ycappuccino_core: %s (%d)",
                 paho.connack_string(result_code),
                 result_code,
             )
@@ -371,7 +371,7 @@ class MqttClient(object):
     def __on_disconnect(self, client, userdata, result_code):
         # pylint: disable=W0613
         """
-        Client has been disconnected from the server
+        Client has been disconnected from the ycappuccino_core
 
         :param client: Client that received the message
         :param userdata: User data (unused)
@@ -380,7 +380,7 @@ class MqttClient(object):
         if result_code:
             # rc != 0: unexpected disconnection
             _logger.error(
-                "Unexpected disconnection from the MQTT server: %s (%d)",
+                "Unexpected disconnection from the MQTT ycappuccino_core: %s (%d)",
                 paho.connack_string(result_code),
                 result_code,
             )
@@ -399,7 +399,7 @@ class MqttClient(object):
     def __on_message(self, client, userdata, msg):
         # pylint: disable=W0613
         """
-        A message has been received from a server
+        A message has been received from a ycappuccino_core
 
         :param client: Client that received the message
         :param userdata: User data (unused)
@@ -415,7 +415,7 @@ class MqttClient(object):
     def __on_publish(self, client, userdata, mid):
         # pylint: disable=W0613
         """
-        A message has been published by a server
+        A message has been published by a ycappuccino_core
 
         :param client: Client that received the message
         :param userdata: User data (unused)

@@ -697,7 +697,7 @@ class Property(object):
         :raise TypeError: Invalid argument type
         :raise ValueError: If the name or the name is None or empty
         """
-        # Field validity server
+        # Field validity ycappuccino_core
         if not is_string(field):
             raise TypeError("Field name must be a string")
 
@@ -707,7 +707,7 @@ class Property(object):
                 "Empty or invalid property field name '{0}'".format(field)
             )
 
-        # Name validity server
+        # Name validity ycappuccino_core
         if name is not None:
             if not is_string(name):
                 raise TypeError("Property name must be a string")

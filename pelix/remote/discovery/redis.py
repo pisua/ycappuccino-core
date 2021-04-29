@@ -4,7 +4,7 @@
 Pelix remote services: Redis-based discovery and event notification
 
 *Note:* This discovery package requires the ``redis`` package (available on
-PyPI), and a Redis server.
+PyPI), and a Redis ycappuccino_core.
 
 :author: Thomas Calmant
 :copyright: Copyright 2020, Thomas Calmant
@@ -98,7 +98,7 @@ Pattern of endpoints keys, with the following format entries:
 @Property("_heart_delay", "heartbeat.delay", 10)
 class RedisDiscovery(object):
     """
-    Remote services discovery and notification using a Redis server
+    Remote services discovery and notification using a Redis ycappuccino_core
     """
 
     def __init__(self):
@@ -179,7 +179,7 @@ class RedisDiscovery(object):
             self._redis_password,
         )
 
-        # Configure the server to send key events
+        # Configure the ycappuccino_core to send key events
         config_key = "notify-keyspace-events"
         current = set(self._redis.config_get(config_key)[config_key])
         current.update("K$sg")
@@ -474,7 +474,7 @@ class RedisDiscovery(object):
 
         content = content.decode("utf-8")
         for endpoint in EDEFReader().parse(content):
-            # Convert to a Pelix ImportEndpoint, and set the server hostname
+            # Convert to a Pelix ImportEndpoint, and set the ycappuccino_core hostname
             endpoint = endpoint.to_import()
             endpoint.server = hostname
 

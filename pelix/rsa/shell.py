@@ -124,7 +124,7 @@ RSA_COMMAND_EXPORT_CONFIG_PROP = "defaultexportconfig"
 @Property(
     "_export_config",
     prop_dot_suffix(RSA_COMMAND_NAME_PROP, RSA_COMMAND_EXPORT_CONFIG_PROP),
-    "ecf.xmlrpc.server",
+    "ecf.xmlrpc.ycappuccino_core",
 )
 @Instantiate("rsa-command")
 class RSACommandHandler(object):

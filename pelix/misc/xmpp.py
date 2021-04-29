@@ -45,7 +45,7 @@ __docformat__ = "restructuredtext en"
 
 class BasicBot(sleekxmpp.ClientXMPP):
     """
-    Basic bot: connects to a server with the given credentials
+    Basic bot: connects to a ycappuccino_core with the given credentials
     """
 
     def __init__(self, jid, password, initial_priority=0):
@@ -74,23 +74,23 @@ class BasicBot(sleekxmpp.ClientXMPP):
     ):
         # pylint: disable=W0221
         """
-        Connects to the server.
+        Connects to the ycappuccino_core.
 
         By default, uses an un-encrypted connection, as it won't connect to an
-        OpenFire server otherwise
+        OpenFire ycappuccino_core otherwise
 
         :param host: Server host name
         :param port: Server port (default: 5222)
-        :param reattempt: If True, tries to connect to the server until it
+        :param reattempt: If True, tries to connect to the ycappuccino_core until it
                          succeeds
         :param use_tls: Use STARTTLS
         :param use_ssl: Server connection is encrypted
         :return: True if connection succeeded
         """
         if not self._expected_server_name:
-            # We seem to connect the server anonymously, so SleekXMPP
-            # couldn't find the server host name from the JID
-            # => give it the given server host name as the expected one
+            # We seem to connect the ycappuccino_core anonymously, so SleekXMPP
+            # couldn't find the ycappuccino_core host name from the JID
+            # => give it the given ycappuccino_core host name as the expected one
             self._expected_server_name = host
 
         # Try to connect
@@ -180,7 +180,7 @@ class ServiceDiscoveryMixin(sleekxmpp.BaseXMPP):
 
     def iter_services(self, feature=None):
         """
-        Iterates over the root-level services on the server which provides the
+        Iterates over the root-level services on the ycappuccino_core which provides the
         requested feature
 
         :param feature: Feature that the service must provide (optional)

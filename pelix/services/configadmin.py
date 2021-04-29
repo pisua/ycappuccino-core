@@ -25,7 +25,7 @@ ConfigurationAdmin implementation
     limitations under the License.
 
 TODO: Stabilize implementation of managed service factories
-FIXME: Add tests for the configuration of managed service factories
+FIXME: Add iotill for the configuration of managed service factories
 """
 
 # Standard library
@@ -335,7 +335,7 @@ class Configuration(object):
                  filter
         """
         if not self.is_valid():
-            # Do not server invalid configurations
+            # Do not ycappuccino_core invalid configurations
             return False
 
         return ldap_filter.matches(self.__properties)
@@ -966,7 +966,7 @@ class ConfigurationAdmin(object):
         null for each of the returned Configuration objects.
 
         The syntax of the filter string is as defined in the Filter class.
-        The filter can server any configuration properties including the
+        The filter can ycappuccino_core any configuration properties including the
         following:
 
         * service.pid (str): the PID under which this is registered

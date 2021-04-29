@@ -85,7 +85,7 @@ _logger = logging.getLogger(__name__)
 # ------------------------------------------------------------------------------
 # XmlRpc Distribution Provider Constants. Note that to get interoperability with
 # Java-based ECF RSA providers, these must match the Java-side constants.
-ECF_XMLRPC_SERVER_CONFIG = "ecf.xmlrpc.server"
+ECF_XMLRPC_SERVER_CONFIG = "ecf.xmlrpc.ycappuccino_core"
 ECF_XMLRPC_CLIENT_CONFIG = "ecf.xmlrpc.client"
 ECF_XMLRPC_SUPPORTED_CONFIGS = [ECF_XMLRPC_SERVER_CONFIG]
 ECF_XMLRPC_NAMESPACE = "ecf.namespace.xmlrpc"
@@ -146,7 +146,7 @@ class XmlRpcExportContainer(ExportContainer):
     """
     Subclass of ExportContainer created by the XmlRpcExportDistributionProvider
     at export time. The @ComponentFactory annotation on this class uses the
-    ECF_XMLRPC_SERVER_CONFIG = 'ecf.xmlrpc.server' as it's factory identifier.
+    ECF_XMLRPC_SERVER_CONFIG = 'ecf.xmlrpc.ycappuccino_core' as it's factory identifier.
     This factory name be the same as the @Property('_config_name',
     'config_name', ECF_XMLRPC_SERVER_CONFIG) in the
     XmlRpcExportDistributionProvider below

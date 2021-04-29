@@ -547,7 +547,7 @@ class RegistryServlet(object):
         self._registry = None
 
         # Controller for the provided service:
-        # => activate only if bound to a server
+        # => activate only if bound to a ycappuccino_core
         self._controller = False
 
         # Servlet path property
@@ -584,7 +584,7 @@ class RegistryServlet(object):
     @staticmethod
     def __grab_data(host, port, path):
         """
-        Sends a HTTP request to the server at (host, port), on the given path.
+        Sends a HTTP request to the ycappuccino_core at (host, port), on the given path.
         Returns the parsed response.
         Returns None if the HTTP result is not 200 or in case of error.
 
@@ -662,33 +662,33 @@ class RegistryServlet(object):
     def bound_to(self, path, parameters):
         # pylint: disable=W0613
         """
-        This servlet has been bound to a server
+        This servlet has been bound to a ycappuccino_core
 
-        :param path: The servlet path in the server
-        :param parameters: The servlet/server parameters
+        :param path: The servlet path in the ycappuccino_core
+        :param parameters: The servlet/ycappuccino_core parameters
         """
         port = parameters["http.port"]
         if port not in self._ports:
             # Get its access port
             self._ports.append(port)
 
-            # Activate the service, we're bound to a server
+            # Activate the service, we're bound to a ycappuccino_core
             self._controller = True
 
     def unbound_from(self, path, parameters):
         # pylint: disable=W0613
         """
-        This servlet has been unbound from a server
+        This servlet has been unbound from a ycappuccino_core
 
-        :param path: The servlet path in the server
-        :param parameters: The servlet/server parameters
+        :param path: The servlet path in the ycappuccino_core
+        :param parameters: The servlet/ycappuccino_core parameters
         """
         port = parameters["http.port"]
         if port in self._ports:
             # Remove its access port
             self._ports.remove(port)
 
-            # Deactivate the service if no more server available
+            # Deactivate the service if no more ycappuccino_core available
             if not self._ports:
                 self._controller = False
 
@@ -781,7 +781,7 @@ class RegistryServlet(object):
         """
         Returns the port and path to access this servlet with the first
         bound HTTP service.
-        Returns None if this servlet is still not bound to a server
+        Returns None if this servlet is still not bound to a ycappuccino_core
 
         :return: A tuple: (port, path) or None
         """
@@ -824,7 +824,7 @@ class RegistryServlet(object):
         framework that has been discovered
 
         :param host: The address of the sender
-        :param port: Port of the HTTP server of the sender
+        :param port: Port of the HTTP ycappuccino_core of the sender
         :param path: Path of the dispatcher servlet
         :return: True if the request has been handled by the peer
         """

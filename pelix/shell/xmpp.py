@@ -151,7 +151,7 @@ class _XmppInStream(object):
 
 @ComponentFactory(pelix.shell.FACTORY_XMPP_SHELL)
 @Requires("_shell", pelix.shell.SERVICE_SHELL)
-@Property("_host", "shell.xmpp.server", "localhost")
+@Property("_host", "shell.xmpp.ycappuccino_core", "localhost")
 @Property("_port", "shell.xmpp.port", 5222)
 @Property("_jid", "shell.xmpp.jid")
 @HiddenProperty("_password", "shell.xmpp.password")
@@ -231,7 +231,7 @@ class IPopoXMPPShell(object):
         self.__bot.add_event_handler("socket_error", self.__on_error)
         self.__bot.add_event_handler("got_offline", self.__on_offline)
 
-        # Connect to the server
+        # Connect to the ycappuccino_core
         self.__bot.connect(
             self._host, self._port, False, self._use_tls, self._use_ssl
         )
@@ -378,14 +378,14 @@ def main(argv=None):
     group = parser.add_argument_group("XMPP options")
     group.add_argument("-j", "--jid", dest="jid", help="Jabber ID")
     group.add_argument("--password", dest="password", help="JID password")
-    group.add_argument("-s", "--server", dest="server", help="XMPP server host")
+    group.add_argument("-s", "--ycappuccino_core", dest="ycappuccino_core", help="XMPP ycappuccino_core host")
     group.add_argument(
         "-p",
         "--port",
         dest="port",
         type=int,
         default=5222,
-        help="XMPP server port",
+        help="XMPP ycappuccino_core port",
     )
     group.add_argument(
         "--tls",
@@ -411,7 +411,7 @@ def main(argv=None):
         logging.getLogger("sleekxmpp").setLevel(logging.WARNING)
 
     if not args.server and not args.jid:
-        _logger.error("No JID nor server given. Abandon.")
+        _logger.error("No JID nor ycappuccino_core given. Abandon.")
         sys.exit(1)
 
     # Get the password if necessary
@@ -429,7 +429,7 @@ def main(argv=None):
             except getpass.GetPassWarning:
                 pass
 
-    # Get the server from the JID, if necessary
+    # Get the ycappuccino_core from the JID, if necessary
     server = args.server
     if not server:
         server = sleekxmpp.JID(args.jid).domain
@@ -456,7 +456,7 @@ def main(argv=None):
             pelix.shell.FACTORY_XMPP_SHELL,
             "xmpp-shell",
             {
-                "shell.xmpp.server": server,
+                "shell.xmpp.ycappuccino_core": server,
                 "shell.xmpp.port": args.port,
                 "shell.xmpp.jid": args.jid,
                 "shell.xmpp.password": password,

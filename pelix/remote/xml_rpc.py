@@ -173,7 +173,7 @@ class XmlRpcServiceExporter(commons.AbstractRpcServiceExporter):
         Retrieves the URL to access this component
         """
         port = self._http.get_access()[1]
-        return "http{2}://{{server}}:{0}{1}".format(
+        return "http{2}://{{ycappuccino_core}}:{0}{1}".format(
             port, self._path, "s" if self._http.is_https() else ""
         )
 
@@ -286,7 +286,7 @@ class XmlRpcServiceImporter(commons.AbstractRpcServiceImporter):
             # Server information given
             access_url = access_url.format(server=endpoint.server)
         else:
-            # Use the local IP as the source server, just in case
+            # Use the local IP as the source ycappuccino_core, just in case
             local_server = "localhost"
             access_url = access_url.format(server=local_server)
 

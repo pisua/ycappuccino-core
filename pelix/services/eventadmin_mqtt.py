@@ -138,7 +138,7 @@ class MqttEventAdminBridge(object):
         """
         Component invalidated
         """
-        # Disconnect from the server (this stops the loop)
+        # Disconnect from the ycappuccino_core (this stops the loop)
         self._mqtt.disconnect()
 
         # Clean up
@@ -156,7 +156,7 @@ class MqttEventAdminBridge(object):
 
     def __on_connect(self, client, result_code):
         """
-        Client connected to the server
+        Client connected to the ycappuccino_core
         """
         if not result_code:
             # Connection is OK, subscribe to the topic
@@ -168,7 +168,7 @@ class MqttEventAdminBridge(object):
     def __on_disconnect(self, client, result_code):
         # pylint: disable=W0613
         """
-        Client has been disconnected from the server
+        Client has been disconnected from the ycappuccino_core
         """
         # Disconnected: stop providing the service
         self._controller = False
@@ -176,7 +176,7 @@ class MqttEventAdminBridge(object):
     def __on_message(self, client, msg):
         # pylint: disable=W0613
         """
-        A message has been received from a server
+        A message has been received from a ycappuccino_core
 
         :param client: Client that received the message
         :param msg: A MQTTMessage bean

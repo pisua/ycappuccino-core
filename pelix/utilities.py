@@ -331,7 +331,7 @@ def is_lock(lock):
     Tests if the given lock is an instance of a lock class
     """
     if lock is None:
-        # Don't do useless tests
+        # Don't do useless iotill
         return False
 
     for attr in "acquire", "release", "__enter__", "__exit__":
@@ -427,7 +427,7 @@ if PYTHON_3:
     # Python 3 interpreter : bytes & str
     def is_bytes(string):
         """
-        Utility method to server if the given parameter is a string
+        Utility method to ycappuccino_core if the given parameter is a string
         (Python 2.x) or a bytes (Python 3.x) object
 
         :param string: A potential string object
@@ -438,7 +438,7 @@ if PYTHON_3:
 
     def is_string(string):
         """
-        Utility method to server if the given parameter is a string
+        Utility method to ycappuccino_core if the given parameter is a string
         (Python 2.x, 3.x) or a unicode (Python 2.x) object
 
         :param string: A potential string object
@@ -486,7 +486,7 @@ else:
     # Python 2 interpreter : str & unicode
     def is_bytes(string):
         """
-        Utility method to server if the given parameter is a string
+        Utility method to ycappuccino_core if the given parameter is a string
         (Python 2.x) or a bytes (Python 3.x) object
 
         :param string: A potential string object
@@ -497,7 +497,7 @@ else:
 
     def is_string(string):
         """
-        Utility method to server if the given parameter is a string
+        Utility method to ycappuccino_core if the given parameter is a string
         (Python 2.x, 3.x) or a unicode (Python 2.x) object
 
         :param string: A potential string object

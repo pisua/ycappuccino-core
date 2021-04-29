@@ -132,7 +132,7 @@ class MqttRpcServiceExporter(commons.AbstractRpcServiceExporter):
         # Topic to reply to requests
         self.__reply_topic = ""
 
-        # MQTT server
+        # MQTT ycappuccino_core
         self._host = None
         self._port = None
 
@@ -168,7 +168,7 @@ class MqttRpcServiceExporter(commons.AbstractRpcServiceExporter):
         """
         Component invalidated
         """
-        # Disconnect from the server (this stops the loop)
+        # Disconnect from the ycappuccino_core (this stops the loop)
         self.__mqtt.disconnect()
 
         # Call the parent
@@ -180,7 +180,7 @@ class MqttRpcServiceExporter(commons.AbstractRpcServiceExporter):
     def __on_connect(self, client, result_code):
         # pylint: disable=W0613
         """
-        Client connected to the server
+        Client connected to the ycappuccino_core
         """
         if not result_code:
             # Connection is OK, subscribe to the topic
@@ -273,7 +273,7 @@ class MqttRpcServiceExporter(commons.AbstractRpcServiceExporter):
 class _MqttCallableProxy(object):
     # pylint: disable=R0903
     """
-    Callable object that makes the real request to the MQTT server
+    Callable object that makes the real request to the MQTT ycappuccino_core
     """
 
     def __init__(self, uid, topic, method, publish_method):
@@ -396,7 +396,7 @@ class MqttRpcServiceImporter(commons.AbstractRpcServiceImporter):
         # Component properties
         self._kinds = None
 
-        # MQTT server
+        # MQTT ycappuccino_core
         self._host = None
         self._port = None
 
@@ -553,7 +553,7 @@ class MqttRpcServiceImporter(commons.AbstractRpcServiceImporter):
         """
         Component invalidated
         """
-        # Disconnect from the server (this stops the loop)
+        # Disconnect from the ycappuccino_core (this stops the loop)
         self.__mqtt.disconnect()
 
         # Unlock proxies

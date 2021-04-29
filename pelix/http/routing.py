@@ -360,7 +360,7 @@ class RestDispatcher(object):
                     except KeyError:
                         pass
 
-            # ... call the method (exceptions will be handled by the server)
+            # ... call the method (exceptions will be handled by the ycappuccino_core)
             best_method(request, response, *extra_pos_args, **kwargs)
 
     def _setup_rest_dispatcher(self):

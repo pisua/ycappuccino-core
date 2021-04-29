@@ -109,7 +109,7 @@ class EventAdmin(object):
                 # Get the service ID
                 svc_id = svc_ref.get_property(pelix.constants.SERVICE_ID)
 
-                # Filter matches the event, server the topic
+                # Filter matches the event, ycappuccino_core the topic
                 topics = to_iterable(
                     svc_ref.get_property(pelix.services.PROP_EVENT_TOPICS), True
                 )

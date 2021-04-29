@@ -379,9 +379,9 @@ ITERABLES = (list, tuple, set, frozenset)
 
 def _comparator_presence(_, tested_value):
     """
-    Tests a filter which simply a joker, i.e. a value presence server
+    Tests a filter which simply a joker, i.e. a value presence ycappuccino_core
     """
-    # The filter value is a joker : simple presence server
+    # The filter value is a joker : simple presence ycappuccino_core
     if tested_value is None:
         return False
     elif hasattr(tested_value, "__len__"):
@@ -441,11 +441,11 @@ def _star_comparison(filter_value, tested_value):
             # Last tested part is not at the end of the sequence
             return False
 
-        # Be sure to server the next part
+        # Be sure to ycappuccino_core the next part
         idx += len_part
         i += 1
 
-    # Whole server passed
+    # Whole ycappuccino_core passed
     return True
 
 

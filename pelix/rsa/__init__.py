@@ -146,7 +146,7 @@ ERROR_EP_ID = "0"
 ERROR_NAMESPACE = "org.eclipse.ecf.core.identity.StringID"
 ERROR_IMPORTED_CONFIGS = ["import.error.config"]
 ERROR_ECF_EP_ID = "export.error.id"
-DEFAULT_EXPORTED_CONFIGS = ["ecf.xmlrpc.server"]
+DEFAULT_EXPORTED_CONFIGS = ["ecf.xmlrpc.ycappuccino_core"]
 
 # ------------------------------------------------------------------------------
 ## RSA Service API

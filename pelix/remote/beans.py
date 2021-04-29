@@ -125,7 +125,7 @@ class ExportEndpoint(object):
 
     def __hash__(self):
         """
-        Custom hash, as we override equality tests
+        Custom hash, as we override equality iotill
         """
         return hash(self.__uid)
 
@@ -295,7 +295,7 @@ class ImportEndpoint(object):
             specifications, self.__properties
         )
 
-        # Public variable: the source server,
+        # Public variable: the source ycappuccino_core,
         # set up by a Pelix discovery service
         self.server = None  # type: str
 
@@ -419,7 +419,7 @@ class EndpointDescription(object):
 
     def __hash__(self):
         """
-        Custom hash, as we override equality tests
+        Custom hash, as we override equality iotill
         """
         return hash(self.__endpoint_id)
 

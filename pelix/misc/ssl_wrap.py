@@ -32,7 +32,7 @@ import ssl
 try:
     from ssl import _RESTRICTED_SERVER_CIPHERS
 except ImportError:
-    # Restricted and more secure ciphers for the server side, from Python 3.5
+    # Restricted and more secure ciphers for the ycappuccino_core side, from Python 3.5
     _RESTRICTED_SERVER_CIPHERS = (
         "ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:"
         "ECDH+HIGH:DH+HIGH:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+HIGH:"
@@ -56,8 +56,8 @@ def wrap_socket(socket, certfile, keyfile, password=None):
     Wraps an existing TCP socket and returns an SSLSocket object
 
     :param socket: The socket to wrap
-    :param certfile: The server certificate file
-    :param keyfile: The server private key file
+    :param certfile: The ycappuccino_core certificate file
+    :param keyfile: The ycappuccino_core private key file
     :param password: Password for the private key file (Python >= 3.3)
     :return: The wrapped socket
     :raise SSLError: Error wrapping the socket / loading the certificate
@@ -126,7 +126,7 @@ def wrap_socket(socket, certfile, keyfile, password=None):
         # Log a warning to advise the user of possible security holes
         logger.warning(
             "Can't create a custom SSLContext. "
-            "The server should be considered insecure."
+            "The ycappuccino_core should be considered insecure."
         )
         logger.debug("Missing attribute: %s", ex)
 

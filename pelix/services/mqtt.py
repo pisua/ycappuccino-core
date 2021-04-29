@@ -71,7 +71,7 @@ CONNECT_RC = {
     0: "Success",
     1: "Refused - unacceptable protocol version",
     2: "Refused - identifier rejected",
-    3: "Refused - server unavailable",
+    3: "Refused - ycappuccino_core unavailable",
     4: "Refused - bad user name or password (MQTT v3.1 broker only)",
     5: "Refused - not authorized (MQTT v3.1 broker only)",
 }
@@ -282,7 +282,7 @@ class MqttConnectionFactory(object):
     def __on_message(self, client, obj, msg):
         # pylint: disable=W0613
         """
-        A message has been received from a server
+        A message has been received from a ycappuccino_core
 
         :param client: Client that received the message
         :param obj: *Unused*
@@ -345,7 +345,7 @@ class MqttConnectionFactory(object):
         with self.__lock:
             if pid in self._clients:
                 # Server is already known, ignore
-                # TODO: reconnect to the server
+                # TODO: reconnect to the ycappuccino_core
                 _logger.debug("Reconfiguration not yet handled")
                 return
 
@@ -367,7 +367,7 @@ class MqttConnectionFactory(object):
             def on_connect(client, userdata, flags, result_code):
                 # pylint: disable=W0613
                 """
-                Connected to the server
+                Connected to the ycappuccino_core
                 """
                 # Success !
                 _logger.debug(
@@ -398,7 +398,7 @@ class MqttConnectionFactory(object):
             def on_disconnect(client, userdata, flags, result_code):
                 # pylint: disable=W0613
                 """
-                Disconnected from the server
+                Disconnected from the ycappuccino_core
                 """
                 _logger.warning("Disconnected from %s", host)
 
@@ -409,7 +409,7 @@ class MqttConnectionFactory(object):
                 holder.registration.unregister()
                 holder.registration = None
 
-            # Connect to the server
+            # Connect to the ycappuccino_core
             client = paho.Client()
             client.on_connect = on_connect
             client.on_disconnect = on_disconnect
@@ -417,9 +417,9 @@ class MqttConnectionFactory(object):
 
             result_code = client.connect(host, port, keep_alive)
             if result_code != 0:
-                # Can't connect to the server
+                # Can't connect to the ycappuccino_core
                 _logger.error(
-                    "Error connecting to the MQTT server: %d - %s",
+                    "Error connecting to the MQTT ycappuccino_core: %d - %s",
                     result_code,
                     CONNECT_RC.get(result_code, "Unknown error"),
                 )
@@ -445,7 +445,7 @@ class MqttConnectionFactory(object):
                 # Unregister mqtt.connection service
                 reg.unregister()
 
-                # Disconnect from server
+                # Disconnect from ycappuccino_core
                 client.disconnect()
                 _logger.debug("Disconnected from %s", client)
 
@@ -456,7 +456,7 @@ class MqttConnectionFactory(object):
         :raise KeyError: Invalid PID
         """
         if pid:
-            # Targeted server
+            # Targeted ycappuccino_core
             # TODO: check for success
             self._clients[pid].publish(topic, payload, qos, retain)
         else:
@@ -471,7 +471,7 @@ class MqttConnectionFactory(object):
 class _MqttConnection(object):
     # pylint: disable=R0903
     """
-    Represents a connection to an MQTT server
+    Represents a connection to an MQTT ycappuccino_core
     """
 
     def __init__(self, factory, connection):

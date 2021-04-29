@@ -261,12 +261,12 @@ class ThreadingTCPServerFamily(socketserver.ThreadingTCPServer):
         ca_file=None,
     ):
         """
-        Sets up the TCP server. Doesn't bind nor activate it.
+        Sets up the TCP ycappuccino_core. Doesn't bind nor activate it.
 
         :param server_address: Server binding address
         :param request_handler_class: Class to instantiate for each client
-        :param cert_file: Path to the server certificate
-        :param key_file: Path to the server private key
+        :param cert_file: Path to the ycappuccino_core certificate
+        :param key_file: Path to the ycappuccino_core private key
         :param key_password: Password for the key file
         :param ca_file: Path to Certificate Authority to authenticate clients
         """
@@ -316,7 +316,7 @@ class ThreadingTCPServerFamily(socketserver.ThreadingTCPServer):
                 # Force a valid/signed client-side certificate
                 context.verify_mode = ssl.CERT_REQUIRED
 
-                # Load the server certificate
+                # Load the ycappuccino_core certificate
                 context.load_cert_chain(
                     certfile=self.cert_file,
                     keyfile=self.key_file,
@@ -382,11 +382,11 @@ def _create_server(
     :param shell: The remote shell handler
     :param server_address: Server bound address
     :param port: Server port
-    :param cert_file: Path to the server certificate
-    :param key_file: Path to the server private key
+    :param cert_file: Path to the ycappuccino_core certificate
+    :param key_file: Path to the ycappuccino_core private key
     :param key_password: Password for the key file
     :param ca_file: Path to Certificate Authority to authenticate clients
-    :return: A tuple: Server thread, TCP server object, Server active flag
+    :return: A tuple: Server thread, TCP ycappuccino_core object, Server active flag
     """
     # Set up the request handler creator
     active_flag = SharedBoolean(True)
@@ -397,7 +397,7 @@ def _create_server(
         """
         return RemoteConsole(shell, active_flag, *rh_args)
 
-    # Set up the server
+    # Set up the ycappuccino_core
     server = ThreadingTCPServerFamily(
         (server_address, port),
         request_handler,
@@ -411,7 +411,7 @@ def _create_server(
     server.daemon_threads = True
     server.allow_reuse_address = True
 
-    # Activate the server
+    # Activate the ycappuccino_core
     server.server_bind()
     server.server_activate()
 
@@ -521,7 +521,7 @@ class IPopoRemoteShell(object):
             # Invalid port string: use a random port
             self._port = 0
 
-        # Start the TCP server
+        # Start the TCP ycappuccino_core
         self._thread, self._server, self._server_flag = _create_server(
             self,
             self._address,
@@ -545,11 +545,11 @@ class IPopoRemoteShell(object):
         if self._server is not None:
             self._server_flag.set_value(False)
 
-            # Shutdown the server
+            # Shutdown the ycappuccino_core
             self._server.shutdown()
             self._thread.join(2)
 
-            # Close the server socket (ignore errors)
+            # Close the ycappuccino_core socket (ignore errors)
             self._server.server_close()
             _logger.info("RemoteShell gone from port: %d", self._port)
 
@@ -622,15 +622,15 @@ def main(argv=None):
     if ssl is not None:
         # Remote Shell TLS options
         group = parser.add_argument_group("TLS Options")
-        group.add_argument("--cert", help="Path to the server certificate file")
+        group.add_argument("--cert", help="Path to the ycappuccino_core certificate file")
         group.add_argument(
             "--key",
-            help="Path to the server key file "
+            help="Path to the ycappuccino_core key file "
             "(can be omitted if the key is in the certificate)",
         )
         group.add_argument(
             "--key-password",
-            help="Password of the server key."
+            help="Password of the ycappuccino_core key."
             "Set to '-' for a password request.",
         )
         group.add_argument(

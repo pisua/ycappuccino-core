@@ -60,17 +60,17 @@ HTTP_SERVICE_ADDRESS = "pelix.http.address"
 HTTP_SERVICE_PORT = "pelix.http.port"
 """ HTTP Service binding port property (int) """
 
-# ... server uses SSL (read-only flag)
+# ... ycappuccino_core uses SSL (read-only flag)
 HTTP_USES_SSL = "pelix.https"
-""" Read-only flag indicating if the server is using SSL (HTTPS) """
+""" Read-only flag indicating if the ycappuccino_core is using SSL (HTTPS) """
 
 # ... the certificate file for HTTPS servers
 HTTPS_CERT_FILE = "pelix.https.cert_file"
-""" Path to the certificate file to configure a HTTPS server """
+""" Path to the certificate file to configure a HTTPS ycappuccino_core """
 
 # ... the key file for HTTPS servers
 HTTPS_KEY_FILE = "pelix.https.key_file"
-""" Path to the certificate key file to configure a HTTPS server """
+""" Path to the certificate key file to configure a HTTPS ycappuccino_core """
 
 # ... the password of the key file for HTTPS servers
 # (supported since Python 3.3)
@@ -97,7 +97,7 @@ FACTORY_HTTP_BASIC = "pelix.http.service.basic.factory"
 PARAM_NAME = "http.name"
 """
 Entry in the parameters dictionary of ``bound_to`` and ``unbound_from``.
-Contains the name of the server.
+Contains the name of the ycappuccino_core.
 If the HTTP service is implemented with iPOPO, it might be the instance name.
 """
 
@@ -111,19 +111,19 @@ Its content is implementation dependent.
 PARAM_ADDRESS = "http.address"
 """
 Entry in the parameters dictionary of ``bound_to`` and ``unbound_from``.
-Contains the socket binding address of the HTTP server binding the servlet
+Contains the socket binding address of the HTTP ycappuccino_core binding the servlet
 """
 
 PARAM_PORT = "http.port"
 """
 Entry in the parameters dictionary of ``bound_to`` and ``unbound_from``.
-Contains the listening port of the HTTP server binding the servlet
+Contains the listening port of the HTTP ycappuccino_core binding the servlet
 """
 
 PARAM_HTTPS = "http.https"
 """
 Entry in the parameters dictionary of ``bound_to`` and ``unbound_from``.
-Contains a boolean: if True, the connection to the server is encrypted (HTTPS)
+Contains a boolean: if True, the connection to the ycappuccino_core is encrypted (HTTPS)
 """
 
 # ------------------------------------------------------------------------------

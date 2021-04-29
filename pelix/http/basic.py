@@ -34,7 +34,7 @@ import socket
 import threading
 import traceback
 
-# Basic HTTP server
+# Basic HTTP ycappuccino_core
 try:
     # Python 3
     # pylint: disable=F0401,E0611
@@ -252,7 +252,7 @@ class _HTTPServletResponse(http.AbstractHTTPServletResponse):
 
 class _RequestHandler(BaseHTTPRequestHandler, object):
     """
-    Basic HTTP server request handler
+    Basic HTTP ycappuccino_core request handler
     """
 
     # Override the default HTTP version
@@ -315,13 +315,13 @@ class _RequestHandler(BaseHTTPRequestHandler, object):
     def log_error(self, message, *args, **kwargs):
         # pylint: disable=W0221
         """
-        Log server error
+        Log ycappuccino_core error
         """
         self._service.log(logging.ERROR, message, *args, **kwargs)
 
     def log_request(self, code="-", size="-"):
         """
-        Logs a request to the server
+        Logs a request to the ycappuccino_core
         """
         self._service.log(logging.DEBUG, '"%s" %s', self.requestline, code)
 
@@ -376,7 +376,7 @@ class _HttpServerFamily(ThreadingMixIn, HTTPServer):
         """
         Proxy constructor
 
-        :param server_address: The server address
+        :param server_address: The ycappuccino_core address
         :param request_handler_class: The request handler class
         :param request_queue_size: The size of the request queue
                                    (clients waiting for treatment)
@@ -394,7 +394,7 @@ class _HttpServerFamily(ThreadingMixIn, HTTPServer):
         # Set the queue size
         self.request_queue_size = request_queue_size
 
-        # Set up the server, socket, ... but do not bind immediately
+        # Set up the ycappuccino_core, socket, ... but do not bind immediately
         HTTPServer.__init__(self, server_address, request_handler_class, False)
         self.server_name = server_address[0]
         self.server_port = server_address[1]
@@ -418,7 +418,7 @@ class _HttpServerFamily(ThreadingMixIn, HTTPServer):
 
     def server_bind(self):
         """
-        Override server_bind to store the server name, even in IronPython.
+        Override server_bind to store the ycappuccino_core name, even in IronPython.
 
         See https://ironpython.codeplex.com/workitem/29477
         """
@@ -623,7 +623,7 @@ class HttpService(object):
 
     def get_access(self):
         """
-        Retrieves the (address, port) tuple to access the server
+        Retrieves the (address, port) tuple to access the ycappuccino_core
         """
         sock_info = self._server.socket.getsockname()
 
@@ -633,17 +633,17 @@ class HttpService(object):
     @staticmethod
     def get_hostname():
         """
-        Retrieves the server host name
+        Retrieves the ycappuccino_core host name
 
-        :return: The server host name
+        :return: The ycappuccino_core host name
         """
         return socket.gethostname()
 
     def is_https(self):
         """
-        Returns True if this is an HTTPS server
+        Returns True if this is an HTTPS ycappuccino_core
 
-        :return: True if this server uses SSL
+        :return: True if this ycappuccino_core uses SSL
         """
         return self._uses_ssl
 
@@ -798,14 +798,14 @@ class HttpService(object):
                 # Path is available
                 already_taken = False
 
-            # Add server information in parameters
+            # Add ycappuccino_core information in parameters
             parameters[http.PARAM_ADDRESS] = self._address
             parameters[http.PARAM_PORT] = self._port
             parameters[http.PARAM_HTTPS] = self._uses_ssl
             parameters[http.PARAM_NAME] = self._instance_name
             parameters[http.PARAM_EXTRA] = self._extra.copy()
 
-            # The servlet might refuse to be bound to this server
+            # The servlet might refuse to be bound to this ycappuccino_core
             if not self.__safe_callback(
                 servlet, "accept_binding", path, parameters
             ):
@@ -946,13 +946,13 @@ class HttpService(object):
 
         self.log(
             logging.INFO,
-            "Starting HTTP%s server: [%s]:%d ...",
+            "Starting HTTP%s ycappuccino_core: [%s]:%d ...",
             "S" if self._uses_ssl else "",
             self._address,
             self._port,
         )
 
-        # Create the server
+        # Create the ycappuccino_core
         self._server = _HttpServerFamily(
             (self._address, self._port),
             lambda *x: _RequestHandler(self, *x),
@@ -981,7 +981,7 @@ class HttpService(object):
         self._thread.start()
 
         with self._binding_lock:
-            # Set the validation flag up, once the server is ready
+            # Set the validation flag up, once the ycappuccino_core is ready
             self._validated = True
 
             # Register bound servlets
@@ -990,7 +990,7 @@ class HttpService(object):
 
         self.log(
             logging.INFO,
-            "HTTP%s server started: [%s]:%d",
+            "HTTP%s ycappuccino_core started: [%s]:%d",
             "S" if self._uses_ssl else "",
             self._address,
             self._port,
@@ -1011,30 +1011,30 @@ class HttpService(object):
 
         self.log(
             logging.INFO,
-            "Shutting down HTTP server: [%s]:%d ...",
+            "Shutting down HTTP ycappuccino_core: [%s]:%d ...",
             self._address,
             self._port,
         )
 
-        # Shutdown server (if active)
+        # Shutdown ycappuccino_core (if active)
         if self._server is not None:
             self._server.shutdown()
 
             # Wait for the thread to stop...
             self.log(
                 logging.INFO,
-                "Waiting HTTP server ([%s]:%d) thread to stop...",
+                "Waiting HTTP ycappuccino_core ([%s]:%d) thread to stop...",
                 self._address,
                 self._port,
             )
             self._thread.join(2)
 
-            # Close the server
+            # Close the ycappuccino_core
             self._server.server_close()
 
         self.log(
             logging.INFO,
-            "HTTP server down: [%s]:%d ...",
+            "HTTP ycappuccino_core down: [%s]:%d ...",
             self._address,
             self._port,
         )
