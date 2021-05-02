@@ -29,8 +29,7 @@ class AbsManager(IManager):
         return self._is_secureWrite
 
     def get_one(self, a_id):
-        if self.is_secureRead():
-            # manage secure
+
         if self._item is not None:
             res = self._storage.get_one(self._item.get_collection_name(), a_id)
             if res is not None:
@@ -38,8 +37,7 @@ class AbsManager(IManager):
         return None
 
     def get_many(self, a_params):
-        if self.is_secureRead():
-            # manage secure
+
         if self._item is not None:
             res = self._storage.get_many(self._item.get_collection_name(), a_params)
             if res is not None:
@@ -47,8 +45,7 @@ class AbsManager(IManager):
         return None
 
     def up_sert(self, a_id, a_new_field):
-        if self.is_secureWrite():
-            # manage secure
+
         if self._item is not None:
             res = self._storage.up_sert(self._item.get_collection_name(), a_id, a_new_field)
             if res is not None:
@@ -56,8 +53,7 @@ class AbsManager(IManager):
         return None
 
     def up_sert_many(self, a_filter, a_new_field):
-        if self.is_secureWrite():
-            # manage secure
+
         if self._item is not None:
             res = self._storage.up_sert(self._item.get_collection_name(), a_filter, a_new_field)
             if res is not None:
@@ -65,8 +61,7 @@ class AbsManager(IManager):
         return None
 
     def delete(self, a_id):
-        if self.is_secureWrite():
-            # manage secure
+
         if self._item is not None:
             res = self._storage.delete(self._item.get_collection_name(), a_id)
             if res is not None:
@@ -74,8 +69,7 @@ class AbsManager(IManager):
         return None
 
     def delete_many(self, a_filter):
-        if self.is_secureWrite():
-            # manage secure
+
         if self._item is not None:
             res = self._storage.delete_many(self._item.get_collection_name(), a_filter)
             if res is not None:
@@ -86,7 +80,7 @@ class AbsManager(IManager):
 @Provides(IManager.name)
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_item_manager",IItemManager.name)
-@Requires("_storage",IStorage.name,optional=True)
+@Requires("_storage",IStorage.name)
 @Property('_item_id', "item", "model")
 @Property('_is_secureRead', "secureRead", False)
 @Property('_is_secureWrite', "secureWrite", False)

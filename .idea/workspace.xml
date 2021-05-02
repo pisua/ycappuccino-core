@@ -20,103 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ae9c08a-8355-45eb-82a6-2b36b76a453c" name="Default Changelist" comment="ten">
-      <change afterPath="$PROJECT_DIR$/iotill/client/application.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iotill/client/bundles/testComponent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iotill/client/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iotill/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/model/album.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/model/band.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/model/lyrics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/model/member.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/model/music.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/model/video.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/client/application.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/client/pelix/framework.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/client/pelix/ipopo/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/client/pelix/ipopo/decorators.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/client/pelix/ipopo/proxy.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/configuration.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/indexEndpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/jwt.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/proxy.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/decorators.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/core/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/mongo/api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ycappuccino/mongo/bundles/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/mongo/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ycappuccino.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ycappuccino.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/model/root/item.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/brython/brython.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/brython/brython.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/brython/brython_stdlib.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/brython/brython_stdlib.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/brython/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/brython/unicode.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/brython/unicode.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/iotill/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/bundles/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/iotill/bundles/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/bundles/indexEndpoint.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/bundles/pythonEndpoint.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/log/Log-Activity-main.log" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/client/pelix/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/framework.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/http/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/http/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/http/basic.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/http/basic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/http/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/http/routing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/ipopo/contexts.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/ipopo/contexts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/ipopo/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/ipopo/decorators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/ldapfilter.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/ldapfilter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/misc/mqtt_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/misc/mqtt_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/misc/ssl_wrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/misc/ssl_wrap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/misc/xmpp.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/misc/xmpp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/beans.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/beans.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/discovery/mqtt.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/discovery/mqtt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/discovery/redis.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/discovery/redis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/discovery/zookeeper.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/discovery/zookeeper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/dispatcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/dispatcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/json_rpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/json_rpc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/transport/jabsorb_rpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/transport/jabsorb_rpc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/transport/mqtt_rpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/transport/mqtt_rpc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/remote/xml_rpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/remote/xml_rpc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/rsa/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/rsa/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/rsa/providers/distribution/xmlrpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/rsa/providers/distribution/xmlrpc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/rsa/shell.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/rsa/shell.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/services/configadmin.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/services/configadmin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/services/eventadmin.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/services/eventadmin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/services/eventadmin_mqtt.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/services/eventadmin_mqtt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/services/mqtt.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/services/mqtt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/shell/remote.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/shell/remote.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/shell/xmpp.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/shell/xmpp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pelix/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/pelix/utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/api.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/beans.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/beans.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/iotill/client/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/activity_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/activity_logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/configuration.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/item_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/item_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/bundles/storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/mongo/bundles/storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/model/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/iotill/model/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/model/model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/Lib/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/bundles/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/Lib/test/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/Lib/test/test1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/client/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/brython.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/brython_stdlib.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/test2.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/client/unicode.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/client/bundles/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/server/test_url_parse.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/framework.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/framework.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +56,8 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/yblues" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -327,59 +239,17 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="WindowStateProjectService">
-    <state width="2497" height="315" key="GridCell.Tab.0.bottom" timestamp="1619704510927">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.0.bottom/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510927" />
-    <state width="2497" height="315" key="GridCell.Tab.0.center" timestamp="1619704510926">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.0.center/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510926" />
-    <state width="2497" height="315" key="GridCell.Tab.0.left" timestamp="1619704510925">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.0.left/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510925" />
-    <state width="2497" height="315" key="GridCell.Tab.0.right" timestamp="1619704510926">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.0.right/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510926" />
-    <state width="2497" height="315" key="GridCell.Tab.1.bottom" timestamp="1619704510928">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.1.bottom/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510928" />
-    <state width="2497" height="315" key="GridCell.Tab.1.center" timestamp="1619704510927">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.1.center/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510927" />
-    <state width="2497" height="315" key="GridCell.Tab.1.left" timestamp="1619704510927">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.1.left/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510927" />
-    <state width="2497" height="315" key="GridCell.Tab.1.right" timestamp="1619704510928">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state width="2497" height="315" key="GridCell.Tab.1.right/42.23.2518.1417@42.23.2518.1417" timestamp="1619704510928" />
-    <state x="863" y="467" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1619704503365">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state x="863" y="467" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/42.23.2518.1417@42.23.2518.1417" timestamp="1619704503365" />
-    <state x="1008" y="486" width="586" height="490" key="find.popup" timestamp="1619702832424">
-      <screen x="42" y="23" width="2518" height="1417" />
-    </state>
-    <state x="1008" y="486" width="586" height="490" key="find.popup/42.23.2518.1417@42.23.2518.1417" timestamp="1619702832424" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py</url>
-          <line>156</line>
+          <line>157</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py</url>
-          <line>166</line>
+          <line>167</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
@@ -393,9 +263,10 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="item_manager" language="Python" />
+        <watch expression="a_module_name+&quot;.&quot;+w_file.split(&quot;/&quot;)[-1][:-3]" language="Python" />
         <watch expression="ycappuccino.core.model.decorators.map_item.values()" language="Python" />
         <watch expression="os.getcwd()" language="Python" />
+        <watch expression="w_file.split(&quot;/&quot;)[-1]" language="Python" />
       </configuration>
     </watches-manager>
   </component>

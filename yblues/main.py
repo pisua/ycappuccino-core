@@ -10,3 +10,4 @@ if __name__ == "__main__":
     ycappuccino.core.init()
     # Run the server
     ycappuccino.core.start()
+

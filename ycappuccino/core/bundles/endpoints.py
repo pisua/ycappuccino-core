@@ -64,10 +64,11 @@ class Endpoint(IEndpoint):
         w_resp = self.delete(w_path, w_header)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
-    @classmethod
-    def check_header(cls, a_headers):
-        if a_headers.authorization is not None:
-            return True
+    def check_header(self, a_headers):
+        w_authorization = a_headers.authorization
+        if w_authorization is not None and "Bearer" in w_authorization:
+            w_token = w_authorization[len("Bearer "):]
+            return self._jwt.verify(w_token)
         else:
             return False
 

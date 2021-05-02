@@ -7,14 +7,18 @@ Starts the Pelix framework and ycappuccino_core ycappuccino_core
 import logging
 import sys
 import os
+from ycappuccino.core import utils
 from ycappuccino.core.utils import MyMetaFinder
+
+
 sys.path.append(os.getcwd())
 # Pelix
 from pelix.framework import create_framework
 from pelix.ipopo.constants import use_ipopo
 import pelix.services
-import glob
 
+w_finder = MyMetaFinder()
+sys.meta_path.insert(0, w_finder)
 
 # ------------------------------------------------------------------------------
 
@@ -30,48 +34,23 @@ _logger = logging.getLogger(__name__)
 import importlib.util
 
 item_manager=None
+context = None
 
 def set_item_manager(a_item_manager):
-    global  item_manager
+    global item_manager
     item_manager  = a_item_manager
 
+subsystem = []
 
-def load_bundle(a_file, a_module_name,a_context):
-    global  item_manager
-
-    with open(a_file, "r") as f:
-        content = f.read()
-        if "pelix" not in a_module_name and "@ComponentFactory" in content and "pelix.ipopo.decorators" in content:
-            print(a_module_name)
-            a_context.install_bundle(a_module_name).start()
-        if "@Item" in content:
-            # import this model
-            a_context.install_bundle(a_module_name)
-
-
-
-def find_and_install_bundle(a_root, a_module_name, a_context):
-    for w_file in glob.iglob(a_root + "/*"):
-        if os.path.exists(w_file) and \
-                "pelix" not in w_file and \
-                "pelix" not in a_module_name and \
-                "client" not in a_module_name and \
-                "framework" not in w_file:
-            w_module_name = ""
-
-            if os.path.isdir(w_file):
-                if a_module_name == "":
-                    w_module_name = w_file.split("/")[-1]
-                else:
-                    w_module_name = a_module_name + "." + w_file.split("/")[-1]
-                find_and_install_bundle(w_file,w_module_name,a_context)
-            elif os.path.isfile(w_file) and w_file.endswith(".py"):
-                load_bundle(w_file,a_module_name+"."+w_file.split("/")[-1][:-3],a_context)
-
+def init_subsystem(a_path):
+    global context
+    subsystem.append(a_path)
+    utils.find_and_install_bundle(a_path,"",context)
 
 def init(bundles_main=None):
     """ """
     global item_manager
+    global context
 
     # Create the Pelix framework
     framework = create_framework((
@@ -113,10 +92,11 @@ def init(bundles_main=None):
     # retrieve item_manager
 
     # install custom
+    # load ycappuccino
     w_root =""
     for w_elem in os.getcwd().split("/"):
         w_root=w_root+"/"+w_elem
-    find_and_install_bundle(w_root,"",context)
+    utils.find_and_install_bundle(w_root,"",context)
 
     # Install & start iPOPO
     context.install_bundle('pelix.ipopo.core').start()
@@ -137,7 +117,7 @@ def init(bundles_main=None):
             context.install_bundle(w_bundle).start()
 
     item_manager.load_item()
-
+    w_finder.set_context(context)
     try:
         # Wait for the framework to stop
         framework.wait_for_stop()
