@@ -20,14 +20,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ae9c08a-8355-45eb-82a6-2b36b76a453c" name="Default Changelist" comment="ten">
-      <change afterPath="$PROJECT_DIR$/ycappuccino/mongo/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/yblues/model/gig.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/account.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/login.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/core/model/role.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/framework.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/framework.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/album.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/band.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/band.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/lyrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/music.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/video.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,23 +60,23 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/yblues/model" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/yblues" />
-      <recent name="$PROJECT_DIR$/yblues/model" />
-      <recent name="$PROJECT_DIR$/iotill-angular" />
-      <recent name="$PROJECT_DIR$/iotill-angular/order" />
-      <recent name="$PROJECT_DIR$/iotill-angular/login" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ycappuccino/core" />
       <recent name="$PROJECT_DIR$/ycappuccino" />
       <recent name="$PROJECT_DIR$/ycappuccino/core/bundles" />
       <recent name="$PROJECT_DIR$/ycappuccino-mongo" />
       <recent name="$PROJECT_DIR$/ycappuccino-mongo/core/bundles" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/yblues/model" />
+      <recent name="$PROJECT_DIR$/ycappuccino/core/model" />
+      <recent name="$PROJECT_DIR$/yblues" />
+      <recent name="$PROJECT_DIR$/iotill-angular" />
+      <recent name="$PROJECT_DIR$/iotill-angular/order" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main (4)">
@@ -251,6 +254,14 @@
           <url>file://$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py</url>
           <line>167</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/yblues/model/band.py</url>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/yblues/model/album.py</url>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

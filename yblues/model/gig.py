@@ -1,8 +1,8 @@
 from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.utils import YDict
 
-@Item(collection="bands",name="band")
-class Band(YDict):
+@Item(collection="gigs",name="gig")
+class Gig(YDict):
     def __init__(self, a_dict):
         super(YDict, self).__init__(a_dict)
 
@@ -17,3 +17,15 @@ class Band(YDict):
     @Property(name="city")
     def city(self, a_value):
         self._city = a_value
+
+    @Property(name="place")
+    def place(self, a_value):
+        self._place = a_value
+
+    @Property(name="date")
+    def date(self, a_value):
+        self._date = a_value
+
+    @Property(name="bands")
+    def bands(self, a_value):
+        self._bands = a_value
