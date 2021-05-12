@@ -22,38 +22,38 @@ class MongoStorage(IStorage):
 
     def aggregate(self, a_collection, a_pipeline):
         """ aggegate data regarding filter and pipeline """
-        return self.db[a_collection].aggregate(a_pipeline)
+        return self._db[a_collection].aggregate(a_pipeline)
 
     def get_one(self, a_collection, a_id):
         """ get dict identify by a Id"""
         w_filter = {"_id": a_id}
-        return self.db[a_collection].find(w_filter)
+        return self._db[a_collection].find(w_filter)
 
     def get_many(self, a_collection, a_filter):
         """ return iterable of dict regarding filter"""
-        return self.db[a_collection].find(a_filter)
+        return self._db[a_collection].find(a_filter)
 
     def up_sert(self, a_collection, a_id, a_new_dict):
         """" update or insert new dict"""
 
         w_filter = {"_id": a_id}
-        res = self.db[a_collection].find(w_filter)
+        res = self._db[a_collection].find(w_filter)
         if len(res) == 1:
             model = res[0]
             model.update(a_new_dict)
-        self.db[a_collection].update_one(w_filter, model, upsert=True)
+        self._db[a_collection].update_one(w_filter, model, upsert=True)
 
     def up_sert_many(self, a_collection, a_filter, a_new_dict):
         """ update or insert document with new dict regarding filter """
-        self.db[a_collection].update_many(a_filter, a_new_dict, upsert=True)
+        self._db[a_collection].update_many(a_filter, a_new_dict, upsert=True)
 
     def delete(self, a_collection, a_id):
         """ delete document identified by id if it exists """
         w_filter = {"_id": a_id}
-        self.db[a_collection].delete_one(w_filter, upsert=True)
+        self._db[a_collection].delete_one(w_filter, upsert=True)
 
     def delete_many(self, a_collection, a_filter):
-        self.db[a_collection].delete_many(a_filter, upsert=True)
+        self._db[a_collection].delete_many(a_filter, upsert=True)
 
 
     @Validate

@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 @Requires("_jwt",IJwt.name)
 @Provides(specifications=[pelix.http.HTTP_SERVLET])
 @Instantiate("endpoints")
-@Requires("_managers",specification=IManager.name,aggregate=True,optional=True)
+@Requires("_managers", specification=IManager.name, aggregate=True, optional=True)
 @Property("_servlet_path", pelix.http.HTTP_SERVLET_PATH, "/api")
 @Property("_reject", pelix.remote.PROP_EXPORT_REJECT, pelix.http.HTTP_SERVLET)
 class Endpoint(IEndpoint):
@@ -72,12 +72,17 @@ class Endpoint(IEndpoint):
         else:
             return False
 
-
+    def find_manager(self, a_item):
+        if a_item not in self._map_managers:
+            # reset map of manager (TODO check why bind doesn't work)
+            for w_manager in self._managers:
+                self._map_managers[w_manager.get_item_id_plural()] = w_manager
+        return self._map_managers[a_item]
 
     def post(self,a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self._map_managers[w_url_path.get_item_id()]
+            w_manager = self.find_manager(w_url_path.get_item_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -93,7 +98,7 @@ class Endpoint(IEndpoint):
     def put(self, a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self._map_managers[w_url_path.get_item_id()]
+            w_manager = self.find_manager(w_url_path.get_item_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -111,8 +116,8 @@ class Endpoint(IEndpoint):
 
     def get(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
-        if w_url_path.is_crud() and w_url_path.get_item_id() in self._map_managers:
-            w_manager = self._map_managers[w_url_path.get_item_id()]
+        if w_url_path.is_crud():
+            w_manager = self.find_manager(w_url_path.get_item_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -137,7 +142,7 @@ class Endpoint(IEndpoint):
     def delete(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self._map_managers[w_url_path.get_item_id()]
+            w_manager = self.find_manager(w_url_path.get_item_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -152,25 +157,6 @@ class Endpoint(IEndpoint):
                 return EndpointResponse(405)
         return EndpointResponse(400)
 
-    @BindField("_managers")
-    def bind_manager(self,field, a_manager, a_service_reference):
-        w_item_id = a_manager.getItem().id
-        self._map_managers[w_item_id] = a_manager
-
-    @UnbindField("_managers")
-    def unbind_manager(self, field, a_manager, a_service_reference):
-        w_item_id = a_manager.getItem().id
-        self._map_managers[w_item_id] = None
-
-    @BindField("_services")
-    def bind_manager(self, field, a_manager, a_service_reference):
-        w_item_id = a_manager.getItem().id
-        self._map_managers[w_item_id] = a_manager
-
-    @UnbindField("_services")
-    def unbind_manager(self, field, a_manager, a_service_reference):
-        w_item_id = a_manager.getItem().id
-        self._map_managers[w_item_id] = None
 
 
     @Validate

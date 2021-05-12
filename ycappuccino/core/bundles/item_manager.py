@@ -54,7 +54,7 @@ class ItemManager(IItemManager, AbsManager):
                 with use_ipopo(self._context) as ipopo:
                     # use the iPOPO core service with the "ipopo" variable
                     ipopo.instantiate("Manager-Factory", "Manager-{}".format(w_item.id),
-                                      {"item": w_item.id, "secureRead": w_item.secureRead,"secureWrite": w_item.secureWrite })
+                                      {"item": w_item, "secureRead": w_item.secureRead,"secureWrite": w_item.secureWrite })
 
             # create a manager component and create it if it's doesn't already exists
         # TODO load data from file and database

@@ -21,6 +21,7 @@ class UrlPath(object):
         """ need status"""
         self._url = a_url
         w_url_no_query = a_url
+        self._query_param = None
         if "?" in a_url:
             self._query_param = dict(parse_qsl(urlsplit(a_url).query))
             w_url_no_query = w_url_no_query.split("?")[0]

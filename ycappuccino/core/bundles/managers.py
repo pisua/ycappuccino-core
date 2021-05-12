@@ -12,15 +12,17 @@ class AbsManager(IManager):
     def __init__(self):
         super(IManager, self).__init__();
         self._log = None
-        self._item_id = None
         self._item = None
         self._storage = None
         self._item_manager = None
         self._is_secureRead = False
         self._is_secureWrite = False
 
-    def get_item(self):
-        return self._item
+    def get_item_id(self):
+        return self._item.id
+
+    def get_item_id_plural(self):
+        return self._item.collection
 
     def is_secureRead(self):
         return self._is_secureRead
@@ -31,23 +33,24 @@ class AbsManager(IManager):
     def get_one(self, a_id):
 
         if self._item is not None:
-            res = self._storage.get_one(self._item.get_collection_name(), a_id)
+            res = self._storage.get_one(self._item.collection, a_id)
             if res is not None:
                 return Model(res)
         return None
 
     def get_many(self, a_params):
-
+        w_result = []
         if self._item is not None:
-            res = self._storage.get_many(self._item.get_collection_name(), a_params)
+            res = self._storage.get_many(self._item.collection, a_params)
             if res is not None:
-                return Model(res)
-        return None
+                for w_model in res:
+                    w_result = Model(w_model)
+        return w_result
 
     def up_sert(self, a_id, a_new_field):
 
         if self._item is not None:
-            res = self._storage.up_sert(self._item.get_collection_name(), a_id, a_new_field)
+            res = self._storage.up_sert(self._item.collection, a_id, a_new_field)
             if res is not None:
                 return Model(res)
         return None
@@ -55,7 +58,7 @@ class AbsManager(IManager):
     def up_sert_many(self, a_filter, a_new_field):
 
         if self._item is not None:
-            res = self._storage.up_sert(self._item.get_collection_name(), a_filter, a_new_field)
+            res = self._storage.up_sert(self._item.collection, a_filter, a_new_field)
             if res is not None:
                 return Model(res)
         return None
@@ -63,7 +66,7 @@ class AbsManager(IManager):
     def delete(self, a_id):
 
         if self._item is not None:
-            res = self._storage.delete(self._item.get_collection_name(), a_id)
+            res = self._storage.delete(self._item.collection, a_id)
             if res is not None:
                 return Model(res)
         return None
@@ -71,7 +74,7 @@ class AbsManager(IManager):
     def delete_many(self, a_filter):
 
         if self._item is not None:
-            res = self._storage.delete_many(self._item.get_collection_name(), a_filter)
+            res = self._storage.delete_many(self._item.collection, a_filter)
             if res is not None:
                 return Model(res)
         return None
@@ -81,7 +84,7 @@ class AbsManager(IManager):
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_item_manager",IItemManager.name)
 @Requires("_storage",IStorage.name)
-@Property('_item_id', "item", "model")
+@Property('_item', "item", "model")
 @Property('_is_secureRead', "secureRead", False)
 @Property('_is_secureWrite', "secureWrite", False)
 class Manager(AbsManager):
