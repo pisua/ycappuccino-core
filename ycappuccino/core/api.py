@@ -14,12 +14,23 @@ class CFQCN(object):
 
 
 class IActivityLogger(object):
-    """ interface of proxy component that allow to bind all
-       YCappuccino ycappuccino_core component and notify client ipopo of ycappuccino_core component"""
+    """ Activity logger of the application. admit a property name that identified the logger"""
     name = CFQCN.build("IActivityLogger")
 
     def __init__(self):
         """ abstract constructor """
+
+
+class IManagerBootStrapData(object):
+    """ Manage bootstrap interface. it allow to initialize for an item data or do a bootstrap operation"""
+    name = CFQCN.build("IManagerBootStrapData")
+
+    def __init__(self):
+        """ abstract constructor """
+        pass
+
+    def bootstrap(self):
+        """ method call while manage is initialized and finish to allow to bootstrap operation """
 
 
 class IConfiguration(object):

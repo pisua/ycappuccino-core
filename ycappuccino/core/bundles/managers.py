@@ -13,6 +13,8 @@ class AbsManager(IManager):
         super(IManager, self).__init__();
         self._log = None
         self._item = None
+        self._item_id = None
+
         self._storage = None
         self._item_manager = None
         self._is_secureRead = False
@@ -31,12 +33,13 @@ class AbsManager(IManager):
         return self._is_secureWrite
 
     def get_one(self, a_id):
-
+        w_result = None
         if self._item is not None:
             res = self._storage.get_one(self._item.collection, a_id)
             if res is not None:
-                return Model(res)
-        return None
+                for w_model in res:
+                    w_result = Model(w_model)
+        return w_result
 
     def get_many(self, a_params):
         w_result = []
@@ -84,7 +87,8 @@ class AbsManager(IManager):
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_item_manager",IItemManager.name)
 @Requires("_storage",IStorage.name)
-@Property('_item', "item", "model")
+@Property('_item_id', "item_id", "model")
+@Property('_item', "item", None)
 @Property('_is_secureRead', "secureRead", False)
 @Property('_is_secureWrite', "secureWrite", False)
 class Manager(AbsManager):
@@ -95,21 +99,17 @@ class Manager(AbsManager):
 
     @Validate
     def validate(self, context):
-        _logger.info("Manager validating")
+        _logger.info("Manager {} validating".format(self._item.id))
         try:
             pass
         except Exception as e:
             _logger.error("Manager Error {}".format(e))
             _logger.exception(e)
 
-        _logger.info("Manager validated")
+        _logger.info("Manager {} validated".format(self._item.id))
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Manager invalidating")
-        try:
-            self._item = None
-        except Exception as e:
-            _logger.error("Manager Error {}".format(e))
-            _logger.exception(e)
-        _logger.info("Manager invalidated")
+        _logger.info("Manager {} invalidating".format(self._item.id))
+
+        _logger.info("Manager {} invalidated".format(self._item.id))

@@ -4,6 +4,8 @@ import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate,  Provides, Instantiate
 from pymongo import MongoClient
 
+from ycappuccino.core.model.model import Model
+
 _logger = logging.getLogger(__name__)
 
 
@@ -38,14 +40,38 @@ class MongoStorage(IStorage):
 
         w_filter = {"_id": a_id}
         res = self._db[a_collection].find(w_filter)
-        if len(res) == 1:
-            model = res[0]
-            model.update(a_new_dict)
-        self._db[a_collection].update_one(w_filter, model, upsert=True)
+        if res.count() == 1:
+            model = Model(res[0])
+            if isinstance(a_new_dict, Model):
+                model.update(a_new_dict._mongo_model)
+            else:
+                model.update(a_new_dict)
+
+            w_update = {
+                "$set": a_new_dict._mongo_model
+            }
+        else:
+            if isinstance(a_new_dict, Model):
+                w_update = {
+                    "$set":a_new_dict._mongo_model
+                }
+            else:
+                w_update = {
+                    "$set": a_new_dict
+                }
+        return self._db[a_collection].update_one(w_filter, w_update, upsert=True)
 
     def up_sert_many(self, a_collection, a_filter, a_new_dict):
         """ update or insert document with new dict regarding filter """
-        self._db[a_collection].update_many(a_filter, a_new_dict, upsert=True)
+        if isinstance(a_new_dict,Model):
+            w_update = {
+                "$set": a_new_dict._mongo_model
+            }
+        else:
+            w_update = {
+                "$set":a_new_dict
+            }
+        return self._db[a_collection].update_many(a_filter, w_update, upsert=True)
 
     def delete(self, a_collection, a_id):
         """ delete document identified by id if it exists """

@@ -1,10 +1,10 @@
 from ycappuccino.core.model.decorators import Item, Property
-from ycappuccino.core.model.utils import YDict
+from ycappuccino.core.model.model import Model
 
 @Item(collection="roles",name="role")
-class Role(YDict):
+class Role(Model):
     def __init__(self, a_dict):
-        super(YDict, self).__init__(a_dict)
+        super().__init__(a_dict)
 
     @Property(name="name")
     def name(self, a_value):

@@ -1,10 +1,10 @@
 from ycappuccino.core.model.decorators import Item, Property
-from ycappuccino.core.model.utils import YDict
+from ycappuccino.core.model.model import Model
 
 @Item(collection="albums",name="album")
-class Album(YDict):
-    def __init__(self, a_dict):
-        super(YDict, self).__init__(a_dict)
+class Album(Model):
+    def __init__(self, a_dict=None):
+        super().__init__(a_dict)
 
     @Property(name="name")
     def name(self, a_value):

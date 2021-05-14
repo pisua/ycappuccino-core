@@ -77,7 +77,15 @@ def init(bundles_main=None):
         'ycappuccino.core.bundles.endpoints',
         'ycappuccino.core.bundles.indexEndpoint',
         'ycappuccino.core.bundles.activity_logger',
-        'ycappuccino.core.bundles.proxy'
+        'ycappuccino.core.bundles.proxy',
+        'ycappuccino.core.bundles.core_bootstrap',
+
+        # bundle core model
+        'ycappuccino.core.model.account',
+        'ycappuccino.core.model.login',
+        'ycappuccino.core.model.role',
+        'ycappuccino.core.model.model'
+
     ))
 
     # Start the framework

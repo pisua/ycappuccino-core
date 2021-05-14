@@ -20,11 +20,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ae9c08a-8355-45eb-82a6-2b36b76a453c" name="Default Changelist" comment="ten">
+      <change afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/core_bootstrap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/beans.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/beans.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/album.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/band.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/band.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/gig.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/gig.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/lyrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/music.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yblues/model/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/video.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/item_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/item_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/framework.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/framework.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/role.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ycappuccino/mongo/bundles/storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/mongo/bundles/storage.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -239,13 +252,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ycappuccino/core/bundles/managers.py</url>
-          <line>46</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -256,10 +262,10 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="a_module_name+&quot;.&quot;+w_file.split(&quot;/&quot;)[-1][:-3]" language="Python" />
+        <watch expression="model._mongo_model" language="Python" />
         <watch expression="w_url_path" language="Python" />
         <watch expression="os.getcwd()" language="Python" />
-        <watch expression="w_file.split(&quot;/&quot;)[-1]" language="Python" />
+        <watch expression="dict(a_dict)" language="Python" />
         <watch expression="w_manager.getItem()" language="Python" />
       </configuration>
     </watches-manager>
