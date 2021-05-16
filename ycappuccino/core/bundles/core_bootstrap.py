@@ -36,8 +36,9 @@ class AccountBootStrap(IManagerBootStrapData):
         w_admin_login.login("admin")
         w_admin_login.password("Danst0ncu1")
         w_admin_account.login_ref("admin")
-        self._manager_account.up_sert("admin",w_admin_account)
-        self._manager_login.up_sert("admin",w_admin_login)
+        self._manager_account.up_sert("admin", w_admin_account)
+        if self._manager_login.get_one("admin") is None:
+            self._manager_login.up_sert("admin", w_admin_login)
 
     @Validate
     def validate(self, context):

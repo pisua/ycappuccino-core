@@ -42,8 +42,9 @@ class MongoStorage(IStorage):
         res = self._db[a_collection].find(w_filter)
         if res.count() == 1:
             model = Model(res[0])
+            model._mongo_model = res[0]
             if isinstance(a_new_dict, Model):
-                model.update(a_new_dict._mongo_model)
+                model.update(a_new_dict)
             else:
                 model.update(a_new_dict)
 

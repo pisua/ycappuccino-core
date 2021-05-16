@@ -29,19 +29,45 @@ class Item(object):
 
 
 def Property(name):
+    """ decoration that manage property with another collection """
     def decorator_property(func):
         @functools.wraps(func)
         def wrapper_proprety(*args, **kwargs):
             value = func(*args, **kwargs)
             if "_mongo_model" not in  args[0].__dict__:
                 args[0]._mongo_model = {}
-            if type(args[1]) not in primitive:
+            if isinstance(args[1],YDict):
                 args[0]._mongo_model[name] = args[1]._mongo_model
             else:
                 args[0]._mongo_model[name] = args[1]
             return value
         return wrapper_proprety
     return decorator_property
+
+
+def Reference(name):
+    """ decoration that manage reference with another collection """
+    def decorator_reference(func):
+        @functools.wraps(func)
+        def wrapper_reference(*args, **kwargs):
+            value = func(*args)
+            if "_mongo_model" not in  args[0].__dict__:
+                args[0]._mongo_model = {}
+            if isinstance(args[1],YDict):
+                args[0]._mongo_model[name] = {
+                   "ref": args[1].id
+                }
+            else:
+                args[0]._mongo_model[name] = {
+                    "ref": args[1]
+                }
+            if len(args) > 2 and isinstance(args[2],dict):
+                # admit dictionnary property of the relation we add it
+                args[0]._mongo_model[name]["properties"] = args[2]
+
+            return value
+        return wrapper_reference
+    return decorator_reference
 
 
 if __name__ == "__main__":

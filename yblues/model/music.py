@@ -1,10 +1,18 @@
-from ycappuccino.core.model.decorators import Item, Property
+from ycappuccino.core.model.decorators import Item, Property, Reference
 from ycappuccino.core.model.model import Model
 
 @Item(collection="musics",name="music")
 class Music(Model):
+    """ bean that represent a music of an album(or not) """
     def __init__(self, a_dict=None):
         super().__init__(a_dict)
+        self._name = None
+        self._author = None
+        self._composer = None
+        self._album = None
+        self._arrangment = None
+        self._feat = None
+        self._album_properties = None
 
     @Property(name="name")
     def name(self, a_value):
@@ -18,6 +26,15 @@ class Music(Model):
     def composer(self, a_value):
         self._composer = a_value
 
-    @Property(name="video_ref")
-    def video_ref(self, a_value):
-        self._video_ref = a_value
+    @Property(name="arrangment")
+    def arrangment(self, a_value):
+        self._arrangment = a_value
+
+    @Property(name="feat")
+    def feat(self, a_value):
+        self._feat = a_value
+
+    @Reference(name="album")
+    def album(self, a_value, a_properties):
+        self._album = a_value
+        self._album_properties = a_properties

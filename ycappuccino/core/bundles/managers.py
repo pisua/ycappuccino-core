@@ -51,20 +51,24 @@ class AbsManager(IManager):
         return w_result
 
     def up_sert(self, a_id, a_new_field):
-
+        """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the model create """
         if self._item is not None:
             res = self._storage.up_sert(self._item.collection, a_id, a_new_field)
             if res is not None:
                 return Model(res)
         return None
 
-    def up_sert_many(self, a_filter, a_new_field):
 
+    def up_sert_many(self, a_new_fields):
+        res = []
         if self._item is not None:
-            res = self._storage.up_sert(self._item.collection, a_filter, a_new_field)
-            if res is not None:
-                return Model(res)
-        return None
+            for w_dict in a_new_fields:
+                w_res = self.up_sert(w_dict.id,w_dict)
+                if w_res is not None:
+                    res.append(w_res)
+        return res
+
+
 
     def delete(self, a_id):
 
