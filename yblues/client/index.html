@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+	<title>Y.Blues Official Website</title>
+	<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="style/style.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="style/style-slide-show.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="style/timeline.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="style/fancy.css"/>
+	<link rel="shortcut icon" href="./img/ico/logo-ico.ico"/>
+  	
+  	<!--  angularjs  -->
+  	<script src="./angularjs/angular.js"></script>
+    	<script src="./angularjs/angular-resource.min.js"></script>
+  
+	<script src="./js/jquery-min.js"></script>
+	<script src="./js/smooth-scroll.js"></script>
+	<script src="./js/news.js" ></script>
+	<script src="./js/fancy.js" ></script>
+	<script src="./js/box-shadow-menu-action.js" ></script>
+  
+  
+
+  	<script src="./module/restapi/restapi.module.js"></script>
+	<script src="./module/restapi/restapi.service.js"></script>
+	<script src="./module/main/main-app.js"></script>
+	<script src="./module/main/main-controller.js"></script>
+  
+</head>
+<body ng-app="mainApp" ng-controller="mainCtrl">
+	<header class="container-fluid header" id="header">
+		<nav class="menu navbar-fixed-top">
+					<div class="box-shadow-menu"></div>
+					<div id="nav-menu">
+						<a class="js-scrollTo" href="#header">Home</a>
+						<a class="js-scrollTo" href="#bio">Bio</a>
+						<a class="js-scrollTo" href="#disco">Disco</a>
+						<a class="js-scrollTo" href="#vid">Vidéos</a>
+						<a class="js-scrollTo" href="#news" ng-show="news != null">News</a>
+						<a class="js-scrollTo" href="#dates">Dates</a>
+						<a class="js-scrollTo" href="#pro">Pro</a>
+						<a class="js-scrollTo" href="#contact">Contact</a>	
+					</div>
+					<a class="link-reseaux" href="http://www.deezer.com/fr/album/15661678" target="_blank"><img class="img-reseaux" src="./img/ico/deezer-ico.png"/></a>
+					<a class="link-reseaux" href="https://www.youtube.com/user/YBluesOfficial" target="_blank"><img class="img-reseaux" src="./img/ico/youtube-ico.png"/></a>
+					<a class="link-reseaux" href="https://open.spotify.com/album/37xg7UVn3kXpieXyNHhrXN" target="_blank"><img class="img-reseaux" src="./img/ico/spotify-ico.png"/></a>
+					<a class="link-reseaux" href="https://itunes.apple.com/fr/album/belong-to-the-barrel/1215699890" target="_blank"><img class="img-reseaux" src="./img/ico/apple-ico.png"/></a>
+					<a class="link-reseaux" href="https://play.google.com/store/music/artist/Y_Blues?id=Ax5hiiworjhmi2pfiki6pdeukbi" target="_blank"><img class="img-reseaux" src="./img/ico/google-ico.png"/></a>
+					<a class="link-reseaux" href="https://www.facebook.com/YBluesOfficial/" target="_blank"><img class="img-reseaux" src="./img/ico/fb-ico.png"/></a>
+					<a class="link-reseaux" href="https://yblues.bandcamp.com/merch" target="_blank"><img class="img-merch" title="MERCH" alt="MERCH" src="./img/ico/merch-ico-large.png"/></a>
+		</nav>
+
+		<img src="./img/picture/4k/alpha.gif" id="alpha">
+		<img src="./img/logo-home-4k.png" id="logo-home-4k"/>
+		<div class="ctn">
+			<div id="content-slider">
+				<div id="slider">
+					<div id="mask">
+					<ul>
+					<li id="first" class="firstanimation">
+					<img src="./img/picture/4k/pct3BandW.jpg" class="img-slide-show"/>
+					</li>
+					<li id="second" class="secondanimation">
+					<img src="./img/picture/4k/pct4.jpg" class="img-slide-show"/>
+					</li>
+					<li id="third" class="thirdanimation">
+					<a href="#">
+					<img src="./img/picture/4k/pct7BandW.jpg" class="img-slide-show"/>
+					</a>
+					</li>	  
+					<li id="fourth" class="fourthanimation">
+					<a href="#">
+						<img src="./img/picture/4k/pct9.jpg" class="img-slide-show"/>
+					</a>
+					</li> 
+					
+					</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</header>
+	
+	<section class="container" id="bio">
+		<div class="row">
+			<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12" id="art-bio">
+					<h1>Biographie</h1>
+					<p>
+					{{band.bio}}
+						<br /> <img src="./img/picture/DSC_6546_2_PETIT.jpg" class="img-slide-article"/>
+						
+					</p>
+			</article>
+		</div>
+		<div class="row">
+			<article class="col-md-4 col-lg-4 col-xs-12 col-sm-12"  ng-repeat="member in members">
+				<h1>{{member.nickname}}</h1>
+				<p>({{member.instrument}})</p>
+			</article>
+		
+		
+		</div>
+	</section>
+	
+	<section class="container-fluid" id="disco">
+		<div class="container" id="container-disco">
+			<div class="row">
+				<article class="col-md-12 col-lg-12 col-xs-12 col-sm-122" id="art-disco">
+					<h1>Discographie</h1>
+				</article>
+			</div>
+			<div class="row">
+				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12" ng-repeat="album in albums">
+						<h2>{{album.lbl}}</h2>
+						<img src="{{album.cover}}" width="200"/>
+						<p>
+							[{{album.type}} <br />
+							Music: {{album.music}},<br />
+							Lyrics : {{album.lyrics}},<br />
+							Arrangement : {{album.arrangment}}]<br /><br />
+							<div ng-repeat="music in album.music_docs">
+							{{$index+1}} - {{music.lbl}}<br />
+							</div>
+							Available on Itunes, Spotify, Deezer <br />
+							Produced By {{album.producer}} <br />
+							<div ng-show="album.label!=null">
+								Label {{album.label}}
+							</div>
+						</p>
+				</article>
+			
+			</div>
+		</div>
+	</section>
+	<section class="container-fluid" id="vid">
+	<div class="container" id="container-vid">
+			<div class="row">
+				<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+						<h1>Vidéos</h1> <span id="prec-vid"  onclick="onChangeVideo(false)"> << Prec </span> <span id="suiv-vid" onclick="onChangeVideo(true)"">Suiv >></span>
+				</article>
+				<div id="vid-grp-1" class="vid-grp">
+					<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12" >
+						<iframe width="100%" height="350px" id="video-0" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+					</article>
+					<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12" >
+						<iframe width="100%" height="350px" id="video-1" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+					</article>
+					<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+						<iframe width="100%" height="350px" id="video-2" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+					</article>
+					<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12" >
+						<iframe width="100%" height="350px" id="video-3" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+					</article>
+				</div>
+			</div>
+	</div>
+	</section>	
+	<section class="container-fluid" id="news" ng-show="news != null">
+		<div class="container" id="container-news">
+		<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+						<h1>News</h1>
+		</article>
+		<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+			<div class="box">
+				<ul id="first-list" ng-repeat="new in news">
+					<li id="{{news.id}}" class="actu" onclick="showHideNews(1)">
+						<span></span>
+						<a class="a-news title" id="1" >{{new.lbl}}</a>
+						<div id="info">
+						{{new.comment}}
+						</div>
+						<div class="time">
+							<span>{{new.month}}, {{new.date}}<sup>{{new.dateEnd}}</sup></span>
+							<span>{{new.hour}}</span>
+						</div>
+					</li>
+					
+				</ul>                 
+			</div>
+		</article>
+		</div>
+	</section>
+	<section class="container-fluid" id="dates">
+		<div class="container" id="container-dates">
+			<div class="row">
+				<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+					<h1>Dates</h1>
+				</article>
+				<article class="col-md-1 col-lg-1 col-xs-1 col-sm-1">
+					<table id="year-selector">
+						<thead>
+						</thead>
+						<tbody ng-repeat="year in gigs">
+							<tr >
+								<td><span class="date-selector" id="{{year.year}}" ng-click="clickOnDate(year.year)">{{year.year}}</span></td>
+							</tr>
+							
+						</tbody>
+					</table>
+				</article>
+				<article class="col-md-11 col-lg-11 col-xs-11 col-sm-11" ng-repeat="year in gigs">
+					 <table  class="table table-hover {{year.klass}}" id="date-{{year.year}}" >
+						<thead>
+						    <tr>
+								<th>{{year.year}}</th>
+							</tr>
+						</thead>
+						<tbody>
+						<!-- 						  <tr onclick="javascript:showFancyWithThisContent('negro');" ng-repeat="gig in year.gigs">
+						 -->
+						  <tr  ng-repeat="gig in year.gigs">
+							<td>{{gig.dateOfMonth}}/{{gig.month}}</td>
+							<td>{{gig.name}}</td>
+							<td>{{gig.address}}</td>
+							<td>{{gig.bands}}</td>
+						  </tr>
+					  </table>
+				</article>
+				
+			</div>
+		</div>
+	</section>
+	<section class="container-fluid" id="pro">
+		<div class="container" id="container-pro">
+			<div class="row">
+			<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+					<h1>Pro</h1>
+					<p><br /></p>
+			</article>
+			
+				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12 pro-item">
+					<a href="tech/yblues_fiche_tech.pdf">Fiche Technique</a>
+				</article>
+				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12 pro-item">
+					<a href="../tech/yblues_pressbook.pdf">Revue de Presse</a>
+				</article>
+				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12 pro-item">
+					<a href="../tech/logo_simple_noir.png">logo simple en noir</a>
+				</article>
+				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12 pro-item">
+					<a href="../tech/logo-yblues_black_clean.psd">logo psd</a>
+				</article>
+				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12 pro-item">
+					<a href="../tech/logo_complet_noir.png">logo complet en noir</a>
+				</article>
+			</div>
+		</div>
+	</section>
+	<section class="container-fluid" id="contact">
+		<div class="container" id="container-contact">
+			<div class="row" id="contact-area">
+			<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+					<h1>Contact</h1>
+			</article>
+							<form method="post" action="mailto:contact@yblues.com">
+								<article class="col-md-12 col-lg-6 col-xs-12 col-sm-12">
+									<label for="Name">Name : </label>&nbsp;<input type="text" name="Name" id="Name" /> 
+								</article>
+								
+								<article class="col-md-12 col-lg-6 col-xs-12 col-sm-12">
+									<label for="Email">Email : </label>&nbsp;<input type="text" name="Email" id="Email" />
+								</article>
+								<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+									<label for="Message">Message:</label><br />
+									<textarea name="Message" rows="20" cols="80" id="Message"></textarea>
+									<input type="submit" name="submit" value="Submit" class="submit-button" />
+								</article>
+									
+							</form>
+								<div style="clear: both;"></div>
+			</div>
+		</div>
+	</section>
+	<footer class="container-fluid">
+		Y.Blues Official Website - © Copyright 2018 - powered by <a href="http://cohorte.github.io/">Cohorte Platform</a>
+	</footer>
+</body>
+</html>

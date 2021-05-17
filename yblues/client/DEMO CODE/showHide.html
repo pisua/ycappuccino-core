@@ -1,0 +1,39 @@
+<html>
+<head>
+<style>
+.li-news:focus + #info {
+  display:block;
+}
+
+.li-news:focus {
+  pointer-events: none;
+}
+
+.li-news + #info {
+  display:block;
+  font-size:0;
+  overflow:hidden;
+  transition:0.5s ;
+}
+
+.li-news:focus + #info {
+  font-size:1rem;;
+}
+
+
+</style>
+</head>
+
+<body>
+<article>
+	<a href="" class="li-news">Click</a>
+	<div id="info">
+		div 1 div 1 div 1 div 1 div 1 
+		div 1 div 1 div 1 iv 1 div 1 
+		div 1 div 1 div 1 div 1 div 1 
+		div 1 iv 1 div 1 div 1 fin
+	</div>
+</article>
+
+</body>
+</html>

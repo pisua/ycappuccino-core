@@ -1,9 +1,10 @@
-from ycappuccino.core.model.decorators import Item, Property, Reference
+from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference
 from ycappuccino.core.model.model import Model
 import datetime, time
 
 
 @Item(collection="albums",name="album")
+@ItemReference(field_name="_band", item_name="band")
 class Album(Model):
     """ bean that represent an album """
     def __init__(self, a_dict=None):

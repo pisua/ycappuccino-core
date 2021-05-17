@@ -40,6 +40,7 @@ class InitDataBootStrap(IManagerBootStrapData):
         self._log = None
 
     def bootstrap(self):
+        self._init_band()
         self._init_member()
         self._init_gig()
         self._init_music()
@@ -215,8 +216,6 @@ class InitDataBootStrap(IManagerBootStrapData):
     def _init_music_sb(self):
         # arrival album
         w_musics = []
-
-
         # mind control
         w_music = Music()
         w_music.id("howmany")
@@ -390,6 +389,8 @@ class InitDataBootStrap(IManagerBootStrapData):
         w_band = Band()
         w_band.id("yblues")
         w_band.name("Y.Blues")
+        w_band.bio("Le Jack Blues Metal, mélange (vieilli en fût) de blues moderne au bottleneck et de metal des plus sauvage, est né lorsque les membre de Y.Blues (prononcez « Ouaille Blouze ») ont compris qu'il pouvaient faire mieux ensemble que de seulement se mettre la gueule au wiskey. Avec Yaiba à la guitare acoustique et au chant, Marmotte à la basse et Sereb à la batterie, parfois groovy, parfois bourrin et même par moment absurde, Y.Blues garanti de nombreuses émotions souvent incompatibles.")
+
         self._manager_band.up_sert(w_band.id, w_band)
 
     @Validate

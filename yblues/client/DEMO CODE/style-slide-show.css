@@ -1,0 +1,53 @@
+@import url("animation.css") screen;
+
+
+.container {
+	width: 100%;
+	height: 100%;
+}
+
+.img-slide-show {
+	width: 100%;
+}
+
+/* CONTENT SLIDER */
+#content-slider {
+	width:100%;
+	height:360px;
+	margin:10px auto 0;
+}
+/* SLIDER */
+
+
+#slider ul {
+	margin:0;
+	padding:0;
+	position:relative;
+}
+#slider li {
+	position:absolute;
+	top:-325px;
+	list-style:none;
+}
+
+#slider li.firstanimation {
+	-moz-animation:cycle 30s linear infinite;	
+	-webkit-animation:cycle 30s linear infinite;		
+}
+#slider li.secondanimation {
+	-moz-animation:cycletwo 30s linear infinite;
+	-webkit-animation:cycletwo 30s linear infinite;		
+}
+
+#slider li.thirdanimation {
+	-moz-animation:cyclethree 30s linear infinite;
+	-webkit-animation:cyclethree 30s linear infinite;		
+}
+
+#slider li.fourthanimation {
+	-moz-animation:cyclefour 30s linear infinite;
+	-webkit-animation:cyclefour 30s linear infinite;		
+}
+
+
+

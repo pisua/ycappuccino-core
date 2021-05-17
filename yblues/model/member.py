@@ -1,7 +1,8 @@
-from ycappuccino.core.model.decorators import Item,  Property
+from ycappuccino.core.model.decorators import Item,  Property, Reference, ItemReference
 from ycappuccino.core.model.model import Model
 
 @Item(collection="members",name="member")
+@ItemReference(field_name="_band", item_name="band")
 class Member(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)
@@ -17,6 +18,6 @@ class Member(Model):
     def role(self, a_value):
         self._role = a_value
 
-    @Property(name="band")
+    @Reference(name="band")
     def band(self, a_value):
         self._band = a_value
