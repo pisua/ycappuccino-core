@@ -1,6 +1,7 @@
 import json
 from urllib.parse import parse_qsl, urlsplit
-
+from ycappuccino.core.model.model import Model
+from ycappuccino.core.model.utils import YDict
 class EndpointResponse(object):
 
     def __init__(self, status, a_meta=None, a_body=None):
@@ -10,7 +11,19 @@ class EndpointResponse(object):
         self._body = a_body
 
     def get_json(self):
-        return json.dumps(self.__dict__)
+        w_resp = YDict({
+            "data": self._body,
+            "status": self._status,
+            "meta": self._meta
+        })
+        if isinstance(w_resp.data, Model):
+            w_resp.data = w_resp.data.__dict__
+        elif isinstance(w_resp.data, list) and len(w_resp.data) > 0 and isinstance(w_resp.data[0], Model):
+            w_body = []
+            for w_model in w_resp.data:
+                w_body.append(w_model.__dict__)
+            w_resp.data = w_body
+        return json.dumps(w_resp.__dict__)
 
     def get_status(self):
         return self._status
@@ -29,6 +42,11 @@ class UrlPath(object):
         self._is_service = "$service" in w_split_url
         if not self._is_service :
             self._item_id = w_split_url[0]
+            if len(w_split_url)>1:
+                # an id is specified
+                if self._query_param is None:
+                    self._query_param = {}
+                self._query_param["id"] = w_split_url[1]
         else :
             self._service_name = w_split_url[1]
 

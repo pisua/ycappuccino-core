@@ -21,7 +21,9 @@ angular.module('restapi').
         band: $resource(current_url+'/bands/:id'),
         new: $resource(current_url+'/news/:id'),
         album: $resource(current_url+'/albums/:id'),
-        gig: $resource(current_url+'/gigs/:id')
+        gig: $resource(current_url+'/gigs/:id'),
+        members: $resource(current_url+'/members'),
+        musics: $resource(current_url+'/musics'),
 
        
         

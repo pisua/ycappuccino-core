@@ -2,6 +2,7 @@ from yblues.model.album import Album
 from yblues.model.band import Band
 from yblues.model.member import Member
 from yblues.model.music import Music
+from yblues.model.video import Video
 from ycappuccino.core.api import IActivityLogger, IManager, IManagerBootStrapData, YCappuccino
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
@@ -84,24 +85,28 @@ class InitDataBootStrap(IManagerBootStrapData):
         w_album = Album()
         w_album.id("arrival")
         w_album.name("The Arrival")
-        w_album.productors("Y.Blues")
+        w_album.producer("Y.Blues")
         w_album.release_date("30/09/2013")
+        w_album.cover("img/picture/cover_arrival_petit.jpg")
         w_album.band("yblues")
         self._manager_album.up_sert(w_album.id, w_album)
 
         w_album = Album()
         w_album.id("bttb")
         w_album.name("Belong to the Barrel")
-        w_album.productors("Y.Blues")
+        w_album.producer("Y.Blues")
         w_album.release_date("15/04/2017")
+        w_album.cover("img/picture/cover_bttb_petit.jpg")
         w_album.band("yblues")
         self._manager_album.up_sert(w_album.id, w_album)
 
         w_album = Album()
         w_album.id("sb")
         w_album.name("Single Barrel")
-        w_album.productors("Y.Blues")
+        w_album.producer("Y.Blues")
         w_album.release_date("21/03/2020")
+        w_album.cover("img/picture/cover_singlebarrel_petit.jpg")
+
         w_album.band("yblues")
         self._manager_album.up_sert(w_album.id, w_album)
 
@@ -383,7 +388,95 @@ class InitDataBootStrap(IManagerBootStrapData):
 
 
     def _init_video(self):
-        pass
+        w_videos =[]
+
+        w_video = Video()
+        w_video.id("45reasons")
+        w_video.name("45 Reasons")
+        w_video.music("45reasons")
+        w_video.url("https://www.youtube.com/embed/9BNABYtjLR4")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("epicstringbattleforwhisky")
+        w_video.name("Epic String Battle for Whisky")
+        w_video.url("https://www.youtube.com/embed/fFMl31hB4NU")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("injusticeforall")
+        w_video.name("Injustice for All")
+        w_video.music("injusticeforall")
+        w_video.url("https://www.youtube.com/embed/_vcxsC_r3pA")
+        w_videos.append(w_video)
+
+        w_video = Video()
+        w_video.id("endoftime")
+        w_video.name("End of Time")
+        w_video.music("endoftime")
+        w_video.url("https://www.youtube.com/embed/qBnd0j6rItY")
+        w_videos.append(w_video)
+
+        w_video = Video()
+        w_video.id("brokenlegspart2")
+        w_video.name("Broken Legs Pt.2")
+        w_video.music("brokenlegspart2")
+        w_video.url("https://www.youtube.com/embed/LGiwYy-7nJQ")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("thearrival")
+        w_video.name("The Arrival")
+        w_video.music("thearrival")
+        w_video.url("https://www.youtube.com/embed/dMChbNTV_rg")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("coverocean")
+        w_video.name("Cover Ocean")
+        w_video.url("https://www.youtube.com/embed/Rgz36SCXfLA")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("covertrain")
+        w_video.name("Cover Train")
+        w_video.url("https://www.youtube.com/embed/JiWLMsMgKgY")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("coverdarrycowlchamber")
+        w_video.name("Cover Darry Cowl Chamber")
+        w_video.url("https://www.youtube.com/embed/QH2mjk7jt30")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("mindcontrol")
+        w_video.name("Mind Control")
+        w_video.url("https://www.youtube.com/embed/3FM8urVV4WM")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("aceofspades")
+        w_video.name("Ace of Spades")
+        w_video.url("https://www.youtube.com/embed/QDig_XMT1a8")
+        w_videos.append(w_video)
+
+
+        w_video = Video()
+        w_video.id("teaseryblues")
+        w_video.name("Teaser")
+        w_video.url("https://www.youtube.com/embed/X8nXyU7ziss")
+        w_videos.append(w_video)
+
+        self._manager_video.up_sert_many(w_videos)
 
     def _init_band(self):
         w_band = Band()

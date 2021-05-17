@@ -3,15 +3,15 @@ from ycappuccino.core.model.model import Model
 import datetime, time
 
 
-@Item(collection="albums",name="album")
+@Item(collection="albums",name="album", secureWrite=True)
 @ItemReference(field_name="_band", item_name="band")
 class Album(Model):
     """ bean that represent an album """
     def __init__(self, a_dict=None):
         super().__init__(a_dict)
         self._name = None
-        self._productors = None
-        self._image_url = None
+        self._producer = None
+        self._cover = None
         self._release_stamp = None
         self._label = None
         self._band = None
@@ -26,15 +26,15 @@ class Album(Model):
         """ id of the ref band if exists  """
         self._band = a_value
 
-    @Property(name="productors")
-    def productors(self, a_value):
+    @Property(name="producer")
+    def producer(self, a_value):
         """ productors of the opus"""
-        self._productors = a_value
+        self._producer = a_value
 
-    @Property(name="image_url")
-    def image_url(self, a_value):
+    @Property(name="cover")
+    def cover(self, a_value):
         """ url thunb image of cover"""
-        self._image_url = a_value
+        self._cover = a_value
 
     @Property(name="release_stamp")
     def release_stamp(self, a_value):

@@ -47,7 +47,7 @@ class ItemManager(IItemManager, AbsManager):
 
     def load_item(self):
         """ """
-        for w_item in ycappuccino.core.model.decorators.map_item.values():
+        for w_item in ycappuccino.core.model.decorators.get_map_items():
             if w_item.id not in self._map_managers:
 
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item

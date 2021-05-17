@@ -1,6 +1,6 @@
 from ycappuccino.core.api import IManager, IActivityLogger, IItemManager,IStorage
 from ycappuccino.core.model.model import Model
-
+import json
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides
 
@@ -44,10 +44,13 @@ class AbsManager(IManager):
     def get_many(self, a_params):
         w_result = []
         if self._item is not None:
-            res = self._storage.get_many(self._item.collection, a_params)
+            w_filter = {}
+            if a_params is not None and "filter" in a_params:
+                w_filter = json.loads(a_params["filter"])
+            res = self._storage.get_many(self._item.collection, w_filter)
             if res is not None:
                 for w_model in res:
-                    w_result = Model(w_model)
+                    w_result.append(Model(w_model))
         return w_result
 
     def up_sert(self, a_id, a_new_field):

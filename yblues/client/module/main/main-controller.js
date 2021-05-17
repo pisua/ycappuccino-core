@@ -94,21 +94,31 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
 		if (!$scope.band) {    
 			restapiServivce.band.get({id:"yblues",expand:"member"},function(aData) {
 				$scope.band = aData.data;
-				$scope.members = $scope.band.member_docs;  
 
 				console.log("get band");
-			});  
+			});
+			restapiServivce.members.get({"filter":{"band.ref":"yblues"}},function(aData) {
+                $scope.members =  aData.data;
+				console.log("get member");
+			});
+
+
 		}
 	}
 	self.getAlbum = function() {      
 		if (!$scope.albums) {    
-			restapiServivce.albums.get({expand:"music"},function(aData) {
+			restapiServivce.albums.get({},function(aData) {
 				$scope.albums = aData.data;
 				//sort music
 				$scope.albums && $scope.albums.forEach(function(album){
-					album.music_docs.sort(function(a,b){
-						return a.nb < b.nb ? -1:1;
-					})
+				    restapiServivce.musics.get({"filter":{"album.ref":album.id}},function(aData) {
+				        album.music_docs = aData.data;
+
+                        album.music_docs.sort(function(a,b){
+                            return a.album.properties.numero < b.album.properties.numero ? -1:1;
+                        });
+                    });
+
 				}) 
 
 				console.log("get albums");
@@ -129,18 +139,18 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
 			self.videoIdx = 0;
 		}
 		$( "#vid-grp-1").animate({
-			opacity: 0
-		}, 1000 , function(){
-			$scope.div_video = $scope.div_videos[self.videoIdx];
-			$scope.div_video.forEach(function(video,idx){
-				console.log("set src for the rframe with "+ video.link)
-				document.getElementById("video-"+idx).src =video.link;
-			})
-			setTimeout(function(){
-				$( "#vid-grp-1" ).animate({opacity: 1}, 1000 );
-				$( "#vid-grp-1" ).removeClass( "hidden-vid-grp" )
-			},1000);	
-		});
+                opacity: 0
+            }, 1000 , function(){
+                $scope.div_video = $scope.div_videos[self.videoIdx];
+                $scope.div_video.forEach(function(video,idx){
+                    console.log("set src for the rframe with ", video)
+                    document.getElementById("video-"+idx).src = video.url;
+                })
+                setTimeout(function(){
+                    $( "#vid-grp-1" ).animate({opacity: 1}, 1000 );
+                    $( "#vid-grp-1" ).removeClass( "hidden-vid-grp" )
+                },1000);
+        });
 		
 	}
 	self.getVideos = function() {      
@@ -160,8 +170,8 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
 				}
 				div_video = $scope.div_videos && $scope.div_videos[self.videoIdx];
 				div_video && div_video.forEach(function(video,idx){
-					console.log("set src for the rframe with "+ video.link)
-					document.getElementById("video-"+idx).src =video.link;
+					console.log("set src for the rframe with "+ video.url)
+					document.getElementById("video-"+idx).src =video.url;
 
 				})
 				$scope.div_video = $scope.div_videos[0] 

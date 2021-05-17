@@ -1,7 +1,7 @@
 from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.model import Model
 
-@Item(collection="bands",name="band")
+@Item(collection="bands",name="band", secureWrite=True)
 class Band(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

@@ -95,9 +95,9 @@
 			</article>
 		</div>
 		<div class="row">
-			<article class="col-md-4 col-lg-4 col-xs-12 col-sm-12"  ng-repeat="member in members">
-				<h1>{{member.nickname}}</h1>
-				<p>({{member.instrument}})</p>
+			<article class="col-md-5 col-lg-5 col-xs-12 col-sm-12"  ng-repeat="member in members">
+				<h1>{{member.name}}</h1>
+				<p>({{member.role}})</p>
 			</article>
 		
 		
@@ -113,15 +113,12 @@
 			</div>
 			<div class="row">
 				<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12" ng-repeat="album in albums">
-						<h2>{{album.lbl}}</h2>
+						<h2>{{album.name}}</h2>
 						<img src="{{album.cover}}" width="200"/>
 						<p>
-							[{{album.type}} <br />
-							Music: {{album.music}},<br />
-							Lyrics : {{album.lyrics}},<br />
-							Arrangement : {{album.arrangment}}]<br /><br />
+
 							<div ng-repeat="music in album.music_docs">
-							{{$index+1}} - {{music.lbl}}<br />
+							{{$index+1}} - {{music.name}}<br />
 							</div>
 							Available on Itunes, Spotify, Deezer <br />
 							Produced By {{album.producer}} <br />
@@ -138,7 +135,7 @@
 	<div class="container" id="container-vid">
 			<div class="row">
 				<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-						<h1>Vidéos</h1> <span id="prec-vid"  onclick="onChangeVideo(false)"> << Prec </span> <span id="suiv-vid" onclick="onChangeVideo(true)"">Suiv >></span>
+						<h1>Vidéos</h1> <span id="prec-vid"  onclick="onChangeVideo(false)"> << Prec </span> <span id="suiv-vid" onclick="onChangeVideo(true)" >Suiv >></span>
 				</article>
 				<div id="vid-grp-1" class="vid-grp">
 					<article class="col-md-6 col-lg-6 col-xs-12 col-sm-12" >
@@ -188,6 +185,8 @@
 				<article class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
 					<h1>Dates</h1>
 				</article>
+				Aucune date pour le moment
+
 				<article class="col-md-1 col-lg-1 col-xs-1 col-sm-1">
 					<table id="year-selector">
 						<thead>
@@ -201,22 +200,21 @@
 					</table>
 				</article>
 				<article class="col-md-11 col-lg-11 col-xs-11 col-sm-11" ng-repeat="year in gigs">
-					 <table  class="table table-hover {{year.klass}}" id="date-{{year.year}}" >
+					 <!--<table  class="table table-hover {{year.klass}}" id="date-{{year.year}}" >
 						<thead>
 						    <tr>
 								<th>{{year.year}}</th>
 							</tr>
 						</thead>
 						<tbody>
-						<!-- 						  <tr onclick="javascript:showFancyWithThisContent('negro');" ng-repeat="gig in year.gigs">
-						 -->
+
 						  <tr  ng-repeat="gig in year.gigs">
 							<td>{{gig.dateOfMonth}}/{{gig.month}}</td>
 							<td>{{gig.name}}</td>
 							<td>{{gig.address}}</td>
 							<td>{{gig.bands}}</td>
 						  </tr>
-					  </table>
+					  </table>-->
 				</article>
 				
 			</div>

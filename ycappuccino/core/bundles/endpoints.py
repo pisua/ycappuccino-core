@@ -121,8 +121,8 @@ class Endpoint(IEndpoint):
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
-                if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
-                    w_resp = w_manager.get_one(w_url_path.get_params().id)
+                if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
+                    w_resp = w_manager.get_one(w_url_path.get_params()["id"])
                     w_meta = {
                         "type": "object",
                         "size": 1
@@ -156,6 +156,16 @@ class Endpoint(IEndpoint):
             else:
                 return EndpointResponse(405)
         return EndpointResponse(400)
+
+    @BindField("_managers")
+    def bind_manager(self, field, a_manager, a_service_reference):
+        w_item_plural = a_manager.get_item_id_plural()
+        self._map_managers[w_item_plural] = a_manager
+
+    @UnbindField("_managers")
+    def unbind_manager(self, field, a_manager, a_service_reference):
+        w_item_plural = a_manager.get_item_id_plural()
+        self._map_managers[w_item_plural] = None
 
 
 

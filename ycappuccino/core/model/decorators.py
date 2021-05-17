@@ -3,7 +3,23 @@ import functools
 from ycappuccino.core.model.utils import YDict
 primitive = (int, str, bool, float, )
 
+# identified item by id
 map_item = {}
+# identified item by class name
+map_item_by_class = {}
+# identified list of ref by class name on source item
+map_item_link_by_class = {}
+# identified list of ref by item name target
+map_item_link_by_target = {}
+
+
+def get_map_items():
+    w_items = []
+    for w_key in map_item:
+        w_items.append(YDict(map_item[w_key]))
+    return w_items;
+
+
 
 
 class Item(object):
@@ -13,20 +29,96 @@ class Item(object):
         self._meta_collection = collection
         self._meta_module = module
 
-        w_model = YDict({
+        w_model = {
             "id": name,
             "module": module,
             "collection": collection,
-            "secureRead":secureRead,
-            "secureWrite": secureWrite
-
-        })
+            "secureRead": secureRead,
+            "secureWrite": secureWrite,
+            "refs": [],
+            "reverse_refs": []
+        }
         map_item[name] = w_model
+        map_item_by_class[self.get_class_name()] = w_model
+        self.add_refs(w_model)
+        self.add_reverse_refs(name, w_model)
+
+    def __call__(self, obj):
+        return obj
+
+    def get_class_name(self):
+        return self.__class__.__name__
+
+    def add_refs(self, a_model):
+        if self.get_class_name() in map_item_link_by_class:
+            for w_ref in map_item_link_by_class:
+                # retrieve item from ref if it's not resolved
+                if "item" not in w_ref and  w_ref["item_name"] in map_item:
+                    w_ref["item"] = map_item[w_ref.item_name]
+                # add the refs
+                a_model["refs"].append(w_ref)
+
+    def add_reverse_refs(self, name, a_model):
+        if name in map_item_link_by_target:
+            for w_ref in map_item_link_by_target[name]:
+                # retrieve item from ref if it's not resolved
+                if "item" not in w_ref and w_ref["item_name"] in map_item:
+                    w_ref["item"] = map_item[w_ref["item_name"]]
+                # add the refs
+                a_model["reverse_refs"].append(w_ref)
+
+
+class ItemReference(object):
+    # Make copy of original __init__, so we can call it without recursion
+    def __init__(self, field_name,  item_name, module="system"):
+        """
+        create a link between item
+        :param field_name:
+        :param item_name: 
+        :param module: 
+        """
+        if self.__class__.__name__ not in map_item_link_by_class:
+            map_item_link_by_class[self.__class__.__name__] = []
+
+        w_ref = {
+            "local_field": field_name,
+            "item_name": item_name,
+            "module_name": module,
+            "class": self.__class__.__name__
+        }
+
+        map_item_link_by_class[self.__class__.__name__].append(w_ref)
+        if item_name not in map_item_link_by_target:
+            map_item_link_by_target[item_name] = []
+
+        map_item_link_by_target[item_name].append(w_ref)
+        # Item decoration has been processed
+        if item_name in map_item:
+            w_ref["item"] = map_item[item_name]
+        self.add_ref(w_ref)
+        self.add_reverse_refs(item_name,w_ref )
+
+
+    def add_reverse_refs(self, item_name, a_ref):
+        if item_name in map_item:
+            if "reverse_refs" not in map_item[item_name]:
+                map_item[item_name]["reverse_refs"] = []
+
+            map_item[item_name]["reverse_refs"].append(a_ref)
+
+    def get_class_name(self):
+        return self.__class__.__name__
+
+    def add_ref(self, a_ref):
+        if self.get_class_name() in map_item_by_class:
+            if "refs" not in map_item_by_class[self.get_class_name()]:
+                map_item_by_class[self.get_class_name()]["refs"] = []
+
+            map_item_by_class[self.get_class_name()]["refs"].append(a_ref)
 
     def __call__(self, obj):
 
         return obj
-
 
 def Property(name):
     """ decoration that manage property with another collection """

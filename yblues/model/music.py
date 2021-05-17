@@ -1,7 +1,7 @@
 from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference
 from ycappuccino.core.model.model import Model
 
-@Item(collection="musics",name="music")
+@Item(collection="musics",name="music", secureWrite=True)
 @ItemReference(field_name="_album", item_name="album")
 class Music(Model):
     """ bean that represent a music of an album(or not) """

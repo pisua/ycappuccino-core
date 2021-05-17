@@ -1,7 +1,7 @@
 from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.model import Model
 
-@Item(collection="gigs",name="gig")
+@Item(collection="gigs",name="gig", secureWrite=True)
 class Gig(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

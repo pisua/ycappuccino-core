@@ -1,4 +1,5 @@
 from ycappuccino.core.api import IActivityLogger
+import mimetypes
 
 import inspect
 import pelix.http
@@ -29,7 +30,8 @@ class IndexEndpoint(object):
         self._client_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "client")
         self._map_python_file = {}
 
-    def manage_python(self,a_path):
+    def manage_python(self, a_path):
+        """ manage python component client"""
         with open(a_path) as f:
             w_lines = f.readlines()
             w_lines_str = ""
@@ -41,7 +43,8 @@ class IndexEndpoint(object):
                 w_lines_str = "".join([w_lines_str, w_line])
             return w_lines_str
 
-    def manage_html(self, a_path):
+    def manage_clob(self, a_path):
+        """ return the content of the file and include html trick if needed """
         with open(a_path) as f:
             w_lines = f.readlines()
             w_lines_str = ""
@@ -51,7 +54,15 @@ class IndexEndpoint(object):
                 w_lines_str = "".join([w_lines_str, w_line])
             return w_lines_str
 
+    def manage_blob(self, a_path):
+        """ return the content of the blob"""
+
+        with open(a_path,mode = "rb") as f:
+            w_lines = f.read()
+            return w_lines
+
     def _manage_python_component(self,a_line, to_added_line):
+        """ manage python component factory ipopo simulation """
         w_factory_name = self._get_component(a_line)
         if w_factory_name is not None:
             pass
@@ -86,18 +97,41 @@ class IndexEndpoint(object):
             return w_class_with_params[0:w_class_with_params.index("(")]
 
     def _is_provided(self, a_line):
+        """
+        :param a_line: r
+        :return:
+        """
         return "@Provides" in a_line
 
     def _is_requires(self, a_line):
+        """
+        :param a_line:
+        :return:
+        """
         return "@Requires" in a_line
 
     def _is_html_head(self, a_line):
+        """
+        return true if it's a head html
+        :param a_line:
+        :return:
+        """
         return "<head>" in a_line
 
     def _is_html_body(self, a_line):
+        """
+        return true if it's a body html
+        :param a_line:
+        :return:
+        """
         return "<body>" in a_line
 
     def _add_brython_script(self, a_line):
+        """
+        add automicatically brython script
+        :param a_line:
+        :return:
+        """
         w_line = a_line + "\n" \
                  + "<script type=\"text/javascript\" src=\"brython.js\"></script>" \
                  + "<script type=\"text/javascript\" src=\"brython_stdlib.js\"></script>"
@@ -105,51 +139,72 @@ class IndexEndpoint(object):
 
 
     def _manage_html_file(self, a_line):
+        """ manage add brython script on header and onload on body"""
         if self._is_html_head(a_line):
             return self._add_brython_script(a_line)
         elif self._is_html_body(a_line):
             return a_line.replace("body","body onload=\"brython(1)\"")
+        else:
+            return a_line
+
+    def _get_path(self, a_file_path):
+        """ return the effective file path """
+        w_path = self._path
+        w_file_path = a_file_path
+        if a_file_path.endswith(".py"):
+            is_python = True
+            w_file_path = w_path + "/client" + a_file_path
+
+        else:
+            # not in current app . we check if it exists in ycappuccino
+            if "brython" in a_file_path:
+                w_file_path = self._brython_path + a_file_path
+            else:
+                w_file_path = w_path + "/client" + a_file_path
+
+            if a_file_path.endswith("/"):
+                w_file_path = w_path + "/client/index.html"
+
+        return w_file_path
+
+    def _is_binary_file(self, a_path):
+        """ return true if it's a binary file """
+        return ".jpg"  in a_path or ".png"  in a_path or ".svg"  in a_path or ".jpeg"  in a_path or ".ico"  in a_path or ".pdf"  in a_path
+
+    def _is_text_file(self, a_path):
+        """ return true if it's a binary file """
+        return ".html"  in a_path or ".css"  in a_path or ".js"  in a_path or ".txt"  in a_path or ".ttf"  in a_path or ".map"  in a_path
+
+    def _is_python_file(self, a_path):
+        """ return true if it's a binary file """
+        return ".py"  in a_path
 
     def do_GET(self, request, response):
         """  return file content """
         w_req_path = request.get_path()
-        w_path = self._path
         w_file = w_req_path.split("?")[0]
-        is_python = False
-        is_html = False
-        if w_file.endswith(".py"):
-            is_python = True
-            w_path = w_path + "/client"+w_file
-
-        else:
-            if w_file.endswith("/"):
-
-                w_path = w_path + "/client/index.html"
-            else:
-                w_path = w_path + "/client"+w_file
-            if ".html" in w_path:
-                is_html= True
-
-        # check if python is a core widget
-        # else check if it's custom widget
-        if not path.exists(w_path):
-            # not in current app . we check if it exists in ycappuccino
-            if "brython" in w_path:
-                w_path = self._brython_path+w_file
-            else:
-                w_path = self._client_path+w_file
+        is_clob = False
+        is_blob = False
+        w_path = self._get_path(w_file)
+        is_python = self._is_python_file(w_path)
+        is_clob = self._is_text_file(w_path)
+        is_blob = self._is_binary_file(w_path)
 
         if not path.exists(w_path):
             response.send_content(404, "", "text/plain")
             return
         try:
+            w_lines_str = ""
             if is_python:
                 w_lines_str = self.manage_python(w_path)
-            else:
-                w_lines_str = self.manage_html(w_path)
+            elif is_clob:
+                w_lines_str = self.manage_clob(w_path)
+            elif is_blob:
+                w_lines_str = self.manage_blob(w_path)
 
             response.send_content(200, w_lines_str, mimetypes.guess_type(w_req_path)[0])
         except Exception as e:
+            _logger.info("fail to return content for path {}".format(w_path))
             _logger.exception(e)
             response.send_content(500, "", "text/plain")
 

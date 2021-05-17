@@ -7,6 +7,8 @@ class Model(YDict):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)
         # init id regarding the dict or model pass
+
+
         if a_dict is not None :
             if isinstance(a_dict, Model):
 
@@ -19,7 +21,8 @@ class Model(YDict):
 
             else:
                 self.id = None
-
+        if "_id" in self.__dict__:
+            del self.__dict__["_id"]
     @Property(name="_id")
     def id(self, a_value):
         self.id = a_value
