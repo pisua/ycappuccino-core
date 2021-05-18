@@ -23,28 +23,10 @@
       <change afterPath="$PROJECT_DIR$/../yblues/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../yblues/.idea/modules.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../yblues/.idea/yblues.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yblues/client/img/picture/cover_singlebarrel_petit.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/bundles/init_data_bootstrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/bundles/init_data_bootstrap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/client/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/client/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/client/module/main/main-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/client/module/main/main-controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/client/module/restapi/restapi.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/client/module/restapi/restapi.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/album.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/band.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/band.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/gig.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/gig.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/lyrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/member.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/music.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yblues/model/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/yblues/model/video.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/beans.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/beans.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/core_bootstrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/core_bootstrap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/endpoints.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/indexEndpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/indexEndpoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/item_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/item_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/managers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/decorators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ycappuccino/core/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/model/model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
