@@ -1,4 +1,4 @@
-from core.api import IManager, IActivityLogger, IItemManager,IStorage
+from ycappuccino.core.api import IManager, IActivityLogger, IItemManager,IStorage
 from ycappuccino.core.model.model import Model
 import json
 import logging
