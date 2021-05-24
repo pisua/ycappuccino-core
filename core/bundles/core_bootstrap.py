@@ -1,4 +1,4 @@
-from core.api import IActivityLogger, IManager, IManagerBootStrapData, YCappuccino
+from ycappuccino.core.api import IActivityLogger, IManager, IManagerBootStrapData, YCappuccino
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 from pelix.ipopo.constants import use_ipopo

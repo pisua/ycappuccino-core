@@ -47,7 +47,7 @@ def init_subsystem(a_path):
     subsystem.append(a_path)
     utils.find_and_install_bundle(a_path,"",context)
 
-def init(bundles_main=None):
+def init(root_dir=None, port=9000):
     """ """
     global item_manager
     global context
@@ -102,8 +102,11 @@ def init(bundles_main=None):
     # install custom
     # load ycappuccino
     w_root =""
-    for w_elem in os.getcwd().split("/"):
+    if root_dir is  None:
+        root_dir = os.getcwd()
+    for w_elem in root_dir.split("/"):
         w_root=w_root+"/"+w_elem
+
     utils.find_and_install_bundle(w_root,"",context)
 
     # Install & start iPOPO
@@ -117,12 +120,9 @@ def init(bundles_main=None):
         ipopo.instantiate(
             'pelix.http.service.basic.factory', 'http-server',
             {'pelix.http.address': 'localhost',
-             'pelix.http.port': 9000})
+             'pelix.http.port': port})
 
-    # launch bundle main of root application
-    if bundles_main is not None:
-        for w_bundle in bundles_main:
-            context.install_bundle(w_bundle).start()
+
 
     item_manager.load_item()
     w_finder.set_context(context)

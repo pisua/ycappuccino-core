@@ -1,4 +1,4 @@
-from core.api import IEndpoint, IActivityLogger, IJwt, IManager
+from ycappuccino.core.api import IEndpoint, IActivityLogger, IJwt, IManager
 
 import pelix.http
 import pelix.remote

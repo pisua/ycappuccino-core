@@ -3,8 +3,8 @@
 import ycappuccino.core.framework
 
 
-def init():
-    ycappuccino.core.framework.init()
+def init(root_path=None,port=9000):
+    ycappuccino.core.framework.init(root_path,port)
 
 
 def start():

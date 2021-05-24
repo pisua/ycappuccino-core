@@ -1,4 +1,4 @@
-from core.api import IActivityLogger
+from ycappuccino.core.api import IActivityLogger
 
 import inspect
 import pelix.remote

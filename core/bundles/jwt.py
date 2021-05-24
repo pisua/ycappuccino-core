@@ -1,7 +1,6 @@
-from core.api import IActivityLogger, IJwt
+from ycappuccino.core.api import IActivityLogger, IJwt
 
 import logging
-import json
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate, Property
 
 _logger = logging.getLogger(__name__)

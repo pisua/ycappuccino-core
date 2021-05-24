@@ -1,4 +1,4 @@
-from core.api import IStorage, IActivityLogger, YCappuccino
+from ycappuccino.core.api import IStorage, IActivityLogger, YCappuccino
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate,  Provides, Instantiate

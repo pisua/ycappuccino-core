@@ -3,23 +3,25 @@ import os.path, glob
 
 from importlib.abc import Loader, MetaPathFinder
 from importlib.util import spec_from_file_location
-
+import logging
+_logger = logging.getLogger(__name__)
 
 bundle_loaded = []
 
 def load_bundle(a_file, a_module_name,a_context):
     """ return list of model to load . need to be load after component"""
     global  item_manager
-
-    with open(a_file, "r") as f:
-        content = f.read()
-        if "pelix" not in a_module_name and "@ComponentFactory" in content and "pelix.ipopo.decorators" in content:
-            bundle_loaded.append(a_module_name)
-            a_context.install_bundle(a_module_name).start()
-        if "@Item" in content:
-            # import this model
-            return a_module_name
-
+    try:
+        with open(a_file, "r") as f:
+            content = f.read()
+            if "pelix" not in a_module_name and "@ComponentFactory" in content and "pelix.ipopo.decorators" in content:
+                bundle_loaded.append(a_module_name)
+                a_context.install_bundle(a_module_name).start()
+            if "@Item" in content:
+                # import this model
+                return a_module_name
+    except Exception as e:
+        print("file {}".format(a_file))
 
 def find_and_install_bundle(a_root, a_module_name, a_context):
     """ find and install all bundle in path """

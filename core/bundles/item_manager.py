@@ -1,4 +1,4 @@
-from core.api import IItemManager, IActivityLogger, IStorage, IConfiguration, YCappuccino
+from ycappuccino.core.api import IItemManager, IActivityLogger, IStorage, IConfiguration, YCappuccino
 from ycappuccino.core.bundles.managers import AbsManager
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField

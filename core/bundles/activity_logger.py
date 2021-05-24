@@ -7,7 +7,7 @@ component that provide a activity logger
 '''
 # cohorte
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate, Property
-from core.api import IActivityLogger, IConfiguration, YCappuccino
+from ycappuccino.core.api import IActivityLogger, IConfiguration, YCappuccino
 
 import logging
 from logging.handlers import RotatingFileHandler
