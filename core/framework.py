@@ -119,8 +119,7 @@ def init(root_dir=None, port=9000):
     with use_ipopo(context) as ipopo:
         ipopo.instantiate(
             'pelix.http.service.basic.factory', 'http-server',
-            {'pelix.http.address': 'localhost',
-             'pelix.http.port': port})
+            {'pelix.http.port': port})
 
 
 

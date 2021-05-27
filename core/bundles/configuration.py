@@ -5,7 +5,7 @@ from pelix.ipopo.decorators import ComponentFactory, Provides, Validate, \
     Invalidate, Instantiate
 import shutil
 from ycappuccino.core.api import IConfiguration
-FILE_NAME = {'key': 'file_name', 'default': "current.properties"}
+FILE_NAME = {'key': 'file_name', 'default': "config.properties"}
 
 
 @ComponentFactory('Configuration-Factory')
@@ -92,7 +92,7 @@ class Configuration(IConfiguration):
         return os.getcwd()+"/"+"conf"
 
     def get_data(self ):
-        return os.getcwd() + "/" +"conf"
+        return os.getcwd() + "/"
 
     @classmethod
     def read(cls, path, aLogger=None):

@@ -1,4 +1,4 @@
-from ycappuccino.core.api import IStorage, IActivityLogger, YCappuccino
+from ycappuccino.core.api import IStorage, IActivityLogger, YCappuccino, IConfiguration
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate,  Provides, Instantiate
@@ -12,6 +12,8 @@ _logger = logging.getLogger(__name__)
 @ComponentFactory('Storage-Factory')
 @Provides(specifications=[IStorage.name, YCappuccino.name])
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
+@Requires("_config",IConfiguration.name)
+
 @Instantiate("MongoStorage")
 class MongoStorage(IStorage):
 
@@ -20,7 +22,19 @@ class MongoStorage(IStorage):
         self._log = None
         self._client = None
         self._db = None
+        self._config = None
+        self._host = None
+        self._port = None
+        self._username = None
+        self._password = None
+        self._db_name = None
 
+    def load_configuration(self):
+        self._host = self._config.get("storage.mongo.db.host", "localhost")
+        self._port = self._config.get("storage.mongo.db.port", 27017)
+        self._username = self._config.get("storage.mongo.db.username", "admin")
+        self._password = self._config.get("storage.mongo.db.password", "ycappuccino")
+        self._db_name = self._config.get("storage.mongo.db.name", "ycappuccino")
 
     def aggregate(self, a_collection, a_pipeline):
         """ aggegate data regarding filter and pipeline """
@@ -87,8 +101,9 @@ class MongoStorage(IStorage):
     def validate(self, context):
         _logger.info("MongoStorage validating")
         try:
-            self._client = MongoClient("localhost", 27017)
-            self._db = self._client.ycappuccino
+            self.load_configuration()
+            self._client = MongoClient(self._host, int(self._port))
+            self._db = self._client[self._db_name]
 
         except Exception as e:
             _logger.error("MongoStorage Error {}".format(e))
