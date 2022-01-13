@@ -93,7 +93,7 @@ class AbsManager(IManager):
 @Provides(IManager.name)
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_item_manager",IItemManager.name)
-@Requires("_storage",IStorage.name)
+@Requires("_storage",IStorage.name,optional=True)
 @Property('_item_id', "item_id", "model")
 @Property('_item', "item", None)
 @Property('_is_secureRead', "secureRead", False)
