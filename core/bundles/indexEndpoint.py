@@ -140,8 +140,8 @@ class IndexEndpoint(object):
         """ manage add brython script on header and onload on body"""
         if self._is_html_head(a_line):
             return self._add_brython_script(a_line)
-        elif self._is_html_body(a_line):
-            return a_line.replace("body","body onload=\"brython(1)\"")
+        #elif self._is_html_body(a_line):
+        #    return a_line.replace("body","body onload=\"brython(1)\"")
         else:
             return a_line
 
