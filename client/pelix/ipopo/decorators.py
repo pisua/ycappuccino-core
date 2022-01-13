@@ -1,11 +1,13 @@
-import inspect
-import os
+
 list_component = {}
 
 
 def ComponentFactoryCall(a_class,  name=None):
     print("ComponentFactoryCall {} {}".format(a_class.__name__, name))
 
+
+def InstantiateCall(a_class,  *args, **kwargs):
+    print("InstantiateCall {} {}".format(a_class.__name__,  args, kwargs))
 
 class ComponentFactory(object):
 

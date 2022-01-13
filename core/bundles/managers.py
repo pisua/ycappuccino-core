@@ -34,31 +34,35 @@ class AbsManager(IManager):
 
     def get_one(self, a_id):
         w_result = None
-        if self._item is not None:
-            res = self._storage.get_one(self._item.collection, a_id)
-            if res is not None:
-                for w_model in res:
-                    w_result = Model(w_model)
+        if self._storage is not None:
+
+            if self._item is not None:
+                res = self._storage.get_one(self._item.collection, a_id)
+                if res is not None:
+                    for w_model in res:
+                        w_result = Model(w_model)
         return w_result
 
     def get_many(self, a_params):
         w_result = []
-        if self._item is not None:
-            w_filter = {}
-            if a_params is not None and "filter" in a_params:
-                w_filter = json.loads(a_params["filter"])
-            res = self._storage.get_many(self._item.collection, w_filter)
-            if res is not None:
-                for w_model in res:
-                    w_result.append(Model(w_model))
+        if self._storage is not None:
+            if self._item is not None:
+                w_filter = {}
+                if a_params is not None and "filter" in a_params:
+                    w_filter = json.loads(a_params["filter"])
+                res = self._storage.get_many(self._item.collection, w_filter)
+                if res is not None:
+                    for w_model in res:
+                        w_result.append(Model(w_model))
         return w_result
 
     def up_sert(self, a_id, a_new_field):
         """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the model create """
-        if self._item is not None:
-            res = self._storage.up_sert(self._item.collection, a_id, a_new_field)
-            if res is not None:
-                return Model(res)
+        if self._storage is not None:
+            if self._item is not None:
+                res = self._storage.up_sert(self._item.collection, a_id, a_new_field)
+                if res is not None:
+                    return Model(res)
         return None
 
 
@@ -74,19 +78,21 @@ class AbsManager(IManager):
 
 
     def delete(self, a_id):
+        if self._storage is not None:
 
-        if self._item is not None:
-            res = self._storage.delete(self._item.collection, a_id)
-            if res is not None:
-                return Model(res)
+            if self._item is not None:
+                res = self._storage.delete(self._item.collection, a_id)
+                if res is not None:
+                    return Model(res)
         return None
 
     def delete_many(self, a_filter):
+        if self._storage is not None:
 
-        if self._item is not None:
-            res = self._storage.delete_many(self._item.collection, a_filter)
-            if res is not None:
-                return Model(res)
+            if self._item is not None:
+                res = self._storage.delete_many(self._item.collection, a_filter)
+                if res is not None:
+                    return Model(res)
         return None
 
 @ComponentFactory('Manager-Factory')

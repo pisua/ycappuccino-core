@@ -11,6 +11,7 @@ from os import path
 _logger = logging.getLogger(__name__)
 
 COMPONENT_FACTORY = "@ComponentFactory"
+COMPONENT_INSTANTIATE = "@Instantiate"
 
 
 @ComponentFactory('IndexEndpoint-Factory')
@@ -23,7 +24,8 @@ class IndexEndpoint(object):
 
     """ bundle that allow to open index.html as root path of http endpoint and provide client bundle on path client """
     def __init__(self):
-        self._path = os.getcwd()
+        self._path_core = os.getcwd()+"/ycappuccino"
+        self._path_app = os.getcwd()
         self._brython_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "brython")
         self._client_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "client")
         self._map_python_file = {}
@@ -33,12 +35,24 @@ class IndexEndpoint(object):
         with open(a_path) as f:
             w_lines = f.readlines()
             w_lines_str = ""
-            to_added_line = []
-            to_added_line.append("import pelix")
+            w_added_lines = []
+            w_import_line = None
+            w_component = {}
             for w_line in w_lines:
-                w_line = self._manage_python_component(w_line, to_added_line)
-
+                (w_new_component , w_line, w_added_line_comp, import_pelix) = self._manage_python_component(w_line, w_component)
+                w_component = w_new_component
+                if import_pelix is not None:
+                    w_import_line = import_pelix
+                if len(w_added_line_comp) > 0:
+                    for w_added in w_added_line_comp:
+                        w_added_lines.append(w_added)
                 w_lines_str = "".join([w_lines_str, w_line])
+
+            for w_added in w_added_lines:
+                w_lines_str = "\n\n".join([w_lines_str,w_added])
+
+            if w_import_line is not None:
+                return w_import_line+"\n\n"+w_lines_str
             return w_lines_str
 
     def manage_clob(self, a_path):
@@ -59,17 +73,21 @@ class IndexEndpoint(object):
             w_lines = f.read()
             return w_lines
 
-    def _manage_python_component(self,a_line, to_added_line):
+    def _manage_python_component(self,a_line, a_component_prop):
         """ manage python component factory ipopo simulation """
         w_factory_name = self._get_component(a_line)
-        if w_factory_name is not None:
-            pass
-            #to_added_line.append("pelix.ipopo.decorators.ComponentFactoryCall({}.__class__,"+w_factory_name+")")
+        to_added_line = []
+        w_with_import_line = None
 
-        w_class_name = self._get_class_name(a_line)
-        if w_class_name is not  None:
-            for w_line in to_added_line:
-                to_added_line[to_added_line.index(w_line)] = w_line.format(w_class_name)
+        if w_factory_name is not None:
+            to_added_line.append("pelix.ipopo.decorators.ComponentFactoryCall({}.__class__,"+w_factory_name+")")
+            w_with_import_line = "import pelix"
+            a_component_prop["factory"] = w_factory_name
+
+        w_instance_name = self._get_instantiate(a_line)
+        if w_instance_name is not  None:
+            to_added_line.append("pelix.ipopo.decorators.InstantiateCall({}.__class__," + a_component_prop["factory"] + "," +w_instance_name+")")
+            a_component_prop["instance"] = w_instance_name
 
         for w_to_replace in re.findall("(__\w+)+", a_line):
             if "__" not in w_to_replace[2:]:
@@ -77,9 +95,15 @@ class IndexEndpoint(object):
                 w_replaced = w_to_replace.replace("__", "_")
                 a_line = a_line.replace(w_to_replace, w_replaced)
 
-        a_line = a_line + "\n\n"
-        a_line = a_line + "\n".join(to_added_line)
-        return a_line
+        return (a_component_prop, a_line, to_added_line, w_with_import_line)
+
+    def _get_instantiate(self, a_line):
+        """
+        :param a_line:
+        :return: string that correspond to the agument passed in componentFactoryp pamameter
+        """
+        if COMPONENT_INSTANTIATE in a_line:
+            return a_line[len(COMPONENT_INSTANTIATE) + 1:a_line.index(")")]
 
     def _get_component(self, a_line):
         """
@@ -140,14 +164,14 @@ class IndexEndpoint(object):
         """ manage add brython script on header and onload on body"""
         if self._is_html_head(a_line):
             return self._add_brython_script(a_line)
-        #elif self._is_html_body(a_line):
-        #    return a_line.replace("body","body onload=\"brython(1)\"")
+        elif self._is_html_body(a_line):
+            return a_line.replace("body","body onload=\"brython(1)\"")
         else:
             return a_line
 
-    def _get_path(self, a_file_path):
+    def _get_path(self, a_base_path, a_file_path):
         """ return the effective file path """
-        w_path = self._path
+        w_path = a_base_path
         w_file_path = a_file_path
         if a_file_path.endswith(".py"):
             is_python = True
@@ -164,6 +188,14 @@ class IndexEndpoint(object):
                 w_file_path = w_path + "/client/index.html"
 
         return w_file_path
+
+    def _get_path_core(self, a_file_path):
+        """ return file path for core client  """
+        return self._get_path(self._path_core,a_file_path)
+
+    def _get_path_app(self, a_file_path):
+        """ return the effective file path client app"""
+        return self._get_path(self._path_app, a_file_path)
 
     def _is_binary_file(self, a_path):
         """ return true if it's a binary file """
@@ -183,14 +215,17 @@ class IndexEndpoint(object):
         w_file = w_req_path.split("?")[0]
         is_clob = False
         is_blob = False
-        w_path = self._get_path(w_file)
+        w_path = self._get_path_app(w_file)
         is_python = self._is_python_file(w_path)
         is_clob = self._is_text_file(w_path)
         is_blob = self._is_binary_file(w_path)
 
         if not path.exists(w_path):
-            response.send_content(404, "", "text/plain")
-            return
+            # check path in core client
+            w_path = self._get_path_core(w_file)
+            if not path.exists(w_path):
+                response.send_content(404, "", "text/plain")
+                return
         try:
             w_lines_str = ""
             if is_python:
