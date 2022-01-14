@@ -6,8 +6,16 @@ def ComponentFactoryCall(a_class,  name=None):
     print("ComponentFactoryCall {} {}".format(a_class.__name__, name))
 
 
-def InstantiateCall(a_class,  *args, **kwargs):
-    print("InstantiateCall {} {}".format(a_class.__name__,  args, kwargs))
+def InstantiateCall(a_class, **kwargs):
+    print("InstantiateCall {} {}".format(a_class.__name__,  kwargs))
+
+
+def RequireCall(a_class, **kwargs):
+    print("RequireCall {} {}".format(a_class.__name__,  kwargs))
+
+def PropertyCall(a_class, **kwargs):
+    print("PropertyCall {} {}".format(a_class.__name__,  kwargs))
+
 
 class ComponentFactory(object):
 
@@ -29,29 +37,18 @@ def Invalidate(method):
 
 class Instantiate(object):
 
-    def __init__(self, name, properties=None):
+    def __init__(self, name ="", properties=None):
         self._name = name
         self._properties = properties
 
     def __call__(self, *args, **kwargs):
         print("Instantiate")
-        if self._name in list_component and "instances" in list_component[self._name]:
-            list_component[self._name]["instances"][self._name] = {
-                "instance": self
-            }
 
-        elif  self._name in list_component:
-            list_component[self._name] = {
-                "instances": {}
-            }
-            list_component[self._name]["instances"][self._name] = {
-                "instance": self
-            }
 
 
 class Requires(object):
 
-    def __init__(self,  field, specification, aggregate=False, optional=False, spec_filter=None, immediate_rebind=False):
+    def __init__(self,  field="", specification="", aggregate=False, optional=False, spec_filter=None, immediate_rebind=False):
         self._field = field
         self._specification = specification
         self._aggregate = aggregate
@@ -61,9 +58,3 @@ class Requires(object):
 
     def __call__(self, *args, **kwargs):
         print("Requires")
-        if self._name in list_component:
-            list_component[self._name]["factory"] = self
-        else:
-            list_component[self._name] = {
-                "factory": self,
-            }

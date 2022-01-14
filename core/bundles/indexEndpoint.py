@@ -12,7 +12,8 @@ _logger = logging.getLogger(__name__)
 
 COMPONENT_FACTORY = "@ComponentFactory"
 COMPONENT_INSTANTIATE = "@Instantiate"
-
+COMPONENT_REQUIRE = "@Requires"
+COMPONENT_PROPERTY ="@Property"
 
 @ComponentFactory('IndexEndpoint-Factory')
 @Provides(specifications=[pelix.http.HTTP_SERVLET])
@@ -73,6 +74,28 @@ class IndexEndpoint(object):
             w_lines = f.read()
             return w_lines
 
+
+    def _call_decorator_factory(self, to_added_line,  a_factory_name, a_component_prop):
+        to_added_line.append("pelix.ipopo.decorators.ComponentFactoryCall({}.__class__," + a_factory_name + ")")
+        a_component_prop["factory"] = a_factory_name
+
+    def _call_decorator_instance(self, to_added_line, a_instance_name, a_component_prop):
+        to_added_line.append("pelix.ipopo.decorators.InstantiateCall({}.__class__,factory=" + a_component_prop["factory"] + ", name=" + a_instance_name + ")")
+        a_component_prop["instance"] = a_instance_name
+
+    def _call_decorator_require(self,  to_added_line, a_require_instance, a_component_prop):
+        to_added_line.append("pelix.ipopo.decorators.RequireCall({}.__class__, field=" + a_require_instance + ")")
+        if "requires" not in a_component_prop:
+            a_component_prop["rqeuires"] = []
+        a_component_prop["rqeuires"].append(a_require_instance)
+
+    def _call_decorator_property(self,  to_added_line, a_property, a_component_prop):
+        to_added_line.append(
+            "pelix.ipopo.decorators.PropertyCall({}.__class__, field=" + a_property + ")")
+        if "properties" not in a_component_prop:
+            a_component_prop["properties"] = []
+        a_component_prop["properties"].append(a_property)
+
     def _manage_python_component(self,a_line, a_component_prop):
         """ manage python component factory ipopo simulation """
         w_factory_name = self._get_component(a_line)
@@ -80,14 +103,20 @@ class IndexEndpoint(object):
         w_with_import_line = None
 
         if w_factory_name is not None:
-            to_added_line.append("pelix.ipopo.decorators.ComponentFactoryCall({}.__class__,"+w_factory_name+")")
             w_with_import_line = "import pelix"
-            a_component_prop["factory"] = w_factory_name
+            self._call_decorator_factory(to_added_line, w_factory_name, a_component_prop)
 
         w_instance_name = self._get_instantiate(a_line)
         if w_instance_name is not  None:
-            to_added_line.append("pelix.ipopo.decorators.InstantiateCall({}.__class__," + a_component_prop["factory"] + "," +w_instance_name+")")
-            a_component_prop["instance"] = w_instance_name
+            self._call_decorator_instance(to_added_line, w_instance_name, a_component_prop)
+
+        w_require_instance = self._get_require(a_line)
+        if w_require_instance is not None:
+            self._call_decorator_require(to_added_line, w_require_instance, a_component_prop)
+
+        w_property = self._get_property(a_line)
+        if w_property is not None:
+            self._call_decorator_property(to_added_line, w_property, a_component_prop)
 
         for w_to_replace in re.findall("(__\w+)+", a_line):
             if "__" not in w_to_replace[2:]:
@@ -104,6 +133,22 @@ class IndexEndpoint(object):
         """
         if COMPONENT_INSTANTIATE in a_line:
             return a_line[len(COMPONENT_INSTANTIATE) + 1:a_line.index(")")]
+
+    def _get_require(self, a_line):
+        """
+        :param a_line:
+        :return: string that correspond to the agument passed in componentFactoryp pamameter
+        """
+        if COMPONENT_REQUIRE in a_line:
+            return a_line[len(COMPONENT_REQUIRE) + 1:a_line.index(")")]
+
+    def _get_property(self, a_line):
+        """
+        :param a_line:
+        :return: string that correspond to the agument passed in componentFactoryp pamameter
+        """
+        if COMPONENT_PROPERTY in a_line:
+            return a_line[len(COMPONENT_PROPERTY) + 1:a_line.index(")")]
 
     def _get_component(self, a_line):
         """

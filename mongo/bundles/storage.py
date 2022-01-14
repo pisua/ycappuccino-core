@@ -4,16 +4,27 @@ import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate,  Provides, Instantiate
 from pymongo import MongoClient
 
+from ycappuccino.core.executorService import RunnableProcess, ThreadPoolExecutorCallable
 from ycappuccino.core.model.model import Model
 
 _logger = logging.getLogger(__name__)
 
 
+
+class ValidateStorageConnect(RunnableProcess):
+    """ """
+    def __init__(self, a_service):
+        super(ValidateStorageConnect,self).__init__("validateStorageConnect")
+        self._service = a_service
+
+    def process(self):
+        self._service.validateConnect()
+
+
 @ComponentFactory('Storage-Factory')
-@Provides(specifications=[IStorage.name, YCappuccino.name])
+@Provides(specifications=[IStorage.name, YCappuccino.name], controller="_available")
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_config",IConfiguration.name)
-
 @Instantiate("MongoStorage")
 class MongoStorage(IStorage):
 
@@ -28,6 +39,7 @@ class MongoStorage(IStorage):
         self._username = None
         self._password = None
         self._db_name = None
+        self._available = False
 
     def load_configuration(self):
         self._host = self._config.get("storage.mongo.db.host", "localhost")
@@ -96,6 +108,10 @@ class MongoStorage(IStorage):
     def delete_many(self, a_collection, a_filter):
         self._db[a_collection].delete_many(a_filter, upsert=True)
 
+    def validateConnect(self):
+        """ """
+        self._client.server_info()
+        self._available = True
 
     @Validate
     def validate(self, context):
@@ -104,6 +120,11 @@ class MongoStorage(IStorage):
             self.load_configuration()
             self._client = MongoClient(self._host, int(self._port))
             self._db = self._client[self._db_name]
+            _threadExecutor = ThreadPoolExecutorCallable("validateConnectionStorage")
+            _callable = ValidateStorageConnect(self)
+            _callable.set_activate(True)
+            _threadExecutor.submit(_callable);
+
 
         except Exception as e:
             _logger.error("MongoStorage Error {}".format(e))
