@@ -83,15 +83,14 @@ class IndexEndpoint(object):
         to_added_line.append("pelix.ipopo.decorators.InstantiateCall({}.__class__,factory=" + a_component_prop["factory"] + ", name=" + a_instance_name + ")")
         a_component_prop["instance"] = a_instance_name
 
-    def _call_decorator_require(self,  to_added_line, a_require_instance, a_component_prop):
-        to_added_line.append("pelix.ipopo.decorators.RequireCall({}.__class__, field=" + a_require_instance + ")")
+    def _call_decorator_require(self,  to_added_line, a_require_instance, a_component_prop, a_instance):
+        to_added_line.append("pelix.ipopo.decorators.RequireCall({}.__class__, instance="+a_instance+",field=" + a_require_instance + ")")
         if "requires" not in a_component_prop:
             a_component_prop["rqeuires"] = []
         a_component_prop["rqeuires"].append(a_require_instance)
 
-    def _call_decorator_property(self,  to_added_line, a_property, a_component_prop):
-        to_added_line.append(
-            "pelix.ipopo.decorators.PropertyCall({}.__class__, field=" + a_property + ")")
+    def _call_decorator_property(self,  to_added_line, a_property, a_component_prop, a_instance):
+        to_added_line.append("pelix.ipopo.decorators.PropertyCall({}.__class__, instance="+a_instance+",field=" + a_property + ")")
         if "properties" not in a_component_prop:
             a_component_prop["properties"] = []
         a_component_prop["properties"].append(a_property)
