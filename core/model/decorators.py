@@ -20,8 +20,6 @@ def get_map_items():
     return w_items;
 
 
-
-
 class Item(object):
     # Make copy of original __init__, so we can call it without recursion
     def __init__(self, collection, name, module="system", secureRead=False,secureWrite=False):
@@ -68,9 +66,17 @@ class Item(object):
                 a_model["reverse_refs"].append(w_ref)
 
 
+def get_item_reference(a_class, a_field_name):
+    """ return the ref field to use as a reference """
+    if a_class in map_item_link_by_class:
+        for a_ref in map_item_link_by_class[a_class]:
+            if a_ref["field_name"] == a_field_name:
+                return a_ref["ref_field"]
+    return None
+
 class ItemReference(object):
     # Make copy of original __init__, so we can call it without recursion
-    def __init__(self, field_name,  item_name, module="system"):
+    def __init__(self, field_name,  item_name, ref_name,  module="system"):
         """
         create a link between item
         :param field_name:
@@ -81,7 +87,8 @@ class ItemReference(object):
             map_item_link_by_class[self.__class__.__name__] = []
 
         w_ref = {
-            "local_field": field_name,
+            "ref_field": ref_name,
+            "field_name": field_name,
             "item_name": item_name,
             "module_name": module,
             "class": self.__class__.__name__
@@ -96,8 +103,7 @@ class ItemReference(object):
         if item_name in map_item:
             w_ref["item"] = map_item[item_name]
         self.add_ref(w_ref)
-        self.add_reverse_refs(item_name,w_ref )
-
+        self.add_reverse_refs(item_name,w_ref)
 
     def add_reverse_refs(self, item_name, a_ref):
         if item_name in map_item:
@@ -119,6 +125,7 @@ class ItemReference(object):
     def __call__(self, obj):
 
         return obj
+
 
 def Property(name):
     """ decoration that manage property with another collection """

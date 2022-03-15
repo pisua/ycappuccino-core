@@ -1,7 +1,8 @@
 import json
 from urllib.parse import parse_qsl, urlsplit
 from ycappuccino.core.model.model import Model
-from ycappuccino.core.model.utils import YDict
+
+
 class EndpointResponse(object):
 
     def __init__(self, status, a_meta=None, a_body=None):
@@ -11,19 +12,22 @@ class EndpointResponse(object):
         self._body = a_body
 
     def get_json(self):
-        w_resp = YDict({
-            "data": self._body,
+        w_resp = {
             "status": self._status,
-            "meta": self._meta
-        })
-        if isinstance(w_resp.data, Model):
-            w_resp.data = w_resp.data.__dict__
-        elif isinstance(w_resp.data, list) and len(w_resp.data) > 0 and isinstance(w_resp.data[0], Model):
-            w_body = []
-            for w_model in w_resp.data:
-                w_body.append(w_model.__dict__)
-            w_resp.data = w_body
-        return json.dumps(w_resp.__dict__)
+            "meta": self._meta,
+            "data": None
+        }
+        if self._body is not None:
+            w_resp["data"] = self._body,
+        if w_resp["data"] is not None:
+            if isinstance(w_resp["data"], Model):
+                w_resp.data = w_resp["data"].__dict__
+            elif isinstance(w_resp["data"], list) and len(w_resp["data"]) > 0 and isinstance(w_resp["data"][0], Model):
+                w_body = []
+                for w_model in w_resp["data"]:
+                    w_body.append(w_model.__dict__)
+                w_resp["data"] = w_body
+        return json.dumps(w_resp)
 
     def get_status(self):
         return self._status

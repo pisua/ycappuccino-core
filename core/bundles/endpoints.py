@@ -1,5 +1,5 @@
 from ycappuccino.core.api import IEndpoint, IActivityLogger, IJwt, IManager
-
+import uuid
 import pelix.http
 import pelix.remote
 import logging
@@ -86,11 +86,12 @@ class Endpoint(IEndpoint):
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
-                w_manager.up_sert(w_url_path.get_params().id if w_url_path.get_params().id is not None else w_url_path.get_params(), a_body)
+                w_id = str(uuid.uuid4())
+                w_manager.up_sert(w_id, a_body)
                 w_meta = {
-                    type: "object"
+                    "type": "array"
                 }
-                return EndpointResponse(201,w_meta)
+                return EndpointResponse(201,w_meta, {"id":w_id})
             else:
                 return EndpointResponse(405)
         return EndpointResponse(400)
@@ -103,12 +104,13 @@ class Endpoint(IEndpoint):
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
-                    w_manager.up_sert(w_url_path.get_params().id, a_body)
+                    w_id = w_url_path.get_params().id
+                    w_manager.up_sert(w_id, a_body)
                     w_meta = {
-                        "type": "object",
+                        "type": "array",
                         "size": 1
                     }
-                    return EndpointResponse(200, w_meta)
+                    return EndpointResponse(200, w_meta, {"id":w_id})
             else:
                 return EndpointResponse(405)
 
@@ -124,7 +126,7 @@ class Endpoint(IEndpoint):
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
                     w_resp = w_manager.get_one(w_url_path.get_params()["id"])
                     w_meta = {
-                        "type": "object",
+                        "type": "array",
                         "size": 1
                     }
                 else:
@@ -147,7 +149,7 @@ class Endpoint(IEndpoint):
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 w_meta = {
-                    "type": "object",
+                    "type": "array",
                     "size": 1
                 }
                 if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:

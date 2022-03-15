@@ -1,4 +1,4 @@
-from ycappuccino.core.api import IManager, IActivityLogger, IItemManager,IStorage
+from ycappuccino.core.api import IManager, IActivityLogger, IItemManager, IStorage, ITrigger
 from ycappuccino.core.model.model import Model
 import json
 import logging
@@ -14,6 +14,7 @@ class AbsManager(IManager):
         self._log = None
         self._item = None
         self._item_id = None
+        self._triggers = None
 
         self._storage = None
         self._item_manager = None
@@ -70,12 +71,12 @@ class AbsManager(IManager):
         res = []
         if self._item is not None:
             for w_dict in a_new_fields:
+
+
                 w_res = self.up_sert(w_dict.id,w_dict)
                 if w_res is not None:
                     res.append(w_res)
         return res
-
-
 
     def delete(self, a_id):
         if self._storage is not None:
@@ -95,6 +96,7 @@ class AbsManager(IManager):
                     return Model(res)
         return None
 
+
 @ComponentFactory('Manager-Factory')
 @Provides(IManager.name)
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
@@ -104,11 +106,24 @@ class AbsManager(IManager):
 @Property('_item', "item", None)
 @Property('_is_secureRead', "secureRead", False)
 @Property('_is_secureWrite', "secureWrite", False)
+@Requires('_list_trigger', ITrigger.name, aggregate=True, optional=True)
 class Manager(AbsManager):
 
     def __init__(self):
         super(AbsManager, self).__init__()
+        self._list_trigger = None
+        self._map_trigger = {}
 
+    @BindField("_list_trigger")
+    def bind_trigger(self, a_field, a_service, a_service_reference):
+        if a_service is not None and a_service.get_item() == self._item_id:
+            self._map_trigger[a_service.get_name()] = a_service
+
+    @UnBindField("_list_trigger")
+    def un_bind_trigger(self, a_field, a_service, a_service_reference):
+        if a_service is not None and a_service.get_item() == self._item_id:
+            if a_service.get_name() in self._map_trigger[a_service.get_name()]:
+                del self._map_trigger[a_service.get_name()]
 
     @Validate
     def validate(self, context):
