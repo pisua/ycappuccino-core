@@ -72,17 +72,18 @@ class Endpoint(IEndpoint):
         else:
             return False
 
-    def find_manager(self, a_item):
-        if a_item not in self._map_managers:
+    def find_manager(self, a_item_plural_id):
+        if a_item_plural_id not in self._map_managers:
             # reset map of manager (TODO check why bind doesn't work)
             for w_manager in self._managers:
-                self._map_managers[w_manager.get_item_id_plural()] = w_manager
-        return self._map_managers[a_item]
+                for w_item_plural in w_manager.get_item_ids_plural():
+                    self._map_managers[w_item_plural] = w_manager
+        return self._map_managers[a_item_plural_id]
 
     def post(self,a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_id())
+            w_manager = self.find_manager(w_url_path.get_item_plural_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -99,7 +100,7 @@ class Endpoint(IEndpoint):
     def put(self, a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_id())
+            w_manager = self.find_manager(w_url_path.get_item_plural_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -119,7 +120,7 @@ class Endpoint(IEndpoint):
     def get(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_id())
+            w_manager = self.find_manager(w_url_path.get_item_plural_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -144,7 +145,7 @@ class Endpoint(IEndpoint):
     def delete(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_id())
+            w_manager = self.find_manager(w_url_path.get_item_plural_id())
             if w_manager is not None:
                 if w_manager.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
@@ -161,14 +162,15 @@ class Endpoint(IEndpoint):
 
     @BindField("_managers")
     def bind_manager(self, field, a_manager, a_service_reference):
-        w_item_plural = a_manager.get_item_id_plural()
-        self._map_managers[w_item_plural] = a_manager
+        w_item_plurals = a_manager.get_item_ids_plural()
+        for w_item_plural in w_item_plurals:
+            self._map_managers[w_item_plural] = a_manager
 
     @UnbindField("_managers")
     def unbind_manager(self, field, a_manager, a_service_reference):
-        w_item_plural = a_manager.get_item_id_plural()
-        self._map_managers[w_item_plural] = None
-
+        w_item_plurals = a_manager.get_item_ids_plural()
+        for w_item_plural in w_item_plurals:
+            self._map_managers[w_item_plural] = None
 
 
     @Validate

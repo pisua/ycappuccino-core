@@ -40,10 +40,10 @@ class AccountBootStrap(IManagerBootStrapData):
         w_admin_role.name("superadmin")
         w_admin_role.rights([{"*"}])
 
-        self._manager_role.up_sert("superadmin", w_admin_role)
-        self._manager_account.up_sert("admin", w_admin_account)
-        if self._manager_login.get_one("admin") is None:
-            self._manager_login.up_sert("admin", w_admin_login)
+        self._manager_role.up_sert_model("superadmin", w_admin_role)
+        self._manager_account.up_sert_model("admin", w_admin_account)
+        if self._manager_login.get_one("logins","admin") is None:
+            self._manager_login.up_sert_model("admin", w_admin_login)
 
     @Validate
     def validate(self, context):

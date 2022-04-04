@@ -69,26 +69,36 @@ class MongoStorage(IStorage):
         if res.count() == 1:
             model = Model(res[0])
             model._mongo_model = res[0]
+
             if isinstance(a_new_dict, Model):
+                a_new_dict["_mongo_model"]["_mat"] = time.time()
+
+                w_update = {
+                    "$set": a_new_dict["_mongo_model"]
+                }
                 model.update(a_new_dict)
             else:
+                a_new_dict["_mat"] = time.time()
+
+                w_update = {
+                    "$set": a_new_dict
+                }
                 model.update(a_new_dict)
 
-            a_new_dict._mongo_model["_cat"] = time.time()
-            a_new_dict._mongo_model["_mat"] = time.time()
 
-            w_update = {
-                "$set": a_new_dict._mongo_model
-            }
         else:
 
-            a_new_dict._mongo_model["_mat"] = time.time()
-
             if isinstance(a_new_dict, Model):
+                a_new_dict["_mongo_model"]["_cat"] = time.time()
+                a_new_dict["_mongo_model"]["_mat"] = a_new_dict["_mongo_model"]["_cat"]
+
                 w_update = {
-                    "$set": a_new_dict._mongo_model
+                    "$set": a_new_dict["_mongo_model"]
                 }
             else:
+                a_new_dict["_mat"] = time.time()
+                a_new_dict["_cat"] = a_new_dict["_mat"]
+
                 w_update = {
                     "$set": a_new_dict
                 }
@@ -96,11 +106,13 @@ class MongoStorage(IStorage):
 
     def up_sert_many(self, a_collection, a_filter, a_new_dict):
         """ update or insert document with new dict regarding filter """
-        a_new_dict._mongo_model["_mat"] = time.time()
+        if "_mongo_model" not in a_new_dict:
+            a_new_dict["_mongo_model"] = {}
+        a_new_dict["_mongo_model"]["_mat"] = time.time()
         if isinstance(a_new_dict, Model):
 
             w_update = {
-                "$set": a_new_dict._mongo_model
+                "$set": a_new_dict["_mongo_model"]
             }
         else:
             w_update = {

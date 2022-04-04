@@ -123,7 +123,6 @@ def init(root_dir=None, port=9000):
 
 
 
-    item_manager.load_item()
     w_finder.set_context(context)
     try:
         # Wait for the framework to stop

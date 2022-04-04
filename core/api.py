@@ -140,28 +140,12 @@ class IManager(object):
     def __init__(self):
         pass
 
-    def get_item(self):
-        pass
 
-    def is_secure(self):
-        pass
+class IDefaultManager(IManager):
+    """ """
+    name = CFQCN.build("IDefaultManager")
 
-    def get_one(self, a_id):
-        pass
-
-    def get_many(self, a_params):
-        pass
-
-    def up_sert(self, a_id, a_new_field):
-        pass
-
-    def up_sert_many(self, a_params, a_new_field):
-        pass
-
-    def delete(self, a_id):
-        pass
-
-    def delete_many(self, a_params):
+    def __init__(self):
         pass
 
 

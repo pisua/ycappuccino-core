@@ -1,7 +1,7 @@
 from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.utils import YDict
 
-@Item(collection="models", name="model")
+@Item(collection="models", name="model", plural="models", abstract=True)
 class Model(YDict):
     """ default bean that represent a model to manipulate / store in a database """
     def __init__(self, a_dict=None):

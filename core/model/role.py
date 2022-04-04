@@ -1,11 +1,11 @@
-from ycappuccino.core.model.decorators import Item, Property
+from ycappuccino.core.model.decorators import Item, Property, Reference
 from ycappuccino.core.model.model import Model
 
 
-@Item(collection="roles", name="role")
+@Item(collection="roles", name="role", plural="roles")
 class Role(Model):
-    def __init__(self, a_dict):
-        super().__init__(a_dict)
+    def __init__(self):
+        super().__init__()
         self._name = None
         self._permissions = None
 
@@ -13,7 +13,7 @@ class Role(Model):
     def name(self, a_value):
         self._name = a_value
 
-    @References(name="permission")
+    @Reference(name="permission")
     def rights(self, a_values):
         """ list of right permission """
         self._permissions = a_values

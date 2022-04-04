@@ -1,6 +1,7 @@
 import sys
 import os.path, glob
 
+from threading import current_thread
 from importlib.abc import Loader, MetaPathFinder
 from importlib.util import spec_from_file_location
 import logging
@@ -122,3 +123,12 @@ class MyLoader(Loader):
 def install():
     """Inserts the finder into the import machinery"""
     sys.meta_path.insert(0, MyMetaFinder())
+
+
+def run(a_runnable):
+    try:
+        if a_runnable != None:
+            current_thread().name = a_runnable._name
+            return a_runnable.run()
+    except Exception as e:
+        logger.exception(e)

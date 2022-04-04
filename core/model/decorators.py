@@ -20,19 +20,37 @@ def get_map_items():
     return w_items;
 
 
+def has_father_item(a_item_id):
+    return map_item[a_item_id].father is not None
+
+
+def get_sons_item(a_item_id):
+    w_list_son = []
+    for w_item in map_item.values():
+        if w_item.father == a_item_id:
+            w_list_son.append(w_item)
+    return w_list_son
+
+
 class Item(object):
     # Make copy of original __init__, so we can call it without recursion
-    def __init__(self, collection, name, module="system", secureRead=False,secureWrite=False):
+    def __init__(self, collection, name, plural, abstract=False,  module="system", secureRead=False,secureWrite=False):
         self._meta_name = name
         self._meta_collection = collection
         self._meta_module = module
+        self._super_class =  self.__class__.__bases__[0] if len(self.__class__.__bases__)>0 else None;
+        self._class =  self.__class__.__name__
 
         w_model = {
             "id": name,
+            "_class": self._class,
             "module": module,
+            "abstract": abstract,
             "collection": collection,
+            "plural": plural,
             "secureRead": secureRead,
             "secureWrite": secureWrite,
+            "father": self._super_class,
             "refs": [],
             "reverse_refs": []
         }
@@ -150,23 +168,56 @@ def Reference(name):
         @functools.wraps(func)
         def wrapper_reference(*args, **kwargs):
             value = func(*args)
-            if "_mongo_model" not in  args[0].__dict__:
-                args[0]._mongo_model = {}
-            if isinstance(args[1],YDict):
-                args[0]._mongo_model[name] = {
-                   "ref": args[1].id
-                }
-            else:
-                args[0]._mongo_model[name] = {
-                    "ref": args[1]
-                }
-            if len(args) > 2 and isinstance(args[2],dict):
-                # admit dictionnary property of the relation we add it
-                args[0]._mongo_model[name]["properties"] = args[2]
+            w_obj_ref = {}
+            if args[0] is not None:
+                if "_mongo_model" not in  args[0].__dict__:
+                    args[0]._mongo_model = {}
+
+                w_obj_ref = _add_ref(args)
+
+                if len(args) > 2 and isinstance(args[2],dict):
+                    # admit dictionnary property of the relation we add it
+                    w_obj_ref["properties"] = args[2]
 
             return value
         return wrapper_reference
     return decorator_reference
+
+
+def _add_ref(args):
+    w_obj_ref = {}
+    if isinstance(args[1], YDict):
+        w_obj_ref["ref"] = args[1].id
+    else:
+        w_obj_ref["ref"] = args[1]
+    return w_obj_ref
+
+
+def References(name):
+    """ decoration that manage reference with another collection """
+    def decorator_reference(func):
+        @functools.wraps(func)
+        def wrapper_reference(*args, **kwargs):
+            value = func(*args)
+            if args[0] is not None:
+                if "_mongo_model" not in args[0].__dict__:
+                    args[0]._mongo_model = {}
+
+                if name not in args[0]._mongo_model:
+                    args[0]._mongo_model[name]=[]
+
+                w_obj_ref = _add_ref(args)
+
+                args[0]._mongo_model[name].append(w_obj_ref)
+
+                if len(args) > 2 and isinstance(args[2],dict):
+                    # admit dictionnary property of the relation we add it
+                    w_obj_ref["properties"] = args[2]
+
+            return value
+        return wrapper_reference
+    return decorator_reference
+
 
 
 if __name__ == "__main__":

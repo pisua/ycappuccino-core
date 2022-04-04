@@ -45,7 +45,7 @@ class UrlPath(object):
         w_split_url = w_url_no_query.split("api/")[1].split("/")
         self._is_service = "$service" in w_split_url
         if not self._is_service :
-            self._item_id = w_split_url[0]
+            self._item_plural_id = w_split_url[0]
             if len(w_split_url)>1:
                 # an id is specified
                 if self._query_param is None:
@@ -60,8 +60,8 @@ class UrlPath(object):
     def is_crud(self):
         return not self._is_service
 
-    def get_item_id(self):
-        return self._item_id
+    def get_item_plural_id(self):
+        return self._item_plural_id
 
     def get_service_name(self):
         return self._service_name
