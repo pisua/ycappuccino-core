@@ -52,26 +52,27 @@ class MongoStorage(IStorage):
         """ aggegate data regarding filter and pipeline """
         return self._db[a_collection].aggregate(a_pipeline)
 
-    def get_one(self, a_collection, a_id):
+    def get_one(self, a_collection, a_filter):
         """ get dict identify by a Id"""
-        w_filter = {"_id": a_id}
-        return self._db[a_collection].find(w_filter)
+        return self._db[a_collection].find(a_filter)
 
     def get_many(self, a_collection, a_filter):
         """ return iterable of dict regarding filter"""
         return self._db[a_collection].find(a_filter)
 
-    def up_sert(self, a_collection, a_id, a_new_dict):
+    def up_sert(self, a_item, a_id, a_new_dict):
         """" update or insert new dict"""
 
-        w_filter = {"_id": a_id}
-        res = self._db[a_collection].find(w_filter)
-        if res.count() == 1:
+        w_filter = {"_id": a_id, "_item_id":a_item.id}
+
+        res = self._db[a_item.collection].find(w_filter)
+        if res.count() != 0:
             model = Model(res[0])
             model._mongo_model = res[0]
 
             if isinstance(a_new_dict, Model):
                 a_new_dict["_mongo_model"]["_mat"] = time.time()
+                a_new_dict["_mongo_model"]["_item_id"] = a_item.id
 
                 w_update = {
                     "$set": a_new_dict["_mongo_model"]
@@ -79,30 +80,31 @@ class MongoStorage(IStorage):
                 model.update(a_new_dict)
             else:
                 a_new_dict["_mat"] = time.time()
+                a_new_dict["_item_id"] = a_item.id
 
                 w_update = {
                     "$set": a_new_dict
                 }
                 model.update(a_new_dict)
 
-
+            return self._db[a_item.collection].update_one(w_filter, w_update, upsert=True)
         else:
-
             if isinstance(a_new_dict, Model):
                 a_new_dict["_mongo_model"]["_cat"] = time.time()
                 a_new_dict["_mongo_model"]["_mat"] = a_new_dict["_mongo_model"]["_cat"]
+                a_new_dict["_mongo_model"]["_item_id"] = a_item.id
 
                 w_update = {
                     "$set": a_new_dict["_mongo_model"]
                 }
             else:
+
                 a_new_dict["_mat"] = time.time()
                 a_new_dict["_cat"] = a_new_dict["_mat"]
+                a_new_dict["_item_id"] = a_item.id
 
-                w_update = {
-                    "$set": a_new_dict
-                }
-        return self._db[a_collection].update_one(w_filter, w_update, upsert=True)
+            a_new_dict["_id"] = a_id
+            return self._db[a_item.collection].insert(a_new_dict)
 
     def up_sert_many(self, a_collection, a_filter, a_new_dict):
         """ update or insert document with new dict regarding filter """

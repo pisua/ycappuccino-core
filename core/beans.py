@@ -17,16 +17,22 @@ class EndpointResponse(object):
             "meta": self._meta,
             "data": None
         }
+
         if self._body is not None:
-            w_resp["data"] = self._body,
-        if w_resp["data"] is not None:
-            if isinstance(w_resp["data"], Model):
-                w_resp.data = w_resp["data"].__dict__
-            elif isinstance(w_resp["data"], list) and len(w_resp["data"]) > 0 and isinstance(w_resp["data"][0], Model):
+            if isinstance(self._body, Model):
+                w_resp["data"]  = self._body.__dict__
+            elif isinstance(self._body, list) :
                 w_body = []
-                for w_model in w_resp["data"]:
-                    w_body.append(w_model.__dict__)
+                if len(self._body) > 0 and isinstance(self._body[0], Model):
+                    for w_model in self._body:
+                        w_body.append(w_model.__dict__)
                 w_resp["data"] = w_body
+        else:
+            if w_resp["meta"]["type"] == "array":
+                w_resp["data"] = []
+            else:
+                w_resp["data"] =  {}
+
         return json.dumps(w_resp)
 
     def get_status(self):

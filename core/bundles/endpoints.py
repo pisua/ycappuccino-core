@@ -83,12 +83,14 @@ class Endpoint(IEndpoint):
     def post(self,a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_plural_id())
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
-                if w_manager.is_secure() and not self.check_header(a_headers):
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+                if w_item.secureWrite and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 w_id = str(uuid.uuid4())
-                w_manager.up_sert(w_id, a_body)
+                w_manager.up_sert(w_item.id, w_id, a_body)
                 w_meta = {
                     "type": "array"
                 }
@@ -100,13 +102,16 @@ class Endpoint(IEndpoint):
     def put(self, a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_plural_id())
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
-                if w_manager.is_secure() and not self.check_header(a_headers):
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+
+                if w_item.secureWrite and not self.check_header(a_headers):
                     return EndpointResponse(401)
-                if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
-                    w_id = w_url_path.get_params().id
-                    w_manager.up_sert(w_id, a_body)
+                if w_url_path.get_params() is not None and w_url_path.get_params()["id"] is not None:
+                    w_id = w_url_path.get_params()["id"]
+                    w_manager.up_sert(w_item.id, w_id, a_body)
                     w_meta = {
                         "type": "array",
                         "size": 1
@@ -120,19 +125,22 @@ class Endpoint(IEndpoint):
     def get(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_plural_id())
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
-                if w_manager.is_secure() and not self.check_header(a_headers):
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+
+                if w_item.secureRead and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
-                    w_resp = w_manager.get_one(w_url_path.get_params()["id"])
+                    w_resp = w_manager.get_one(w_item.id, w_url_path.get_params()["id"])
                     w_meta = {
-                        "type": "array",
+                        "type": "object",
                         "size": 1
                     }
                 else:
 
-                    w_resp = w_manager.get_many(w_url_path.get_params())
+                    w_resp = w_manager.get_many(w_item.id,w_url_path.get_params())
                     w_meta = {
                         "type": "array",
                         "size": len(w_resp)
@@ -145,16 +153,18 @@ class Endpoint(IEndpoint):
     def delete(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
-            w_manager = self.find_manager(w_url_path.get_item_plural_id())
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
-                if w_manager.is_secure() and not self.check_header(a_headers):
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+                if w_item.secureWrite and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 w_meta = {
                     "type": "array",
                     "size": 1
                 }
                 if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
-                    w_manager.delete(w_url_path.get_params().id)
+                    w_manager.delete(w_item.id, w_url_path.get_params().id)
                     return EndpointResponse(200, w_meta)
             else:
                 return EndpointResponse(405)

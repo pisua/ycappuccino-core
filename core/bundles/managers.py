@@ -27,15 +27,19 @@ class AbsManager(IManager):
         self._items[a_item.id] = a_item
         self._items_class[a_item._class] = a_item
         self._items_plural[a_item.plural] = a_item
-        self.create_proxy_manager(a_item.id,a_bundle_context)
+        self.create_proxy_manager(a_item,a_bundle_context)
 
-    def create_proxy_manager(self, a_item_id, a_bundle_context):
+    def create_proxy_manager(self, a_item, a_bundle_context):
 
         with use_ipopo(a_bundle_context) as ipopo:
             # use the iPOPO core service with the "ipopo" variable
-            ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item_id),
-                              {"item_id": a_item_id })
+            ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item.id),
+                              {"item_id": a_item.id})
 
+
+    def get_item_from_id_plural(self,a_item_plural):
+        """ return list of item id"""
+        return self._items_plural[a_item_plural]
 
     def get_item_ids(self):
         """ return list of item id"""
@@ -73,42 +77,53 @@ class AbsManager(IManager):
             ids[w_item.id] = w_item.secureWrite
         return ids
 
-    def get_one(self, a_item_plural_id,  a_id):
+    def get_one(self, a_item_id,  a_id):
         w_result = None
         if self._storage is not None:
-            w_item = self._items_plural[a_item_plural_id]
+            w_item = self._items[a_item_id]
             if w_item is not None:
-                res = self._storage.get_one(w_item.collection, a_id)
+                w_filter = {
+                    "_id": a_id,
+                    "_item_id":w_item.id
+                }
+
+                res = self._storage.get_one(w_item.collection, w_filter)
                 if res is not None:
                     for w_model in res:
                         w_result = Model(w_model)
         return w_result
 
-    def get_many(self, a_item_plural_id, a_params):
+    def get_many(self, a_item_id, a_params):
         w_result = []
         if self._storage is not None:
-            w_item = self._items_plural[a_item_plural_id]
+            w_item = self._items[a_item_id]
             if w_item is not None:
                 w_filter = {}
                 if a_params is not None and "filter" in a_params:
                     w_filter = json.loads(a_params["filter"])
+                w_filter["_item_id"] = w_item.id
                 res = self._storage.get_many(w_item.collection, w_filter)
                 if res is not None:
                     for w_model in res:
                         w_result.append(Model(w_model))
         return w_result
 
-    def up_sert(self, a_item_plural_id, a_id, a_new_field):
+    def up_sert(self, a_item_id, a_id, a_new_field):
         """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the model create """
 
         if self._storage is not None:
-            w_item = self._items_plural[a_item_plural_id]
+            w_item = self._items[a_item_id]
 
             if w_item is not None:
-                res = self._storage.up_sert(w_item.collection, a_id, a_new_field)
+                res = self._up_sert(w_item, a_id, a_new_field)
                 if res is not None:
                     return Model(res)
         return None
+
+    def _up_sert(self, a_item, a_id, a_new_field):
+        res = self._storage.up_sert(a_item, a_id, a_new_field)
+        if res is not None:
+            return Model(res)
 
     def up_sert_model(self, a_id, a_model):
         """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the model create """
@@ -117,7 +132,7 @@ class AbsManager(IManager):
             w_item = self._items_class[a_model.__class__.__name__]
 
             if w_item is not None:
-                res = self._storage.up_sert(w_item.collection, a_id, a_new_field)
+                res = self._up_sert(w_item, a_id, a_model.__dict__)
                 if res is not None:
                     return Model(res)
         return None
@@ -142,9 +157,9 @@ class AbsManager(IManager):
                 res.append(w_res)
         return res
 
-    def delete(self, a_item_plural_id, a_id):
+    def delete(self, a_item_id, a_id):
         if self._storage is not None:
-            w_item = self._items_plural[a_item_plural_id]
+            w_item = self._items[a_item_id]
 
             if w_item is not None:
                 res = self._storage.delete(w_item.collection, a_id)
@@ -153,16 +168,16 @@ class AbsManager(IManager):
         return None
 
 
-
-    def delete_many(self, a_item_plural_id, a_filter):
+    def delete_many(self, a_item_id, a_filter):
         if self._storage is not None:
-            w_item = self._items_plural[a_item_plural_id]
+            w_item = self._items[a_item_id]
 
             if w_item is not None:
                 res = self._storage.delete_many(w_item.collection, a_filter)
                 if res is not None:
                     return Model(res)
         return None
+
 
 @ComponentFactory('Manager-Proxy-Factory')
 @Provides(IManager.name)
@@ -174,6 +189,7 @@ class ProxyManager(IManager, Proxy):
         super(ProxyManager, self).__init__()
         self._item_id = None
         self._obj = None
+
 
     @Validate
     def validate(self, context):
