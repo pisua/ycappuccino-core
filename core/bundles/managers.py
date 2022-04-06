@@ -25,17 +25,17 @@ class AbsManager(IManager):
 
     def add_item(self, a_item, a_bundle_context):
         """ add item in map manage by the manager"""
-        self._items[a_item.id] = a_item
-        self._items_class[a_item._class] = a_item
-        self._items_plural[a_item.plural] = a_item
+        self._items[a_item["id"]] = a_item
+        self._items_class[a_item["_class"]] = a_item
+        self._items_plural[a_item["plural"]] = a_item
         self.create_proxy_manager(a_item,a_bundle_context)
 
     def create_proxy_manager(self, a_item, a_bundle_context):
 
         with use_ipopo(a_bundle_context) as ipopo:
             # use the iPOPO core service with the "ipopo" variable
-            ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item.id),
-                              {"item_id": a_item.id})
+            ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item["id"]),
+                              {"item_id": a_item["id"]})
 
 
     def get_item_from_id_plural(self,a_item_plural):
@@ -47,35 +47,35 @@ class AbsManager(IManager):
 
         ids = []
         for w_item in self._items.values():
-            ids.append(w_item.id)
+            ids.append(w_item["id"])
         return ids
 
     def get_map_item_ids_plural(self):
         """ return dict of plural name regarding item_id"""
         ids = {}
         for w_item in self._items.values():
-            ids[w_item.id]=w_item.plural
+            ids[w_item["id"]]=w_item["plural"]
         return ids
 
     def get_item_ids_plural(self):
         """ return dict of plural name regarding item_id"""
         ids = []
         for w_item in self._items.values():
-            ids.append(w_item.plural)
+            ids.append(w_item["plural"])
         return ids
 
     def is_secureRead(self):
         """ return dict of secureRead name regarding item_id"""
         ids = {}
         for w_item in self._items.values():
-            ids[w_item.id] = w_item.secureRead
+            ids[w_item["id"]] = w_item["secureRead"]
         return ids
 
     def is_secureWrite(self):
         """ return dict of secureRead name regarding item_id"""
         ids = {}
         for w_item in self._items.values():
-            ids[w_item.id] = w_item.secureWrite
+            ids[w_item["id"]] = w_item["secureWrite"]
         return ids
 
     def get_one(self, a_item_id,  a_id):
@@ -91,17 +91,17 @@ class AbsManager(IManager):
                     }
                 }
 
-                res = self._storage.get_one(w_item.collection, w_filter)
+                res = self._storage.get_one(w_item["collection"], w_filter)
                 if res is not None:
                     for w_model in res:
                         w_result = Model(w_model)
         return w_result
 
     def get_sons_item(self, a_item):
-        return get_sons_item(a_item.id)
+        return get_sons_item(a_item["id"])
 
     def get_sons_item_id(self, a_item):
-        return get_sons_item_id(a_item.id)
+        return get_sons_item_id(a_item["id"])
 
     def get_many(self, a_item_id, a_params):
         w_result = []
@@ -116,7 +116,7 @@ class AbsManager(IManager):
                 w_filter["_item_id"] = {
                     "$in":w_items
                 }
-                res = self._storage.get_many(w_item.collection, w_filter)
+                res = self._storage.get_many(w_item["collection"], w_filter)
                 if res is not None:
                     for w_model in res:
                         w_result.append(Model(w_model))
@@ -176,7 +176,7 @@ class AbsManager(IManager):
             w_item = self._items[a_item_id]
 
             if w_item is not None:
-                res = self._storage.delete(w_item.collection, a_id)
+                res = self._storage.delete(w_item["collection"], a_id)
                 if res is not None:
                     return Model(res)
         return None
@@ -187,7 +187,7 @@ class AbsManager(IManager):
             w_item = self._items[a_item_id]
 
             if w_item is not None:
-                res = self._storage.delete_many(w_item.collection, a_filter)
+                res = self._storage.delete_many(w_item["collection"], a_filter)
                 if res is not None:
                     return Model(res)
         return None

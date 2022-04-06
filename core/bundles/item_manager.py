@@ -2,6 +2,7 @@ from ycappuccino.core.api import IItemManager, IActivityLogger, IStorage, IConfi
     IDefaultManager
 from ycappuccino.core.bundles.managers import AbsManager
 import logging
+import json
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 from pelix.ipopo.constants import use_ipopo
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -76,9 +77,9 @@ class ItemManager(IItemManager, AbsManager):
     def load_item(self):
         """ """
         for w_item in ycappuccino.core.model.decorators.get_map_items():
-            if w_item.id not in self._map_managers and self._default_manager is not None:
+            if w_item["id"] not in self._map_managers and self._default_manager is not None:
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item
-                if not w_item.abstract:
+                if not w_item["abstract"]:
                     self._default_manager.add_item(w_item, self._context)
 
 
@@ -89,7 +90,7 @@ class ItemManager(IItemManager, AbsManager):
         try:
             self._context = context
             framework.set_item_manager(self)
-
+            self.load_item()
         except Exception as e:
             _logger.error("Manager Error {}".format(e))
             _logger.exception(e)
