@@ -1,6 +1,7 @@
 from pelix.ipopo.constants import use_ipopo
 from ycappuccino.core.api import IManager, IActivityLogger, IStorage, ITrigger, IDefaultManager
 from ycappuccino.core.model.model import Model
+from ycappuccino.core.model.decorators import get_sons_item, get_sons_item_id
 from ycappuccino.core.model.utils import Proxy
 import json
 import logging
@@ -82,9 +83,12 @@ class AbsManager(IManager):
         if self._storage is not None:
             w_item = self._items[a_item_id]
             if w_item is not None:
+                w_items = self.get_sons_item_id(w_item)
                 w_filter = {
                     "_id": a_id,
-                    "_item_id":w_item.id
+                    "_item_id":{
+                        "$in":w_items
+                    }
                 }
 
                 res = self._storage.get_one(w_item.collection, w_filter)
@@ -92,6 +96,12 @@ class AbsManager(IManager):
                     for w_model in res:
                         w_result = Model(w_model)
         return w_result
+
+    def get_sons_item(self, a_item):
+        return get_sons_item(a_item.id)
+
+    def get_sons_item_id(self, a_item):
+        return get_sons_item_id(a_item.id)
 
     def get_many(self, a_item_id, a_params):
         w_result = []
@@ -101,7 +111,11 @@ class AbsManager(IManager):
                 w_filter = {}
                 if a_params is not None and "filter" in a_params:
                     w_filter = json.loads(a_params["filter"])
-                w_filter["_item_id"] = w_item.id
+                w_items = self.get_sons_item_id(w_item)
+
+                w_filter["_item_id"] = {
+                    "$in":w_items
+                }
                 res = self._storage.get_many(w_item.collection, w_filter)
                 if res is not None:
                     for w_model in res:

@@ -31,6 +31,15 @@ def get_sons_item(a_item_id):
             w_list_son.append(w_item)
     return w_list_son
 
+def get_sons_item_id(a_item_id):
+    w_list_son = [a_item_id]
+    w_item_father = map_item[a_item_id]
+    for w_item in map_item.values():
+        if w_item["father"] is not None and w_item["father"] == w_item_father["_class"]:
+            w_list_son.append(w_item["id"])
+    return w_list_son
+
+
 
 class Item(object):
     # Make copy of original __init__, so we can call it without recursion
@@ -38,28 +47,31 @@ class Item(object):
         self._meta_name = name
         self._meta_collection = collection
         self._meta_module = module
-        self._super_class =  self.__class__.__bases__[0] if len(self.__class__.__bases__)>0 else None;
-        self._class =  self.__class__.__name__
 
-        w_model = {
+
+        self._item = {
             "id": name,
-            "_class": self._class,
             "module": module,
             "abstract": abstract,
             "collection": collection,
             "plural": plural,
             "secureRead": secureRead,
             "secureWrite": secureWrite,
-            "father": self._super_class,
             "refs": [],
             "reverse_refs": []
         }
-        map_item[name] = w_model
-        map_item_by_class[self.get_class_name()] = w_model
-        self.add_refs(w_model)
-        self.add_reverse_refs(name, w_model)
+        map_item[name] = self._item
+        self.add_refs(self._item)
+        self.add_reverse_refs(name, self._item)
 
     def __call__(self, obj):
+        self._super_class = obj.__bases__[0].__name__ if len(obj.__bases__) > 0 and obj.__bases__[0].__name__ != "YDict" else None;
+        self._class = obj.__name__
+        self._item["father"] = self._super_class
+        self._item["_class"] = self._class
+
+        map_item_by_class[self._item["_class"]] = self._item
+
         return obj
 
     def get_class_name(self):
@@ -73,6 +85,8 @@ class Item(object):
                     w_ref["item"] = map_item[w_ref.item_name]
                 # add the refs
                 a_model["refs"].append(w_ref)
+
+
 
     def add_reverse_refs(self, name, a_model):
         if name in map_item_link_by_target:
