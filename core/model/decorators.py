@@ -104,7 +104,7 @@ class ItemReference(object):
                     "foreign_field": "_id",
                     "item_id": a_item_id
                 }
-
+            # TODO reverse ref
         return obj
 
 def Property(name):
