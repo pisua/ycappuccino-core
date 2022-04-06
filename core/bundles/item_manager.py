@@ -90,7 +90,6 @@ class ItemManager(IItemManager, AbsManager):
         try:
             self._context = context
             framework.set_item_manager(self)
-            self.load_item()
         except Exception as e:
             _logger.error("Manager Error {}".format(e))
             _logger.exception(e)

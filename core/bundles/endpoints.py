@@ -87,7 +87,7 @@ class Endpoint(IEndpoint):
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item.secureWrite and not self.check_header(a_headers):
+                if w_item["secureWrite"] and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 w_id = str(uuid.uuid4())
                 w_manager.up_sert(w_item.id, w_id, a_body)
@@ -107,7 +107,7 @@ class Endpoint(IEndpoint):
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
-                if w_item.secureWrite and not self.check_header(a_headers):
+                if w_item["secureWrite"] and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and w_url_path.get_params()["id"] is not None:
                     w_id = w_url_path.get_params()["id"]
@@ -130,7 +130,7 @@ class Endpoint(IEndpoint):
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
-                if w_item.secureRead and not self.check_header(a_headers):
+                if w_item["secureRead"] and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
                     w_resp = w_manager.get_one(w_item.id, w_url_path.get_params()["id"])
@@ -140,7 +140,7 @@ class Endpoint(IEndpoint):
                     }
                 else:
 
-                    w_resp = w_manager.get_many(w_item.id,w_url_path.get_params())
+                    w_resp = w_manager.get_many(w_item["id"],w_url_path.get_params())
                     w_meta = {
                         "type": "array",
                         "size": len(w_resp)
@@ -164,7 +164,7 @@ class Endpoint(IEndpoint):
                     "size": 1
                 }
                 if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
-                    w_manager.delete(w_item.id, w_url_path.get_params().id)
+                    w_manager.delete(w_item["id"], w_url_path.get_params().id)
                     return EndpointResponse(200, w_meta)
             else:
                 return EndpointResponse(405)

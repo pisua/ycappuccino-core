@@ -124,6 +124,8 @@ def init(root_dir=None, port=9000):
 
 
     w_finder.set_context(context)
+    item_manager.load_item()
+
     try:
         # Wait for the framework to stop
         framework.wait_for_stop()

@@ -74,6 +74,7 @@ class Item(object):
         map_item[w_id]["secureRead"] = self._item["secureRead"]
         map_item[w_id]["secureWrite"] = self._item["secureWrite"]
         map_item[w_id]["_class"] = self._item["_class"]
+        map_item[w_id]["father"] = self._item["father"]
 
 
         return obj
