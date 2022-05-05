@@ -63,16 +63,16 @@ class MongoStorage(IStorage):
     def up_sert(self, a_item, a_id, a_new_dict):
         """" update or insert new dict"""
 
-        w_filter = {"_id": a_id, "_item_id":a_item.id}
+        w_filter = {"_id": a_id, "_item_id":a_item["id"]}
 
-        res = self._db[a_item.collection].find(w_filter)
+        res = self._db[a_item["collection"]].find(w_filter)
         if res.count() != 0:
             model = Model(res[0])
             model._mongo_model = res[0]
 
-            if isinstance(a_new_dict, Model):
+            if "_mongo_model" in a_new_dict:
                 a_new_dict["_mongo_model"]["_mat"] = time.time()
-                a_new_dict["_mongo_model"]["_item_id"] = a_item.id
+                a_new_dict["_mongo_model"]["_item_id"] = a_item["id"]
 
                 w_update = {
                     "$set": a_new_dict["_mongo_model"]
@@ -80,38 +80,39 @@ class MongoStorage(IStorage):
                 model.update(a_new_dict)
             else:
                 a_new_dict["_mat"] = time.time()
-                a_new_dict["_item_id"] = a_item.id
+                a_new_dict["_item_id"] = a_item["id"]
 
                 w_update = {
                     "$set": a_new_dict
                 }
                 model.update(a_new_dict)
 
-            return self._db[a_item.collection].update_one(w_filter, w_update, upsert=True)
+            return self._db[a_item["collection"]].update_one(w_filter, w_update, upsert=True)
         else:
-            if isinstance(a_new_dict, Model):
+            a_new_dict["_id"] = a_id
+            if "_mongo_model" in a_new_dict:
                 a_new_dict["_mongo_model"]["_cat"] = time.time()
                 a_new_dict["_mongo_model"]["_mat"] = a_new_dict["_mongo_model"]["_cat"]
-                a_new_dict["_mongo_model"]["_item_id"] = a_item.id
+                a_new_dict["_mongo_model"]["_item_id"] = a_item["id"]
 
-                w_update = {
-                    "$set": a_new_dict["_mongo_model"]
-                }
+                w_update = a_new_dict["_mongo_model"]
+
             else:
 
                 a_new_dict["_mat"] = time.time()
                 a_new_dict["_cat"] = a_new_dict["_mat"]
-                a_new_dict["_item_id"] = a_item.id
+                a_new_dict["_item_id"] = a_item["id"]
 
-            a_new_dict["_id"] = a_id
-            return self._db[a_item.collection].insert(a_new_dict)
+                w_update = a_new_dict
+
+            return self._db[a_item["collection"]].insert(w_update)
 
     def up_sert_many(self, a_collection, a_filter, a_new_dict):
         """ update or insert document with new dict regarding filter """
         if "_mongo_model" not in a_new_dict:
             a_new_dict["_mongo_model"] = {}
         a_new_dict["_mongo_model"]["_mat"] = time.time()
-        if isinstance(a_new_dict, Model):
+        if "_mongo_model" in a_new_dict:
 
             w_update = {
                 "$set": a_new_dict["_mongo_model"]
