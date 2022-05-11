@@ -6,6 +6,7 @@ import logging
 import json
 from ycappuccino.core.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate, Property
+import ycappuccino.core.model.decorators
 
 _logger = logging.getLogger(__name__)
 
@@ -33,7 +34,10 @@ class Endpoint(IEndpoint):
         w_path = request.get_path()
         w_header = request.get_headers()
 
-        w_resp = self.get(w_path, w_header)
+        if "swagger.json" in w_path:
+            w_resp = self.get_swagger_descriptions(["https","http"])
+        else:
+            w_resp = self.get(w_path, w_header)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
     def do_POST(self, request, response):
@@ -97,6 +101,10 @@ class Endpoint(IEndpoint):
                 return EndpointResponse(201,w_meta, {"id":w_id})
             else:
                 return EndpointResponse(405)
+        elif w_url_path.is_schema():
+            return EndpointResponse(501)
+        elif w_url_path.is_service():
+            return EndpointResponse(501)
         return EndpointResponse(400)
 
     def put(self, a_path, a_headers, a_body):
@@ -119,8 +127,142 @@ class Endpoint(IEndpoint):
                     return EndpointResponse(200, w_meta, {"id":w_id})
             else:
                 return EndpointResponse(405)
+        elif w_url_path.is_schema():
+            return EndpointResponse(501)
+        elif w_url_path.is_service():
+            return EndpointResponse(501)
 
         return EndpointResponse(400)
+
+    def get_swagger_description_tag(self, a_item):
+        return a_item["app"]+" "+a_item["plural"]
+
+    def get_swagger_description_path(self, a_item, a_with_id):
+        """ query can be get, getAll, put, post and delete """
+        w_path = "/"+a_item["plural"]
+        if a_with_id:
+            w_path =  w_path+"/{id}"
+        return w_path
+
+
+    def get_swagger_description(self, a_item, a_path):
+        """ return the path description for the item"""
+        a_path[self.get_swagger_description_path(a_item, False)]={
+            "get": {
+                "tags": [self.get_swagger_description_tag(a_item)],
+                "operationId": "getAll_"+a_item["id"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "filter",
+                    "in": "query",
+                    "required": False,
+                    "type": "string"
+                },{
+                    "name": "offset",
+                    "in": "query",
+                    "required": False,
+                    "type": "integer",
+                    "default": 0,
+                    "format": "int32"
+                }, {
+                    "name": "size",
+                    "in": "query",
+                    "required": False,
+                    "type": "integer",
+                    "default": 50,
+                    "format": "int32"
+                }],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [self.get_swagger_description_tag(a_item)],
+                "operationId": "create_"+a_item["id"],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "required": True,
+                    "schema": {
+                        "type": "string"
+                    }
+                }, {
+                    "name": "filter",
+                    "in": "query",
+                    "required": True,
+                    "type": "string"
+                }],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
+        a_path[self.get_swagger_description_path(a_item, True)] = {
+            "get": {
+                "tags": [self.get_swagger_description_tag(a_item)],
+                "operationId": "getItem_"+a_item["id"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "required": True,
+                    "type": "string"
+                }],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            },
+            "put": {
+                "tags": [self.get_swagger_description_tag(a_item)],
+                "operationId": "update_"+a_item["id"],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "required": True,
+                    "schema": {
+                        "type": "string"
+                    }
+                }, {
+                    "name": "id",
+                    "in": "path",
+                    "required": True,
+                    "type": "string"
+                }],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
+        return a_path
+
+    def get_swagger_descriptions(self, a_scheme):
+        w_path = {}
+        w_tag = []
+        w_swagger = {
+            "swagger":"2.0",
+            "info":{},
+            "basePath":"/api/",
+            "tags":w_tag,
+            "schemes": a_scheme,
+            "paths":w_path
+        }
+        for w_item in ycappuccino.core.model.decorators.get_map_items():
+            if not w_item["abstract"]:
+                self.get_swagger_description(w_item, w_swagger["paths"])
+                w_tag.append({"name":self.get_swagger_description_tag(w_item)})
+        return EndpointResponse(200,None,w_swagger)
 
     def get(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
@@ -133,7 +275,7 @@ class Endpoint(IEndpoint):
                 if w_item["secureRead"] and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
-                    w_resp = w_manager.get_one(w_item.id, w_url_path.get_params()["id"])
+                    w_resp = w_manager.get_one(w_item["id"], w_url_path.get_params()["id"])
                     w_meta = {
                         "type": "object",
                         "size": 1
@@ -148,6 +290,18 @@ class Endpoint(IEndpoint):
                 return EndpointResponse(200, w_meta, w_resp)
             else:
                 return EndpointResponse(405)
+        elif w_url_path.is_schema():
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
+            if w_manager is not None:
+                w_resp = w_manager.get_schema(w_item_plural)
+                w_meta = {
+                    "type": "object",
+                    "size": 1
+                }
+                return EndpointResponse(200, w_meta, w_resp)
+        elif w_url_path.is_service():
+            return EndpointResponse(501)
         return EndpointResponse(400)
 
     def delete(self, a_path, a_headers):
@@ -168,6 +322,10 @@ class Endpoint(IEndpoint):
                     return EndpointResponse(200, w_meta)
             else:
                 return EndpointResponse(405)
+        elif w_url_path.is_schema():
+            return EndpointResponse(501)
+        elif w_url_path.is_service():
+            return EndpointResponse(501)
         return EndpointResponse(400)
 
     @BindField("_managers")

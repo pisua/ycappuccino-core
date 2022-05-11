@@ -2,7 +2,7 @@ from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.model import Model
 
 
-@Item(collection="permissions", name="permission", plural="permissions")
+@Item(collection="permissions", name="permission", plural="permissions", app="core")
 class Permission(Model):
     def __init__(self, a_dict):
         super().__init__(a_dict)

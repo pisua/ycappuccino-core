@@ -1,0 +1,210 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+
+<link rel="icon" href="../../theme/icons/agilium_favicon.png">
+
+<title>IotPack Syspage</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../theme/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="../theme/css/dashboard.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+<link rel="stylesheet" type="text/css"
+	href="./swagger-ui/swagger-ui.css">
+<!-- <link rel="stylesheet" type="text/css" href="./theme/theme-material.css"> -->
+<style>
+.col {
+	width: auto;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+.swagger-ui .topbar {
+	display: none !important;
+}
+
+.swagger-ui .info hgroup.main a {
+	display: none !important;
+}
+
+.swagger-ui {
+	line-height: 1;
+}
+/*.swagger-ui .wrapper { padding: 0px; }*/
+.swagger-ui .opblock .opblock-summary-method {
+	font-size: 12px;
+	padding-right: 7px;
+	padding-left: 7px;
+}
+
+.swagger-ui .opblock .opblock-summary-operation-id, .swagger-ui .opblock .opblock-summary-path,
+	.swagger-ui .opblock .opblock-summary-path__deprecated {
+	font-size: 14px;
+}
+
+.swagger-ui .opblock-tag {
+	font-size: 22px;
+}
+
+/* .swagger-ui { transform: scale(0.9); } */
+/*.swagger-ui .scheme-container, .swagger-ui .topbar { display: none !important; }*/
+</style>
+</head>
+<script type="text/javascript">
+	
+ 	var pSysPageInfo = {};
+	var current_url = window.location.protocol+"//"+window.location.hostname;
+	 	if( window.location.port ){
+	  	current_url=current_url+":"+window.location.port;
+  	}
+  	if( window.location.pathname.indexOf("/syspage") !=-1 ){
+	  	current_url=current_url+window.location.pathname.substring(0,window.location.pathname.indexOf("/syspage"));
+
+  	}
+	
+	function getUrl(aSubUrl){
+		wUrl = current_url+aSubUrl;
+		window.location.replace(wUrl);
+	}
+	
+	
+</script>
+
+<body>
+	<nav
+		class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+		<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"></a>
+		<!-- 
+   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+   -->
+		<!-- <h1 class="form-control form-control-dark w-100">System Infos</h1>  -->
+		<ul class="navbar-nav px-3">
+			<li class="nav-item text-nowrap"><span style="color: white;">Version
+			</span></li>
+		</ul>
+		<ul class="navbar-nav px-3">
+			<li class="nav-item text-nowrap"><a class="nav-link"
+				href="javascript:void(0);"
+				onclick="logout('/swagger/index.html');">Logout</a></li>
+		</ul>
+
+	</nav>
+
+
+	<div class="container-fluid" style="padding-top: 3em">
+		<div class="row">
+
+			<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+				<div class="sidebar-sticky">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link"
+							href="../index.html"> <span data-feather="home"></span>
+								System infos
+						</a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="../restapi/index.html"> <span data-feather="layers"></span>
+								REST API
+						</a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="javascript:void(0);"
+							onclick="getUrl('/sse/index.html')"> <span
+								data-feather="hard-drive"></span> Sse tester
+						</a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="getUrl('releasenotes/index.html')"> <span
+								data-feather="file-text"></span> Release notes
+						</a></li>
+							<li class="nav-item"><a class="nav-link"
+							href="javascript:void(0);"
+							onclick="getUrl('/syspage/logs/index.html')"> <span
+								data-feather="hard-drive"></span> Logs
+						</a></li>
+
+						<li class="nav-item"><a class="nav-link"
+							href="getUrl('/requestdetails/index.html')"> <span
+								data-feather="hard-drive"></span> Http request details
+						</a></li>
+
+					</ul>
+
+				</div>
+			</nav>
+
+			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">REST API Documentation</h1>
+			</div>
+			<div id="swagger-ui" />
+
+			</main>
+		</div>
+	</div>
+
+	<!-- Placed at the end of the document so the pages load faster -->
+
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+
+	<script src="/syspage/theme/js/jquery-3.3.1.min.js"></script>
+	<script src="/syspage/theme/js/popper.min.js"></script>
+	<script src="/syspage/theme/js/bootstrap.min.js"></script>
+	<script src="/syspage/theme/js/bowser.min.js"></script>
+	<script src="/syspage/theme/js/syspage.js"></script>
+	<!-- Icons -->
+	<script src="/syspage/theme/js/feather.min.js"></script>
+	<script>
+      feather.replace()
+    </script>
+    
+	<script src="./swagger-ui/swagger-ui-bundle.js" charset="UTF-8">
+		
+	</script>
+	<script src="./swagger-ui/swagger-ui-standalone-preset.js"
+		charset="UTF-8">
+		
+	</script>
+	<script>
+		window.onload = function() {
+			var current_url = window.location.protocol+"//"+window.location.hostname;
+		 	if( window.location.port ){
+			  	current_url=current_url+":"+window.location.port;
+		  	}
+		  	if( window.location.pathname.indexOf("/syspage") !=-1 ){
+			  	current_url=current_url+window.location.pathname.substring(0, window.location.pathname.indexOf("/syspage"));
+	
+		  	}
+			// Build a system
+			const ui = SwaggerUIBundle({
+				url : current_url+"/services/swagger.json",
+				dom_id : '#swagger-ui',
+				docExpansion : 'none',
+				deepLinking : true,
+				presets : [ SwaggerUIBundle.presets.apis,
+						SwaggerUIStandalonePreset ],
+				plugins : [ SwaggerUIBundle.plugins.DownloadUrl ],
+				layout : "StandaloneLayout"
+			})
+
+			window.ui = ui
+		}
+	</script>
+</body>
+</html>

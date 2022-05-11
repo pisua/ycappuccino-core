@@ -40,7 +40,7 @@ def get_sons_item_id(a_item_id):
 
 class Item(object):
     # Make copy of original __init__, so we can call it without recursion
-    def __init__(self, collection, name, plural, abstract=False,  module="system", secureRead=False,secureWrite=False):
+    def __init__(self, collection, name, plural, abstract=False,  module="system", app="core", secureRead=False,secureWrite=False):
         self._meta_name = name
         self._meta_collection = collection
         self._meta_module = module
@@ -51,7 +51,8 @@ class Item(object):
             "collection": collection,
             "plural": plural,
             "secureRead": secureRead,
-            "secureWrite": secureWrite
+            "secureWrite": secureWrite,
+            "app":app
         }
 
     def __call__(self, obj):
@@ -75,9 +76,14 @@ class Item(object):
         map_item[w_id]["secureWrite"] = self._item["secureWrite"]
         map_item[w_id]["_class"] = self._item["_class"]
         map_item[w_id]["father"] = self._item["father"]
+        map_item[w_id]["app"] = self._item["app"]
 
+        # create empty
 
         return obj
+
+
+
 
 
 class ItemReference(object):
@@ -97,7 +103,7 @@ class ItemReference(object):
             }
         w_item = map_item_by_class[a_class]
 
-        if w_item != None:
+        if w_item is not None:
             if a_item_id not in w_item["refs"]:
                 w_item["refs"][a_item_id]={}
                 w_item["refs"][a_item_id][local_field + ".ref"] = {
@@ -105,8 +111,10 @@ class ItemReference(object):
                     "foreign_field": "_id",
                     "item_id": a_item_id
                 }
+
             # TODO reverse ref
         return obj
+
 
 def Property(name):
     """ decoration that manage property with another collection """

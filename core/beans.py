@@ -3,6 +3,8 @@ from urllib.parse import parse_qsl, urlsplit
 from ycappuccino.core.model.model import Model
 
 
+
+
 class EndpointResponse(object):
 
     def __init__(self, status, a_meta=None, a_body=None):
@@ -12,28 +14,30 @@ class EndpointResponse(object):
         self._body = a_body
 
     def get_json(self):
-        w_resp = {
-            "status": self._status,
-            "meta": self._meta,
-            "data": None
-        }
-
-        if self._body is not None:
-            if isinstance(self._body, Model):
-                w_resp["data"]  = self._body.__dict__
-            elif isinstance(self._body, list) :
-                w_body = []
-                if len(self._body) > 0 and isinstance(self._body[0], Model):
-                    for w_model in self._body:
-                        w_body.append(w_model.__dict__)
-                w_resp["data"] = w_body
+        if self._meta is None:
+            return json.dumps(self._body)
         else:
-            if w_resp["meta"]["type"] == "array":
-                w_resp["data"] = []
+            w_resp = {
+                "status": self._status,
+                "meta": self._meta,
+                "data": None
+            }
+            if self._body is not None:
+                if isinstance(self._body, Model):
+                    w_resp["data"]  = self._body.__dict__
+                elif isinstance(self._body, list) :
+                    w_body = []
+                    if len(self._body) > 0 and isinstance(self._body[0], Model):
+                        for w_model in self._body:
+                            w_body.append(w_model.__dict__)
+                    w_resp["data"] = w_body
             else:
-                w_resp["data"] =  {}
+                if w_resp["meta"]["type"] == "array":
+                    w_resp["data"] = []
+                else:
+                    w_resp["data"] =  {}
 
-        return json.dumps(w_resp)
+            return json.dumps(w_resp)
 
     def get_status(self):
         return self._status
@@ -50,14 +54,17 @@ class UrlPath(object):
             w_url_no_query = w_url_no_query.split("?")[0]
         w_split_url = w_url_no_query.split("api/")[1].split("/")
         self._is_service = "$service" in w_split_url
+        self._is_schema = "$schema" in w_split_url
+
         if not self._is_service :
             self._item_plural_id = w_split_url[0]
+
             if len(w_split_url)>1:
                 # an id is specified
                 if self._query_param is None:
                     self._query_param = {}
                 self._query_param["id"] = w_split_url[1]
-        else :
+        elif not self._is_schema:
             self._service_name = w_split_url[1]
 
     def is_service(self):
@@ -65,6 +72,9 @@ class UrlPath(object):
 
     def is_crud(self):
         return not self._is_service
+
+    def is_schema(self):
+        return not self._is_schema
 
     def get_item_plural_id(self):
         return self._item_plural_id

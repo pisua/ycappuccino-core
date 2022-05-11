@@ -28,6 +28,8 @@ class IndexEndpoint(object):
         self._path_core = os.getcwd()+"/ycappuccino"
         self._path_app = os.getcwd()
         self._brython_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "brython")
+        self._swagger_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "swagger")
+
         self._client_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "client")
         self._map_python_file = {}
 
@@ -225,6 +227,11 @@ class IndexEndpoint(object):
             # not in current app . we check if it exists in ycappuccino
             if "brython" in a_file_path:
                 w_file_path = self._brython_path + a_file_path
+            elif "swagger" in a_file_path:
+                w_file_path = self._path_core+a_file_path
+                if a_file_path.endswith("/"):
+                    w_file_path = w_file_path + "index.html"
+                return w_file_path
             else:
                 w_file_path = w_path + "/client" + a_file_path
 

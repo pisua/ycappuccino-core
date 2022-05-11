@@ -2,7 +2,7 @@ from ycappuccino.core.model.decorators import Item, Property, Reference, ItemRef
 from ycappuccino.core.model.model import Model
 
 
-@Item(collection="roles", name="role", plural="roles")
+@Item(collection="roles", name="role", plural="roles", app="core")
 @ItemReference(field="permission", item="permission")
 class Role(Model):
     def __init__(self):

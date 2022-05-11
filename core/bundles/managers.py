@@ -97,6 +97,11 @@ class AbsManager(IManager):
                         w_result = Model(w_model)
         return w_result
 
+    def get_schema(self, a_item_id):
+        w_result = None
+        w_item = self._items[a_item_id]
+        return w_result
+
     def get_sons_item(self, a_item):
         return get_sons_item(a_item["id"])
 
