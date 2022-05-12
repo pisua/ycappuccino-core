@@ -20,6 +20,19 @@ class IActivityLogger(object):
     def __init__(self):
         """ abstract constructor """
 
+class IClientIndexPath(object):
+    """ Activity logger of the application. admit a property name that identified the logger"""
+    name = CFQCN.build("IClientIndexPath")
+
+    def __init__(self):
+        """ abstract constructor """
+        pass
+
+    def get_path(self):
+        pass
+
+    def get_id(self):
+        pass
 
 class IManagerBootStrapData(object):
     """ Manage bootstrap interface. it allow to initialize for an item data or do a bootstrap operation"""

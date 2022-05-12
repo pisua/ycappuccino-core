@@ -5,9 +5,13 @@ import pelix.remote
 import logging
 import mimetypes
 import re
-from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Provides, Instantiate, Property
+from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Provides, Instantiate, Property, UnbindField, BindField
 import os
 from os import path
+
+from pelix.ipopo.decorators import BindField
+from ycappuccino.core.api import IClientIndexPath
+
 _logger = logging.getLogger(__name__)
 
 COMPONENT_FACTORY = "@ComponentFactory"
@@ -18,6 +22,7 @@ COMPONENT_PROPERTY ="@Property"
 @ComponentFactory('IndexEndpoint-Factory')
 @Provides(specifications=[pelix.http.HTTP_SERVLET])
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
+@Requires("_list_path_client",IClientIndexPath.name, aggregate=True, optional=True)
 @Instantiate("IndexEndpoint")
 @Property("_servlet_path", pelix.http.HTTP_SERVLET_PATH, "/")
 @Property("_reject", pelix.remote.PROP_EXPORT_REJECT, pelix.http.HTTP_SERVLET)
@@ -27,11 +32,22 @@ class IndexEndpoint(object):
     def __init__(self):
         self._path_core = os.getcwd()+"/ycappuccino"
         self._path_app = os.getcwd()
-        self._brython_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "brython")
-        self._swagger_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "swagger")
+        self._list_path_client = []
+        self._path_client = {}
 
         self._client_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "client")
         self._map_python_file = {}
+
+
+
+    @BindField("_list_path_client")
+    def bind_client_path(self, field, a_client_path, a_service_reference):
+        self._path_client[a_client_path.get_id()] = a_client_path.get_path()
+
+    @UnbindField("_list_path_client")
+    def unbind_client_path(self, field, a_client_path, a_service_reference):
+        del  self._path_client[a_client_path.get_id()]
+
 
     def manage_python(self, a_path):
         """ manage python component client"""
@@ -178,42 +194,12 @@ class IndexEndpoint(object):
         """
         return "@Requires" in a_line
 
-    def _is_html_head(self, a_line):
-        """
-        return true if it's a head html
-        :param a_line:
-        :return:
-        """
-        return "<head>" in a_line
-
-    def _is_html_body(self, a_line):
-        """
-        return true if it's a body html
-        :param a_line:
-        :return:
-        """
-        return "<body>" in a_line
-
-    def _add_brython_script(self, a_line):
-        """
-        add automicatically brython script
-        :param a_line:
-        :return:
-        """
-        w_line = a_line + "\n" \
-                 + "<script type=\"text/javascript\" src=\"brython.js\"></script>" \
-                 + "<script type=\"text/javascript\" src=\"brython_stdlib.js\"></script>"
-        return w_line
 
 
     def _manage_html_file(self, a_line):
         """ manage add brython script on header and onload on body"""
-        if self._is_html_head(a_line):
-            return self._add_brython_script(a_line)
-        elif self._is_html_body(a_line):
-            return a_line.replace("body","body onload=\"brython(1)\"")
-        else:
-            return a_line
+
+        return a_line
 
     def _get_path(self, a_base_path, a_file_path):
         """ return the effective file path """
@@ -225,18 +211,17 @@ class IndexEndpoint(object):
 
         else:
             # not in current app . we check if it exists in ycappuccino
-            if "brython" in a_file_path:
-                w_file_path = self._brython_path + a_file_path
-            elif "swagger" in a_file_path:
-                w_file_path = self._path_core+a_file_path
-                if a_file_path.endswith("/"):
-                    w_file_path = w_file_path + "index.html"
-                return w_file_path
-            else:
+            w_in_known_path = False
+            for w_id in self._path_client.keys():
+                if w_id in a_file_path:
+                    w_file_path = self._path_client[w_id] + a_file_path
+                    w_in_known_path = True
+                    break
+            if not w_in_known_path:
                 w_file_path = w_path + "/client" + a_file_path
 
             if a_file_path.endswith("/"):
-                w_file_path = w_path + "/client/index.html"
+                w_file_path = w_file_path + "index.html"
 
         return w_file_path
 
