@@ -23,6 +23,8 @@ class EndpointResponse(object):
                 "data": None
             }
             if self._body is not None:
+                if isinstance(self._body, dict):
+                    w_resp["data"] = self._body
                 if isinstance(self._body, Model):
                     w_resp["data"]  = self._body.__dict__
                 elif isinstance(self._body, list) :
@@ -56,25 +58,26 @@ class UrlPath(object):
         self._is_service = "$service" in w_split_url
         self._is_schema = "$schema" in w_split_url
 
-        if not self._is_service :
+        if self._is_service :
+            self._service_name = w_split_url[1]
+        elif self._is_schema:
+            pass
+        else:
             self._item_plural_id = w_split_url[0]
-
             if len(w_split_url)>1:
                 # an id is specified
                 if self._query_param is None:
                     self._query_param = {}
                 self._query_param["id"] = w_split_url[1]
-        elif not self._is_schema:
-            self._service_name = w_split_url[1]
 
     def is_service(self):
         return self._is_service
 
     def is_crud(self):
-        return not self._is_service
+        return not self._is_service and not self._is_schema
 
     def is_schema(self):
-        return not self._is_schema
+        return self._is_schema
 
     def get_item_plural_id(self):
         return self._item_plural_id

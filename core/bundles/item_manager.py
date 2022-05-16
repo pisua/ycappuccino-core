@@ -1,6 +1,6 @@
 from ycappuccino.core.api import IItemManager, IActivityLogger, IStorage, IConfiguration, YCappuccino, IManager, \
-    IDefaultManager
-from ycappuccino.core.bundles.managers import AbsManager
+    IDefaultManager, IProxyManager
+from ycappuccino.core.bundles.managers import AbsManager, ProxyManager
 import logging
 import json
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
@@ -34,7 +34,8 @@ class CreateManagerProxy(object):
 @Requires("_config", IConfiguration.name)
 @Property('_is_secure', "secure", True)
 @Requires("_managers", specification=IManager.name, aggregate=True, optional=True)
-@Requires("_default_manager", specification=IDefaultManager.name, aggregate=True)
+@Requires("_proxies", specification=IProxyManager.name, aggregate=True, optional=True)
+@Requires("_default_manager", specification=IDefaultManager.name)
 @Instantiate("itemManager")
 class ItemManager(IItemManager, AbsManager):
 
@@ -47,20 +48,25 @@ class ItemManager(IItemManager, AbsManager):
         self._item_manager = None
         self._managers = None
         self._map_managers = {}
+
         self._default_manager = None
         self._context = None
 
     @BindField("_managers")
     def bind_manager(self, field, a_manager, a_service_reference):
-
+        self._context = a_service_reference._ServiceReference__bundle._Bundle__context
         for w_item_id in a_manager.get_item_ids():
-            self._map_managers[w_item_id] = a_manager
+            if w_item_id not in self._map_managers:
+                self._map_managers[w_item_id] = a_manager
+                if not isinstance(a_manager,ProxyManager):
+                    w_item = ycappuccino.core.model.decorators.get_item(w_item_id)
+                    a_manager.add_item(w_item, self._context)
 
     @BindField("_default_manager")
     def bind_default_manager(self, field, a_manager, a_service_reference):
-        self._default_manager = a_manager
         self._context = a_service_reference._ServiceReference__bundle._Bundle__context
-        self.load_item()
+        self._default_manager = a_manager
+        #self.load_item()
 
     @UnbindField("_default_manager")
     def unbind_default_manager(self, field, a_manager, a_service_reference):
@@ -73,7 +79,6 @@ class ItemManager(IItemManager, AbsManager):
             self._map_managers[w_item_id] = None
 
 
-
     def load_item(self):
         """ """
         for w_item in ycappuccino.core.model.decorators.get_map_items():
@@ -81,7 +86,6 @@ class ItemManager(IItemManager, AbsManager):
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item
                 if not w_item["abstract"]:
                     self._default_manager.add_item(w_item, self._context)
-
 
 
     @Validate

@@ -1,5 +1,5 @@
 from pelix.ipopo.constants import use_ipopo
-from ycappuccino.core.api import IManager, IActivityLogger, IStorage, ITrigger, IDefaultManager
+from ycappuccino.core.api import IManager, IActivityLogger, IStorage, ITrigger, IDefaultManager, IProxyManager
 from ycappuccino.core.model.model import Model
 from ycappuccino.core.model.decorators import get_sons_item, get_sons_item_id
 from ycappuccino.core.model.utils import Proxy
@@ -22,20 +22,14 @@ class AbsManager(IManager):
         self._triggers = None
         self._loaded = False
         self._storage = None
+        self._list_component = {}
 
     def add_item(self, a_item, a_bundle_context):
         """ add item in map manage by the manager"""
         self._items[a_item["id"]] = a_item
         self._items_class[a_item["_class"]] = a_item
         self._items_plural[a_item["plural"]] = a_item
-        self.create_proxy_manager(a_item,a_bundle_context)
 
-    def create_proxy_manager(self, a_item, a_bundle_context):
-
-        with use_ipopo(a_bundle_context) as ipopo:
-            # use the iPOPO core service with the "ipopo" variable
-            ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item["id"]),
-                              {"item_id": a_item["id"]})
 
 
     def get_item_from_id_plural(self,a_item_plural):
@@ -199,8 +193,8 @@ class AbsManager(IManager):
 
 
 @ComponentFactory('Manager-Proxy-Factory')
-@Provides(IManager.name)
-@Property('_item_id', "item_id", "model")
+@Provides(specifications=IManager.name)
+@Property('_item_id', "item_id", "model",)
 @Requires('_default_manager', IDefaultManager.name)
 class ProxyManager(IManager, Proxy):
 
@@ -208,7 +202,6 @@ class ProxyManager(IManager, Proxy):
         super(ProxyManager, self).__init__()
         self._item_id = None
         self._obj = None
-
 
     @Validate
     def validate(self, context):
@@ -230,7 +223,7 @@ class ProxyManager(IManager, Proxy):
 
 
 @ComponentFactory('DefaultManager-Factory')
-@Provides(IDefaultManager.name)
+@Provides(specifications=[IDefaultManager.name])
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_storage",IStorage.name,optional=True)
 @Requires('_list_trigger', ITrigger.name, aggregate=True, optional=True)
@@ -242,7 +235,27 @@ class DefaultManager(AbsManager):
         self._list_trigger = None
         self._map_trigger = {}
 
+    def add_item(self, a_item, a_bundle_context):
+        """ add item in map manage by the manager"""
+        super(DefaultManager,self).add_item(a_item, a_bundle_context)
+        self.create_proxy_manager(a_item, a_bundle_context)
 
+    def remove_item(self, a_item, a_bundle_context):
+        """ add item in map manage by the manager"""
+        super(DefaultManager,self).remove_item(a_item, a_bundle_context)
+        self.remove_proxy_manager(a_item, a_bundle_context)
+
+    def create_proxy_manager(self, a_item, a_bundle_context):
+
+        with use_ipopo(a_bundle_context) as ipopo:
+            # use the iPOPO core service with the "ipopo" variable
+            ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item["id"]),
+                              {"item_id": a_item["id"]})
+
+    def remove_proxy_manager(self, a_item, a_bundle_context):
+        if a_item["id"] in self._list_component:
+            with use_ipopo(a_bundle_context) as ipopo:
+                ipopo.kill(self._list_component[a_item["id"]].name)
 
     @BindField("_list_trigger")
     def bind_trigger(self, a_field, a_service, a_service_reference):

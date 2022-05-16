@@ -24,9 +24,9 @@ class Jwt(IJwt):
     def load_configuration(self):
         self._key = self._config.get("jwt.token.key", KEY)
 
-    def generate(self,login, password):
+    def generate(self,login):
         # tody manage right / account / tenant
-        return jwt.encode({'iss': 'auth0', 'login': login }, self._key , algorithm='HS256').decode("utf-8")
+        return jwt.encode({'iss': 'auth0', 'login': login }, self._key , algorithm='HS256')
 
     def verify(self, a_token):
         w_res = jwt.decode(a_token, self._key, algorithms='HS256')

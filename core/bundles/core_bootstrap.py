@@ -34,15 +34,16 @@ class AccountBootStrap(IManagerBootStrapData):
         w_admin_account = Account({})
         w_admin_account.name("superadmin")
         w_admin_login = Login()
+        w_admin_login.id("superadmin")
         w_admin_login.login("superadmin")
-        w_admin_login.password("Danst0ncu1")
+        w_admin_login.password("admin")
         w_admin_role = Role()
         w_admin_role.name("superadmin")
-        w_admin_role.rights([{"*"}])
+        w_admin_role.rights(["*"])
 
         self._manager_role.up_sert_model("superadmin", w_admin_role)
         self._manager_account.up_sert_model("admin", w_admin_account)
-        if self._manager_login.get_one("logins","admin") is None:
+        if self._manager_login.get_one("login","admin") is None:
             self._manager_login.up_sert_model("admin", w_admin_login)
 
     @Validate

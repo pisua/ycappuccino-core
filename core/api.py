@@ -20,6 +20,7 @@ class IActivityLogger(object):
     def __init__(self):
         """ abstract constructor """
 
+
 class IClientIndexPath(object):
     """ Activity logger of the application. admit a property name that identified the logger"""
     name = CFQCN.build("IClientIndexPath")
@@ -33,6 +34,7 @@ class IClientIndexPath(object):
 
     def get_id(self):
         pass
+
 
 class IManagerBootStrapData(object):
     """ Manage bootstrap interface. it allow to initialize for an item data or do a bootstrap operation"""
@@ -54,6 +56,7 @@ class IConfiguration(object):
     def __init__(self):
         """ abstract constructor """
 
+
 class IJwt(object):
     """ interface of YCappuccino component """
     name = CFQCN.build("IJwt")
@@ -61,6 +64,7 @@ class IJwt(object):
     def __init__(self):
         """ abstract constructor """
         pass
+
 
 class IStorage(object):
     """ interface of proxy component that allow to bind all
@@ -71,6 +75,7 @@ class IStorage(object):
         """ abstract constructor """
         pass
 
+
 class IServerProxy(object):
     """ interface of YCappuccino component """
     name = CFQCN.build("IServerProxy")
@@ -79,6 +84,7 @@ class IServerProxy(object):
         """ abstract constructor """
         pass
 
+
 class YCappuccino(object):
     """ interface of YCappuccino component """
     name = CFQCN.build("YCappuccino")
@@ -86,8 +92,6 @@ class YCappuccino(object):
     def __init__(self):
         """ abstract constructor """
         pass
-
-
 
 
 class IEndpoint(object):
@@ -117,6 +121,20 @@ class IService(object):
     def __init__(self):
         pass
 
+    def get_name(self):
+        pass
+
+    def post(self, a_header, a_params, a_body):
+        pass
+
+    def put(self, a_header, a_params, a_body):
+        pass
+
+    def get(self, a_header, a_params):
+        pass
+
+    def delete(self, a_header, a_params):
+        pass
 
 class ITrigger(object):
     """ """
@@ -153,6 +171,20 @@ class IManager(object):
     def __init__(self):
         pass
 
+class ILoginService(object):
+    """ """
+    name = CFQCN.build("ILoginService")
+
+    def __init__(self):
+        pass
+
+
+class IProxyManager(object):
+    """ """
+    name = CFQCN.build("IProxyManager")
+
+    def __init__(self):
+        pass
 
 class IDefaultManager(IManager):
     """ """

@@ -11,11 +11,14 @@ map_item_by_class = {}
 map_item_link = {}
 
 
+def get_item(a_id):
+    return map_item[a_id]
+
 def get_map_items():
     w_items = []
     for w_key in map_item:
         w_items.append(map_item[w_key])
-    return w_items;
+    return w_items
 
 
 def has_father_item(a_item_id):
