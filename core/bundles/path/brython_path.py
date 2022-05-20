@@ -24,6 +24,9 @@ class BrythonPath(IClientIndexPath):
     def get_path(self):
         return self._path
 
+    def is_auth(self):
+        return False
+
     def get_id(self):
         return self._id
     @Validate

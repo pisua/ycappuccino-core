@@ -56,9 +56,20 @@ class MongoStorage(IStorage):
         """ get dict identify by a Id"""
         return self._db[a_collection].find(a_filter)
 
-    def get_many(self, a_collection, a_filter):
+    def get_many(self, a_collection, a_filter, a_offset, a_limit, a_sort):
         """ return iterable of dict regarding filter"""
-        return self._db[a_collection].find(a_filter)
+        w_offset = 0
+        w_limit = 50
+        w_sort = [("_cat",-1)]
+
+        if a_offset is not None:
+            w_offset = a_offset
+        if a_limit is not  None:
+            w_limit = a_limit
+        if a_sort is not None:
+            w_sort = a_sort
+
+        return self._db[a_collection].find(a_filter).sort(w_sort).skip(w_offset).limit(w_limit)
 
     def up_sert(self, a_item, a_id, a_new_dict):
         """" update or insert new dict"""

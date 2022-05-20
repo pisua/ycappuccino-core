@@ -42,7 +42,7 @@ class IndexEndpoint(object):
 
     @BindField("_list_path_client")
     def bind_client_path(self, field, a_client_path, a_service_reference):
-        self._path_client[a_client_path.get_id()] = a_client_path.get_path()
+        self._path_client[a_client_path.get_id()] = a_client_path
 
     @UnbindField("_list_path_client")
     def unbind_client_path(self, field, a_client_path, a_service_reference):
@@ -201,7 +201,7 @@ class IndexEndpoint(object):
 
         return a_line
 
-    def _get_path(self, a_base_path, a_file_path):
+    def _get_path(self, a_header, a_base_path, a_file_path):
         """ return the effective file path """
         w_path = a_base_path
         w_file_path = a_file_path
@@ -214,7 +214,13 @@ class IndexEndpoint(object):
             w_in_known_path = False
             for w_id in self._path_client.keys():
                 if w_id in a_file_path:
-                    w_file_path = self._path_client[w_id] + a_file_path
+                    if self._path_client[w_id].is_auth():
+                        w_authorization = None
+                        if "authorization" in a_header:
+                            w_authorization = a_header["authorization"]
+                        if not self._path_client[w_id].check_auth(w_authorization):
+                            return None
+                    w_file_path = self._path_client[w_id].get_path() + a_file_path
                     w_in_known_path = True
                     break
             if not w_in_known_path:
@@ -225,13 +231,13 @@ class IndexEndpoint(object):
 
         return w_file_path
 
-    def _get_path_core(self, a_file_path):
+    def _get_path_core(self, a_header,  a_file_path):
         """ return file path for core client  """
-        return self._get_path(self._path_core,a_file_path)
+        return self._get_path(a_header, self._path_core,a_file_path)
 
-    def _get_path_app(self, a_file_path):
+    def _get_path_app(self,  a_header,a_file_path):
         """ return the effective file path client app"""
-        return self._get_path(self._path_app, a_file_path)
+        return self._get_path(a_header, self._path_app, a_file_path)
 
     def _is_binary_file(self, a_path):
         """ return true if it's a binary file """
@@ -248,18 +254,28 @@ class IndexEndpoint(object):
     def do_GET(self, request, response):
         """  return file content """
         w_req_path = request.get_path()
+        w_header = request.get_headers()
+
         w_file = w_req_path.split("?")[0]
         is_clob = False
         is_blob = False
-        w_path = self._get_path_app(w_file)
+        w_path = self._get_path_app(w_header,w_file)
+        if w_path is None:
+            response.set_header("WWW-authenticate","BASIC")
+            response.send_content(401,"" ,"" )
+            return
+
         is_python = self._is_python_file(w_path)
         is_clob = self._is_text_file(w_path)
         is_blob = self._is_binary_file(w_path)
 
         if not path.exists(w_path):
             # check path in core client
-            w_path = self._get_path_core(w_file)
-            if not path.exists(w_path):
+            w_path = self._get_path_core(w_header,w_file)
+            if w_path is None:
+                response.send_content(401)
+                return
+            elif not path.exists(w_path):
                 response.send_content(404, "", "text/plain")
                 return
         try:

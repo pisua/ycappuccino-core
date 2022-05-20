@@ -50,6 +50,9 @@ class Endpoint(IEndpoint):
         w_json = json.loads(w_str)
 
         w_resp = self.post(w_path, w_header, w_json)
+        for key, value in w_resp.get_header().items():
+            response.set_header(key, value)
+
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
     def do_PUT(self, request, response):
@@ -71,12 +74,22 @@ class Endpoint(IEndpoint):
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
     def check_header(self, a_headers):
-        w_authorization = a_headers.authorization
-        if w_authorization is not None and "Bearer" in w_authorization:
-            w_token = w_authorization[len("Bearer "):]
-            return self._jwt.verify(w_token)
-        else:
-            return False
+        if "authorization" in a_headers:
+            w_authorization = a_headers["authorization"]
+            if w_authorization is not None and "Bearer" in w_authorization:
+                w_token = w_authorization[len("Bearer "):]
+                return self._jwt.verify(w_token)
+            else:
+                return False
+        elif "Cookie" in a_headers:
+            w_cookies = a_headers["Cookie"]
+            if ";" in w_cookies:
+                w_arr = w_cookies.split(";")
+                for w_cookie in w_arr:
+                    if "_ycappuccino" in w_cookie:
+                        w_token = w_cookie.split("=")[1]
+                        return self._jwt.verify(w_token)
+                return False
 
     def find_service(self, a_service_name):
         if a_service_name not in self._map_services:
@@ -104,7 +117,7 @@ class Endpoint(IEndpoint):
                 w_meta = {
                     "type": "array"
                 }
-                return EndpointResponse(201,w_meta, {"id":w_id})
+                return EndpointResponse(201, None, w_meta, {"id":w_id})
             else:
                 return EndpointResponse(405)
         elif w_url_path.is_schema():
@@ -113,14 +126,14 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_service(w_service_name)
             if w_service is not None:
-                w_resp = w_service.post(a_headers, w_url_path.get_params(), a_body)
+                w_header, w_body = w_service.post(a_headers, w_url_path.get_params(), a_body)
                 w_meta = {
                     "type": "array"
                 }
-                if w_resp is None:
+                if w_body is None:
                     return EndpointResponse(401)
                 else:
-                    return EndpointResponse(200, w_meta, w_resp)
+                    return EndpointResponse(200, w_header, w_meta, w_body)
             return EndpointResponse(501)
         return EndpointResponse(400)
 
@@ -141,7 +154,7 @@ class Endpoint(IEndpoint):
                         "type": "array",
                         "size": 1
                     }
-                    return EndpointResponse(200, w_meta, {"id":w_id})
+                    return EndpointResponse(200, None, w_meta, {"id":w_id})
             else:
                 return EndpointResponse(405)
         elif w_url_path.is_schema():
@@ -150,11 +163,11 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                w_resp = w_service.put(a_headers, w_url_path.get_params(), a_body)
+                w_header, w_body = w_service.put(a_headers, w_url_path.get_params(), a_body)
                 w_meta = {
                     "type": "array"
                 }
-                return EndpointResponse(200, w_meta, w_resp)
+                return EndpointResponse(200, w_header, w_meta, w_body)
             return EndpointResponse(501)
 
         return EndpointResponse(400)
@@ -220,12 +233,17 @@ class Endpoint(IEndpoint):
                     "default": 0,
                     "format": "int32"
                 }, {
-                    "name": "size",
+                    "name": "limit",
                     "in": "query",
                     "required": False,
                     "type": "integer",
                     "default": 50,
                     "format": "int32"
+                },{
+                    "name": "sort",
+                    "in": "query",
+                    "required": False,
+                    "type": "string"
                 }],
                 "responses": {
                     "default": {
@@ -321,7 +339,7 @@ class Endpoint(IEndpoint):
         for w_service in self._map_services.values():
             self.get_swagger_description_service(w_service, w_swagger["paths"])
             w_tag.append({"name": self.get_swagger_description_service_tag(w_service)})
-        return EndpointResponse(200,None,w_swagger)
+        return EndpointResponse(200, None, None, w_swagger)
 
     def get(self, a_path, a_headers):
         w_url_path = UrlPath(a_path)
@@ -346,7 +364,7 @@ class Endpoint(IEndpoint):
                         "type": "array",
                         "size": len(w_resp)
                     }
-                return EndpointResponse(200, w_meta, w_resp)
+                return EndpointResponse(200, None, w_meta, w_resp)
             else:
                 return EndpointResponse(405)
         elif w_url_path.is_schema():
@@ -363,11 +381,11 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                w_resp = w_service.get(a_headers, w_url_path.get_params(), a_body)
+                w_header, w_body = w_service.get(a_headers, w_url_path.get_params(), a_body)
                 w_meta = {
                     "type": "array"
                 }
-                return EndpointResponse(200, w_meta, w_resp)
+                return EndpointResponse(200, w_header,  w_meta, w_body)
             return EndpointResponse(501)
         return EndpointResponse(400)
 
@@ -386,7 +404,7 @@ class Endpoint(IEndpoint):
                 }
                 if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
                     w_manager.delete(w_item["id"], w_url_path.get_params().id)
-                    return EndpointResponse(200, w_meta)
+                    return EndpointResponse(200, None, w_meta)
             else:
                 return EndpointResponse(405)
         elif w_url_path.is_schema():
@@ -395,11 +413,11 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                w_resp = w_service.delete(a_headers, w_url_path.get_params(), a_body)
+                w_header, w_body =  w_service.delete(a_headers, w_url_path.get_params())
                 w_meta = {
                     "type": "array"
                 }
-                return EndpointResponse(200, w_meta, w_resp)
+                return EndpointResponse(200,w_header, w_meta, w_body)
             return EndpointResponse(501)
         return EndpointResponse(400)
 

@@ -1,7 +1,7 @@
 from ycappuccino.core.model.decorators import Item, Property,  Reference, ItemReference
 from ycappuccino.core.model.model import Model
 
-@Item(collection="accounts" ,name="account", plural="accounts", app="core")
+@Item(collection="accounts" ,name="account", plural="accounts", app="core", secureWrite=True, secureRead=True)
 @ItemReference(field="login" ,item="login")
 @ItemReference(field="role" ,item="role")
 class Account(Model):

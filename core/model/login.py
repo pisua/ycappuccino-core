@@ -3,7 +3,7 @@ from ycappuccino.core.model.model import Model
 import hashlib
 import os
 
-@Item(collection="logins",name="login", plural="logins", app="core")
+@Item(collection="logins",name="login", plural="logins", app="core", secureWrite=True, secureRead=True)
 class Login(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

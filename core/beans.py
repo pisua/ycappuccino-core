@@ -7,11 +7,15 @@ from ycappuccino.core.model.model import Model
 
 class EndpointResponse(object):
 
-    def __init__(self, status, a_meta=None, a_body=None):
+    def __init__(self, status,a_header=None, a_meta=None, a_body=None):
         """ need status"""
         self._status = status
         self._meta = a_meta
+        self._header = a_header
         self._body = a_body
+
+    def get_header(self):
+        return self._header
 
     def get_json(self):
         if self._meta is None:

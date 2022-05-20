@@ -108,14 +108,26 @@ class AbsManager(IManager):
             w_item = self._items[a_item_id]
             if w_item is not None:
                 w_filter = {}
+                w_sort = None
+                w_offset = None
+                w_limit = None
+                w_sort = None
+
                 if a_params is not None and "filter" in a_params:
                     w_filter = json.loads(a_params["filter"])
+                if a_params is not None and "limit" in a_params:
+                    w_limit = int(a_params["limit"])
+                if a_params is not None and "offset" in a_params:
+                    w_offset = int(a_params["offset"])
+                if a_params is not None and "sort" in a_params:
+                    w_sort = a_params["sort"]
+
                 w_items = self.get_sons_item_id(w_item)
 
                 w_filter["_item_id"] = {
                     "$in":w_items
                 }
-                res = self._storage.get_many(w_item["collection"], w_filter)
+                res = self._storage.get_many(w_item["collection"], w_filter, w_offset, w_limit, w_sort)
                 if res is not None:
                     for w_model in res:
                         w_result.append(Model(w_model))
