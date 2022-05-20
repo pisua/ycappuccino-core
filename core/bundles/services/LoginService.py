@@ -101,7 +101,7 @@ class LoginCookieService(AbsService):
         w_token = self.check_login(a_body["login"], a_body["password"])
         if w_token is not None:
             return {
-              "Set-Cookie": "_ycappuccino="+w_token
+              "Set-Cookie": "_ycappuccino="+w_token+";Path=/;HttpOnly"
             }, {}
         return None, None
 

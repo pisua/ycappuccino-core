@@ -32,12 +32,14 @@ class AccountBootStrap(IManagerBootStrapData):
     def bootstrap(self):
 
         w_admin_account = Account({})
+        w_admin_account.id("superadmin")
         w_admin_account.name("superadmin")
         w_admin_login = Login()
         w_admin_login.id("superadmin")
         w_admin_login.login("superadmin")
         w_admin_login.password("admin")
         w_admin_role = Role()
+        w_admin_role.id("superadmin")
         w_admin_role.name("superadmin")
         w_admin_role.rights(["*"])
 
