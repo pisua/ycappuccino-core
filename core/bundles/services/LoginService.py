@@ -102,7 +102,9 @@ class LoginCookieService(AbsService):
         if w_token is not None:
             return {
               "Set-Cookie": "_ycappuccino="+w_token+";Path=/;HttpOnly"
-            }, {}
+            }, {
+                "token":w_token
+            }
         return None, None
 
     def put(self, a_header, a_params, a_body):

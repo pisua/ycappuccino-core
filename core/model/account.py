@@ -2,8 +2,8 @@ from ycappuccino.core.model.decorators import Item, Property,  Reference, ItemRe
 from ycappuccino.core.model.model import Model
 
 @Item(collection="accounts" ,name="account", plural="accounts", app="core", secureWrite=True, secureRead=True)
-@ItemReference(field="login" ,item="login")
-@ItemReference(field="role" ,item="role")
+@ItemReference(field="_login" ,item="login")
+@ItemReference(field="_role" ,item="role")
 class Account(Model):
     """ describe an account in the application """
     def __init__(self, a_dict=None):

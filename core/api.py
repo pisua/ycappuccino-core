@@ -36,9 +36,19 @@ class IClientIndexPath(object):
         pass
 
 
-class IManagerBootStrapData(object):
+class IClientIndexPathFactory(object):
+    """ Activity logger of the application. admit a property name that identified the logger"""
+    name = CFQCN.build("IClientIndexPathFactory")
+
+    def __init__(self):
+        """ abstract constructor """
+        pass
+
+
+
+class IBootStrap(object):
     """ Manage bootstrap interface. it allow to initialize for an item data or do a bootstrap operation"""
-    name = CFQCN.build("IManagerBootStrapData")
+    name = CFQCN.build("IBootStrap")
 
     def __init__(self):
         """ abstract constructor """
@@ -46,7 +56,10 @@ class IManagerBootStrapData(object):
 
     def bootstrap(self):
         """ method call while manage is initialized and finish to allow to bootstrap operation """
+        pass
 
+    def get_id(self):
+        pass
 
 class IConfiguration(object):
     """ interface of proxy component that allow to bind all

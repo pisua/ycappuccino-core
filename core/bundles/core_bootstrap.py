@@ -1,4 +1,4 @@
-from ycappuccino.core.api import IActivityLogger, IManager, IManagerBootStrapData, YCappuccino
+from ycappuccino.core.api import IActivityLogger, IManager, IBootStrap, YCappuccino
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 from pelix.ipopo.constants import use_ipopo
@@ -9,44 +9,66 @@ import ycappuccino.core.model.decorators
 from ycappuccino.core.model.account import Account
 from ycappuccino.core.model.login import Login
 from ycappuccino.core.model.role import Role
+from ycappuccino.core.model.ui.client_path import ClientPath
+
 
 _logger = logging.getLogger(__name__)
 
 
 @ComponentFactory('AccountBootStrap-Factory')
-@Provides(specifications=[IManagerBootStrapData.name, YCappuccino.name])
+@Provides(specifications=[IBootStrap.name, YCappuccino.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_manager_account", IManager.name, spec_filter="'(item_id=account)'")
 @Requires("_manager_login", IManager.name, spec_filter="'(item_id=login)'")
 @Requires("_manager_role", IManager.name, spec_filter="'(item_id=role)'")
+@Requires("_manager_client_path", IManager.name, spec_filter="'(item_id=clientPath)'")
+@Property("_id", "id", "core")
+
 @Instantiate("AccountBootStrap")
-class AccountBootStrap(IManagerBootStrapData):
+class AccountBootStrap(IBootStrap):
 
     def __init__(self):
-        super(IManagerBootStrapData, self).__init__();
+        super(IBootStrap, self).__init__();
         self._manager_account =None
         self._manager_login =None
         self._manager_role =None
+        self._manager_client_path = None
         self._log =None
+        self._id = "core"
+
+    def get_id(self):
+        return self._id
 
     def bootstrap(self):
 
-        w_admin_account = Account({})
-        w_admin_account.id("superadmin")
-        w_admin_account.name("superadmin")
         w_admin_login = Login()
         w_admin_login.id("superadmin")
         w_admin_login.login("superadmin")
         w_admin_login.password("admin")
+
         w_admin_role = Role()
         w_admin_role.id("superadmin")
         w_admin_role.name("superadmin")
         w_admin_role.rights(["*"])
 
+        w_admin_account = Account({})
+        w_admin_account.id("superadmin")
+        w_admin_account.name("superadmin")
+        w_admin_account.login("superadmin")
+        w_admin_account.role("superadmin")
+
         self._manager_role.up_sert_model("superadmin", w_admin_role)
-        self._manager_account.up_sert_model("admin", w_admin_account)
+        self._manager_account.up_sert_model("superadmin", w_admin_account)
         if self._manager_login.get_one("login","superadmin") is None:
             self._manager_login.up_sert_model("superadmin", w_admin_login)
+
+        w_client_path_default = ClientPath()
+        w_client_path_default.id("default")
+        w_client_path_default.path("/")
+        w_client_path_default.secure(False)
+
+        if self._manager_client_path.get_one("clientPath", "default") is None:
+            self._manager_login.up_sert_model("default/", w_client_path_default)
 
     @Validate
     def validate(self, context):

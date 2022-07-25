@@ -79,6 +79,7 @@ def init(root_dir=None, port=9000):
         'ycappuccino.core.bundles.activity_logger',
         'ycappuccino.core.bundles.proxy',
         'ycappuccino.core.bundles.core_bootstrap',
+        'ycappuccino.core.bundles.path.server_path',
 
         # bundle core model
         'ycappuccino.core.model.account',

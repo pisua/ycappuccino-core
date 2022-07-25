@@ -6,6 +6,7 @@ from pymongo import MongoClient
 import time
 from ycappuccino.core.executorService import RunnableProcess, ThreadPoolExecutorCallable
 from ycappuccino.core.model.model import Model
+from uuid import uuid4
 
 _logger = logging.getLogger(__name__)
 
@@ -115,6 +116,8 @@ class MongoStorage(IStorage):
                 a_new_dict["_item_id"] = a_item["id"]
 
                 w_update = a_new_dict
+            if "_id" not in w_update:
+                w_update["id"] = uuid4().__str__()
 
             return self._db[a_item["collection"]].insert(w_update)
 

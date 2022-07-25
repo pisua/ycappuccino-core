@@ -48,30 +48,15 @@ class IndexEndpoint(object):
     def unbind_client_path(self, field, a_client_path, a_service_reference):
         del  self._path_client[a_client_path.get_id()]
 
-
     def manage_python(self, a_path):
         """ manage python component client"""
         with open(a_path) as f:
             w_lines = f.readlines()
             w_lines_str = ""
-            w_added_lines = []
-            w_import_line = None
-            w_component = {}
+
             for w_line in w_lines:
-                (w_new_component , w_line, w_added_line_comp, import_pelix) = self._manage_python_component(w_line, w_component)
-                w_component = w_new_component
-                if import_pelix is not None:
-                    w_import_line = import_pelix
-                if len(w_added_line_comp) > 0:
-                    for w_added in w_added_line_comp:
-                        w_added_lines.append(w_added)
-                w_lines_str = "".join([w_lines_str, w_line])
+               w_lines_str = "".join([w_lines_str, w_line])
 
-            for w_added in w_added_lines:
-                w_lines_str = "\n\n".join([w_lines_str,w_added])
-
-            if w_import_line is not None:
-                return w_import_line+"\n\n"+w_lines_str
             return w_lines_str
 
     def manage_clob(self, a_path):
@@ -113,35 +98,6 @@ class IndexEndpoint(object):
             a_component_prop["properties"] = []
         a_component_prop["properties"].append(a_property)
 
-    def _manage_python_component(self,a_line, a_component_prop):
-        """ manage python component factory ipopo simulation """
-        w_factory_name = self._get_component(a_line)
-        to_added_line = []
-        w_with_import_line = None
-
-        if w_factory_name is not None:
-            w_with_import_line = "import pelix"
-            self._call_decorator_factory(to_added_line, w_factory_name, a_component_prop)
-
-        w_instance_name = self._get_instantiate(a_line)
-        if w_instance_name is not  None:
-            self._call_decorator_instance(to_added_line, w_instance_name, a_component_prop)
-
-        w_require_instance = self._get_require(a_line)
-        if w_require_instance is not None:
-            self._call_decorator_require(to_added_line, w_require_instance, a_component_prop)
-
-        w_property = self._get_property(a_line)
-        if w_property is not None:
-            self._call_decorator_property(to_added_line, w_property, a_component_prop)
-
-        for w_to_replace in re.findall("(__\w+)+", a_line):
-            if "__" not in w_to_replace[2:]:
-                # manage replace __ by _ to prevent importation pb
-                w_replaced = w_to_replace.replace("__", "_")
-                a_line = a_line.replace(w_to_replace, w_replaced)
-
-        return (a_component_prop, a_line, to_added_line, w_with_import_line)
 
     def _get_instantiate(self, a_line):
         """
@@ -205,29 +161,27 @@ class IndexEndpoint(object):
         """ return the effective file path """
         w_path = a_base_path
         w_file_path = a_file_path
-        if a_file_path.endswith(".py"):
-            is_python = True
+
+        # not in current app . we check if it exists in ycappuccino
+        w_in_known_path = False
+        for w_id in self._path_client.keys():
+            if w_id in a_file_path:
+                if self._path_client[w_id].is_auth():
+                    w_authorization = None
+                    if "authorization" in a_header:
+                        w_authorization = a_header["authorization"]
+                    if not self._path_client[w_id].check_auth(w_authorization):
+                        return None
+                for w_path in self._path_client[w_id].get_path() :
+                    w_file_path = w_path +w_id+ a_file_path
+                    if path.exists(w_file_path):
+                        w_in_known_path = True
+                        break
+        if not w_in_known_path:
             w_file_path = w_path + "/client" + a_file_path
 
-        else:
-            # not in current app . we check if it exists in ycappuccino
-            w_in_known_path = False
-            for w_id in self._path_client.keys():
-                if w_id in a_file_path:
-                    if self._path_client[w_id].is_auth():
-                        w_authorization = None
-                        if "authorization" in a_header:
-                            w_authorization = a_header["authorization"]
-                        if not self._path_client[w_id].check_auth(w_authorization):
-                            return None
-                    w_file_path = self._path_client[w_id].get_path() + a_file_path
-                    w_in_known_path = True
-                    break
-            if not w_in_known_path:
-                w_file_path = w_path + "/client" + a_file_path
-
-            if a_file_path.endswith("/"):
-                w_file_path = w_file_path + "index.html"
+        if a_file_path.endswith("/"):
+            w_file_path = w_file_path + "index.html"
 
         return w_file_path
 
@@ -261,28 +215,18 @@ class IndexEndpoint(object):
         is_blob = False
         w_path = self._get_path_app(w_header,w_file)
         if w_path is None:
-            response.set_header("WWW-authenticate","BASIC")
-            response.send_content(401,"" ,"" )
+            response.send_content(404, "", "text/plain")
             return
-
         is_python = self._is_python_file(w_path)
         is_clob = self._is_text_file(w_path)
         is_blob = self._is_binary_file(w_path)
 
-        if not path.exists(w_path):
-            # check path in core client
-            w_path = self._get_path_core(w_header,w_file)
-            if w_path is None:
-                response.send_content(401)
-                return
-            elif not path.exists(w_path):
-                response.send_content(404, "", "text/plain")
-                return
+
         try:
             w_lines_str = ""
             if is_python:
                 w_lines_str = self.manage_python(w_path)
-            elif is_clob:
+            if is_clob or is_python:
                 w_lines_str = self.manage_clob(w_path)
             elif is_blob:
                 w_lines_str = self.manage_blob(w_path)
