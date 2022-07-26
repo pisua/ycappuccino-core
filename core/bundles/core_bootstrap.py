@@ -49,7 +49,6 @@ class AccountBootStrap(IBootStrap):
         w_admin_role = Role()
         w_admin_role.id("superadmin")
         w_admin_role.name("superadmin")
-        w_admin_role.rights(["*"])
 
         w_admin_account = Account({})
         w_admin_account.id("superadmin")
@@ -65,10 +64,21 @@ class AccountBootStrap(IBootStrap):
         w_client_path_default = ClientPath()
         w_client_path_default.id("default")
         w_client_path_default.path("/")
+        w_client_path_default.subpath("client")
+        w_client_path_default.priority(0)
         w_client_path_default.secure(False)
 
-        if self._manager_client_path.get_one("clientPath", "default") is None:
-            self._manager_login.up_sert_model("default/", w_client_path_default)
+        self._manager_login.up_sert_model("default", w_client_path_default)
+
+        w_client_path_swagger = ClientPath()
+        w_client_path_swagger.id("swagger")
+        w_client_path_swagger.path("/swagger")
+        w_client_path_swagger.subpath("swagger")
+        w_client_path_swagger.priority(1)
+
+        w_client_path_swagger.secure(False)
+
+        self._manager_login.up_sert_model("swagger", w_client_path_swagger)
 
     @Validate
     def validate(self, context):

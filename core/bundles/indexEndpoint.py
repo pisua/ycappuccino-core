@@ -42,11 +42,19 @@ class IndexEndpoint(object):
 
     @BindField("_list_path_client")
     def bind_client_path(self, field, a_client_path, a_service_reference):
-        self._path_client[a_client_path.get_id()] = a_client_path
+        if a_client_path.get_priority() not in self._path_client :
+            self._path_client[a_client_path.get_priority()] = {
+                a_client_path.get_id(): a_client_path
+            }
+        else:
+            self._path_client[a_client_path.get_priority()][a_client_path.get_id()] = a_client_path
+
 
     @UnbindField("_list_path_client")
     def unbind_client_path(self, field, a_client_path, a_service_reference):
-        del  self._path_client[a_client_path.get_id()]
+        if self._path_client[a_client_path.get_prioity()] is not None:
+            del self._path_client[a_client_path.get_prioity()][a_client_path.get_id()]
+
 
     def manage_python(self, a_path):
         """ manage python component client"""
@@ -164,19 +172,23 @@ class IndexEndpoint(object):
 
         # not in current app . we check if it exists in ycappuccino
         w_in_known_path = False
-        for w_id in self._path_client.keys():
-            if w_id in a_file_path:
-                if self._path_client[w_id].is_auth():
+        for w_prio in sorted(self._path_client.keys(),reverse=True):
+            for w_id in self._path_client[w_prio].keys():
+                if self._path_client[w_prio][w_id].is_auth():
                     w_authorization = None
                     if "authorization" in a_header:
                         w_authorization = a_header["authorization"]
-                    if not self._path_client[w_id].check_auth(w_authorization):
+                    if not self._path_client[w_prio][w_id].check_auth(w_authorization):
                         return None
-                for w_path in self._path_client[w_id].get_path() :
-                    w_file_path = w_path +w_id+ a_file_path
+                for w_path in self._path_client[w_prio][w_id].get_path() :
+                    w_file_path = w_path + a_file_path.replace(self._path_client[w_prio][w_id].get_subpath()+"/","")
                     if path.exists(w_file_path):
                         w_in_known_path = True
                         break
+                if w_in_known_path :
+                    break
+            if w_in_known_path:
+                break
         if not w_in_known_path:
             w_file_path = w_path + "/client" + a_file_path
 

@@ -1,6 +1,8 @@
 # decorators to describe item and element to store in mongo if it's mongo element
 import functools
 from ycappuccino.core.model.utils import YDict
+import sys
+
 primitive = (int, str, bool, float, )
 
 # identified item by id
@@ -55,7 +57,15 @@ class Item(object):
             "plural": plural,
             "secureRead": secureRead,
             "secureWrite": secureWrite,
-            "app":app
+            "app":app,
+            "schema":{
+                "$id": name,
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": name,
+                "type": "object",
+                "properties": {}
+            },
+            "empty":None
         }
 
     def __call__(self, obj):
@@ -80,6 +90,7 @@ class Item(object):
         map_item[w_id]["_class"] = self._item["_class"]
         map_item[w_id]["father"] = self._item["father"]
         map_item[w_id]["app"] = self._item["app"]
+        map_item[w_id]["schema"] = self._item["schema"]
 
         # create empty
 
@@ -102,7 +113,12 @@ class ItemReference(object):
         if a_class not in map_item_by_class:
             map_item_by_class[a_class] = {
                 "_class": a_class,
-                "refs": {}
+                "refs": {},
+                "schema":{
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {}
+                }
             }
         w_item = map_item_by_class[a_class]
 
@@ -114,9 +130,16 @@ class ItemReference(object):
                     "foreign_field": "_id",
                     "item_id": a_item_id
                 }
+                w_item["schema"]["properties"][local_field] = {
+                    "ref":{
+                        "type":"string",
+                        "description":"reference to {}".format(a_item_id)
+                    }
+                }
 
             # TODO reverse ref
         return obj
+
 
 
 def Property(name):
@@ -131,6 +154,12 @@ def Property(name):
                 args[0]._mongo_model[name] = args[1]._mongo_model
             else:
                 args[0]._mongo_model[name] = args[1]
+
+            w_item = map_item_by_class[args[0].__class__.__name__]
+            w_item["schema"]["properties"][name] = {
+                "type": "string",
+                "description": "reference to {}".format(name)
+            }
             return value
         return wrapper_proprety
     return decorator_property
@@ -186,6 +215,11 @@ def References(name):
                     # admit dictionnary property of the relation we add it
                     w_obj_ref["properties"] = args[2]
 
+                w_item = map_item_by_class[args[0].__name__]
+                w_item["schema"]["properties"][name] = {
+                    "type": "string",
+                    "description": "reference to {}".format(name)
+                }
             return value
         return wrapper_reference
     return decorator_reference

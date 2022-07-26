@@ -185,6 +185,40 @@ class Endpoint(IEndpoint):
             w_path =  w_path+"/{id}"
         return w_path
 
+    def get_swagger_description_empty(self, a_item,a_path):
+        """ return the path description for the item"""
+        a_path["/"+a_item["plural"]+"/$empty"] = {
+            "get": {
+                "tags": [self.get_swagger_description_tag(a_item)],
+                "operationId": "empty_" + a_item["plural"],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
+
+    def get_swagger_description_schema(self, a_item,a_path):
+        """ return the path description for the item"""
+        a_path["/"+a_item["plural"]+"/$schema"] = {
+            "get": {
+                "tags": [self.get_swagger_description_tag(a_item)],
+                "operationId": "schema_" + a_item["plural"],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
+
 
     def get_swagger_description_service(self, a_service, a_path):
         """ return the path description for the item"""
@@ -318,6 +352,9 @@ class Endpoint(IEndpoint):
                 }
             }
         }
+        self.get_swagger_description_empty(a_item,a_path)
+        self.get_swagger_description_schema(a_item,a_path)
+
         return a_path
 
     def get_swagger_descriptions(self, a_scheme):
@@ -369,9 +406,12 @@ class Endpoint(IEndpoint):
                 return EndpointResponse(405)
         elif w_url_path.is_schema():
             w_item_plural = w_url_path.get_item_plural_id()
+
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
-                w_resp = w_manager.get_schema(w_item_plural)
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+
+                w_resp = w_manager.get_schema(w_item["id"])
                 w_meta = {
                     "type": "object",
                     "size": 1
@@ -386,6 +426,19 @@ class Endpoint(IEndpoint):
                     "type": "array"
                 }
                 return EndpointResponse(200, w_header,  w_meta, w_body)
+            return EndpointResponse(501)
+        elif w_url_path.is_empty():
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
+            if w_manager is not None:
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+
+                w_resp = w_manager.get_empty(w_item["id"])
+                w_meta = {
+                    "type": "object",
+                    "size": 1
+                }
+                return EndpointResponse(200, w_meta, w_resp)
             return EndpointResponse(501)
         return EndpointResponse(400)
 

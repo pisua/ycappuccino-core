@@ -1,9 +1,13 @@
 from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference
 from ycappuccino.core.model.model import Model
+_empty = None
 
+def empty():
+    _empty = Role()
+    _empty.id("test")
+    _empty.name("test")
 
 @Item(collection="roles", name="role", plural="roles", app="core", secureWrite=True, secureRead=True)
-@ItemReference(field="permission", item="permission")
 class Role(Model):
     def __init__(self):
         super().__init__()
@@ -14,7 +18,4 @@ class Role(Model):
     def name(self, a_value):
         self._name = a_value
 
-    @Reference(name="permission")
-    def rights(self, a_values):
-        """ list of right permission """
-        self._permissions = a_values
+empty()

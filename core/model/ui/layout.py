@@ -1,5 +1,6 @@
 from ycappuccino.core.model.decorators import Item, Property,  Reference, ItemReference
 from ycappuccino.core.model.model import Model
+_empty = None
 
 @Item(collection="layouts", name="layout", plural="layouts", app="core.ui", secureWrite=True, secureRead=True)
 @ItemReference(field="_layout_parent", item="layout")

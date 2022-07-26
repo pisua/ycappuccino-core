@@ -2,6 +2,13 @@ from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.model import Model
 import hashlib
 import os
+_empty = None
+
+def empty():
+    _empty = Login()
+    _empty.id("admin")
+    _empty.password("admin")
+    _empty.account_ref("test")
 
 @Item(collection="logins",name="login", plural="logins", app="core", secureWrite=True, secureRead=True)
 class Login(Model):
@@ -35,3 +42,4 @@ class Login(Model):
         self._account_ref = a_value
 
 
+empty()

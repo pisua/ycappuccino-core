@@ -72,6 +72,13 @@ class AbsManager(IManager):
             ids[w_item["id"]] = w_item["secureWrite"]
         return ids
 
+
+    def aggregate(self, a_item_id, a_id, a_expand):
+        """ return the element with an aggregation with item define in a_expand expression
+            e.g : /services/item1/id?expand=item2,item3
+        """
+        pass
+
     def get_one(self, a_item_id,  a_id):
         w_result = None
         if self._storage is not None:
@@ -92,9 +99,12 @@ class AbsManager(IManager):
         return w_result
 
     def get_schema(self, a_item_id):
-        w_result = None
-        w_item = self._items[a_item_id]
-        return w_result
+        w_schema = self._items[a_item_id]["schema"]
+        return w_schema
+
+    def get_empty(self, a_item_id):
+        w_empty = self._items[a_item_id]["empty"]
+        return w_empty
 
     def get_sons_item(self, a_item):
         return get_sons_item(a_item["id"])

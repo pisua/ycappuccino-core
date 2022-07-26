@@ -1,6 +1,16 @@
 from ycappuccino.core.model.decorators import Item, Property,  Reference, ItemReference
 from ycappuccino.core.model.model import Model
 
+_empty = None
+
+def empty():
+    _empty = Account()
+    _empty.id("test")
+    _empty.login("admin")
+    _empty.name("admin")
+    _empty.role("admin")
+
+
 @Item(collection="accounts" ,name="account", plural="accounts", app="core", secureWrite=True, secureRead=True)
 @ItemReference(field="_login" ,item="login")
 @ItemReference(field="_role" ,item="role")
@@ -23,3 +33,5 @@ class Account(Model):
     @Reference(name="role")
     def role(self, a_value):
         self._role = a_value
+
+empty()
