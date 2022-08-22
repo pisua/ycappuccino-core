@@ -76,8 +76,19 @@ class AbsManager(IManager):
     def aggregate(self, a_item_id, a_id, a_expand):
         """ return the element with an aggregation with item define in a_expand expression
             e.g : /services/item1/id?expand=item2,item3
+            @param a_item_id : id of the item to read to retreive collection
+            @param a_id : id of the document link to the item to read
+            @param a_expand :  list of aggregate item to expand the expand admit this kind of url => item2[(filter={}|count|offset=0limit=10|sort=toto(asc))]
         """
-        pass
+        w_expands = []
+        if a_expand is not None:
+            w_expands = a_expand.split(",")
+        if a_item_id in self._items and  len(w_expands) > 0:
+            w_item = self._items[a_item_id]
+            for w_expand_item in w_expands:
+                if w_expand_item in w_item["refs"]:
+                    pass
+
 
     def get_one(self, a_item_id,  a_id):
         w_result = None

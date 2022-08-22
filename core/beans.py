@@ -33,9 +33,13 @@ class EndpointResponse(object):
                     w_resp["data"]  = self._body.__dict__
                 elif isinstance(self._body, list) :
                     w_body = []
-                    if len(self._body) > 0 and isinstance(self._body[0], Model):
-                        for w_model in self._body:
-                            w_body.append(w_model.__dict__)
+                    if len(self._body) > 0 :
+                        if isinstance(self._body[0], Model):
+                            for w_model in self._body:
+                                w_body.append(w_model.__dict__)
+                        else:
+                            for w_json in self._body:
+                                w_body.append(w_json)
                     w_resp["data"] = w_body
             else:
                 if w_resp["meta"]["type"] == "array":

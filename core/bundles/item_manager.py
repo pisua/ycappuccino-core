@@ -45,12 +45,30 @@ class ItemManager(IItemManager, AbsManager):
         self._log = None
         self._config = None
         self._storage = None
-        self._item_manager = None
         self._managers = None
         self._map_managers = {}
 
         self._default_manager = None
         self._context = None
+
+
+
+    def get_one(self, a_item_id,  a_id):
+        if a_id in ycappuccino.core.model.decorators.get_map_items():
+            w_result = ycappuccino.core.model.decorators.get_map_items()[a_id]
+        return w_result
+
+    def get_many(self, a_item_id, a_params):
+        w_result = ycappuccino.core.model.decorators.get_map_items()
+
+        return w_result
+
+    def get_item_from_id_plural(self,a_item_plural):
+        """ return list of item id"""
+        return {
+            "id":"item",
+            "secureRead":False
+        }
 
     @BindField("_managers")
     def bind_manager(self, field, a_manager, a_service_reference):
