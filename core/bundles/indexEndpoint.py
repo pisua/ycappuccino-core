@@ -168,6 +168,8 @@ class IndexEndpoint(object):
     def _get_path(self, a_header, a_base_path, a_file_path):
         """ return the effective file path """
         w_path = a_base_path
+
+
         w_file_path = a_file_path
 
         # not in current app . we check if it exists in ycappuccino
@@ -180,11 +182,12 @@ class IndexEndpoint(object):
                         w_authorization = a_header["authorization"]
                     if not self._path_client[w_prio][w_id].check_auth(w_authorization):
                         return None
-                for w_path in self._path_client[w_prio][w_id].get_path() :
-                    w_file_path = w_path + a_file_path.replace(self._path_client[w_prio][w_id].get_subpath()+"/","")
-                    if path.exists(w_file_path):
-                        w_in_known_path = True
-                        break
+                if w_id in w_file_path:
+                    for w_path in self._path_client[w_prio][w_id].get_path() :
+                        w_file_path = w_path + a_file_path.replace(self._path_client[w_prio][w_id].get_subpath()+"/","")
+                        if path.exists(w_file_path):
+                            w_in_known_path = True
+                            break
                 if w_in_known_path :
                     break
             if w_in_known_path:
