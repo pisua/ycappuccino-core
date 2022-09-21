@@ -37,7 +37,7 @@ def find_and_install_bundle(a_root, a_module_name, a_context):
                 "framework" not in w_file:
             w_module_name = ""
 
-            if os.path.isdir(w_file):
+            if os.path.isdir(w_file) and os.path.isfile(w_file+"/__init__.py"):
                 if a_module_name == "":
                     w_module_name = w_file.split("/")[-1]
                 else:
