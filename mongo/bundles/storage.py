@@ -78,7 +78,9 @@ class MongoStorage(IStorage):
         w_filter = {"_id": a_id, "_item_id":a_item["id"]}
 
         res = self._db[a_item["collection"]].find(w_filter)
-        if res.count() != 0:
+        count = self._db[a_item["collection"]].count_documents(w_filter)
+
+        if res != None and count != 0:
             model = Model(res[0])
             model._mongo_model = res[0]
 
@@ -119,7 +121,7 @@ class MongoStorage(IStorage):
             if "_id" not in w_update:
                 w_update["id"] = uuid4().__str__()
 
-            return self._db[a_item["collection"]].insert(w_update)
+            return self._db[a_item["collection"]].insert_one(w_update)
 
     def up_sert_many(self, a_collection, a_filter, a_new_dict):
         """ update or insert document with new dict regarding filter """

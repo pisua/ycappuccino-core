@@ -22,7 +22,8 @@ def load_bundle(a_file, a_module_name,a_context):
                 # import this model
                 return a_module_name
     except Exception as e:
-        print("file {}".format(a_file))
+        _logger.exception("fail to load bundle {}".format(repr(e)))
+
 
 def find_and_install_bundle(a_root, a_module_name, a_context):
     """ find and install all bundle in path """
