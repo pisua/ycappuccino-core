@@ -34,7 +34,7 @@ class IndexEndpoint(object):
         self._path_app = os.getcwd()
         self._list_path_client = []
         self._path_client = {}
-
+        self._file_etag = {}
         self._client_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "client")
         self._map_python_file = {}
 
@@ -235,7 +235,15 @@ class IndexEndpoint(object):
         is_python = self._is_python_file(w_path)
         is_clob = self._is_text_file(w_path)
         is_blob = self._is_binary_file(w_path)
-
+        # get date of file and put it as if-none-match
+        if "If-None-Match" in w_header and w_path in self._file_etag:
+            w_etag_header = w_header["If-None-Match"]
+            if w_etag_header == self._file_etag[w_path]:
+                response.send_content(304, "", "")
+                return
+        if os.path.exists(w_path):
+            self._file_etag[w_path] = str(os.path.getmtime(w_path))
+            response.set_header("etag",self._file_etag[w_path])
 
         try:
             w_lines_str = ""
