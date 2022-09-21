@@ -7,6 +7,7 @@ import time
 from ycappuccino.core.executorService import RunnableProcess, ThreadPoolExecutorCallable
 from ycappuccino.core.model.model import Model
 from uuid import uuid4
+import json
 
 _logger = logging.getLogger(__name__)
 
@@ -61,16 +62,16 @@ class MongoStorage(IStorage):
         """ return iterable of dict regarding filter"""
         w_offset = 0
         w_limit = 50
-        w_sort = [("_cat",-1)]
+        w_sort = {"_cat":-1}
 
         if a_offset is not None:
             w_offset = a_offset
         if a_limit is not  None:
             w_limit = a_limit
         if a_sort is not None:
-            w_sort = a_sort
+            w_sort = json.loads(a_sort)
 
-        return self._db[a_collection].find(a_filter).sort(w_sort).skip(w_offset).limit(w_limit)
+        return self._db[a_collection].find(a_filter).sort(w_sort.items()).skip(w_offset).limit(w_limit)
 
     def up_sert(self, a_item, a_id, a_new_dict):
         """" update or insert new dict"""
