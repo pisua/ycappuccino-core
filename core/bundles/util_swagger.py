@@ -129,11 +129,6 @@ def get_swagger_description( a_item, a_path):
                 "schema": {
                     "type": "string"
                 }
-            }, {
-                "name": "filter",
-                "in": "query",
-                "required": True,
-                "type": "string"
             }],
             "responses": {
                 "default": {

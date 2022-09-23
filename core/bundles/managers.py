@@ -90,7 +90,7 @@ class AbsManager(IManager):
                     pass
 
 
-    def get_one(self, a_item_id,  a_id):
+    def get_one(self, a_item_id, a_id, a_params):
         w_result = None
         if self._storage is not None:
             w_item = self._items[a_item_id]
@@ -105,7 +105,18 @@ class AbsManager(IManager):
 
                 res = self._storage.get_one(w_item["collection"], w_filter)
                 if res is not None:
+                    w_private_field = False
+                    if a_params is not None and "content" in a_params:
+                        if "privateField" in a_params["content"]:
+                            w_private_field = True
+
                     for w_model in res:
+
+                        if not w_private_field and "private_property" in w_item:
+                            # remove private field if not asked
+                            for w_priv_prop in w_item["private_property"] :
+                                if w_priv_prop in w_model:
+                                    del w_model[w_priv_prop]
                         w_result = Model(w_model)
         return w_result
 
@@ -150,7 +161,18 @@ class AbsManager(IManager):
                 }
                 res = self._storage.get_many(w_item["collection"], w_filter, w_offset, w_limit, w_sort)
                 if res is not None:
+                    w_private_field = False
+                    if a_params is not None and  "content" in a_params:
+                        if "privateField" in a_params["content"]:
+                            w_private_field = True
+
                     for w_model in res:
+
+                        if not w_private_field and "private_property" in w_item:
+                            # remove private field if not asked
+                            for w_priv_prop in w_item["private_property"]:
+                                if w_priv_prop in w_model:
+                                    del w_model[w_priv_prop]
                         w_result.append(Model(w_model))
         return w_result
 
@@ -161,7 +183,10 @@ class AbsManager(IManager):
             w_item = self._items[a_item_id]
 
             if w_item is not None:
-                res = self._up_sert(w_item, a_id, a_new_field)
+                model = w_item["_class_obj"]()
+                for prop in a_new_field:
+                    getattr(model,prop)(a_new_field[prop])
+                res = self._up_sert(w_item, a_id, model.__dict__)
                 if res is not None:
                     return Model(res)
         return None
@@ -178,6 +203,7 @@ class AbsManager(IManager):
             w_item = self._items_class[a_model.__class__.__name__]
 
             if w_item is not None:
+
                 res = self._up_sert(w_item, a_id, a_model.__dict__)
                 if res is not None:
                     return Model(res)

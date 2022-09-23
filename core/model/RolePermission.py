@@ -1,13 +1,13 @@
-from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference
+from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference, Empty
 from ycappuccino.core.model.model import Model
 
-_empty = None
-
+@Empty()
 def empty():
     _empty = RolePermission()
     _empty.id("test")
     _empty.role("test")
     _empty.rights("test")
+    return _empty
 
 @Item(collection="rolePermissions", name="rolePermission", plural="role-permissions", app="core", secureWrite=True, secureRead=True)
 @ItemReference(field="permission", item="permission")

@@ -73,6 +73,8 @@ class Item(object):
         self._class = obj.__name__
         self._item["father"] = self._super_class
         self._item["_class"] = self._class
+        self._item["_class_obj"] = obj
+
         if self._class not in map_item_by_class:
             map_item_by_class[self._item["_class"]] = self._item
 
@@ -88,6 +90,7 @@ class Item(object):
         map_item[w_id]["secureRead"] = self._item["secureRead"]
         map_item[w_id]["secureWrite"] = self._item["secureWrite"]
         map_item[w_id]["_class"] = self._item["_class"]
+        map_item[w_id]["_class_obj"] = self._item["_class_obj"]
         map_item[w_id]["father"] = self._item["father"]
         map_item[w_id]["app"] = self._item["app"]
         map_item[w_id]["schema"] = self._item["schema"]
@@ -140,9 +143,21 @@ class ItemReference(object):
             # TODO reverse ref
         return obj
 
+def Empty():
+    """ decoration that manage property with another collection """
+    def decorator_property(func):
+        @functools.wraps(func)
+        def wrapper_proprety(*args, **kwargs):
+            value = func(*args, **kwargs)
+
+            w_item = map_item_by_class[value.__class__.__name__]
+            w_item["empty"] = value._mongo_model
+            return value
+        return wrapper_proprety
+    return decorator_property
 
 
-def Property(name):
+def Property(name, private=False):
     """ decoration that manage property with another collection """
     def decorator_property(func):
         @functools.wraps(func)
@@ -160,6 +175,10 @@ def Property(name):
                 "type": "string",
                 "description": "reference to {}".format(name)
             }
+            if "private_property" not in w_item:
+                w_item["private_property"] = []
+            if private and name not in w_item["private_property"]:
+                w_item["private_property"].append(name)
             return value
         return wrapper_proprety
     return decorator_property

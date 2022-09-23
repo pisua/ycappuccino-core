@@ -52,8 +52,9 @@ class Endpoint(IEndpoint):
         w_json = json.loads(w_str)
 
         w_resp = self.post(w_path, w_header, w_json)
-        for key, value in w_resp.get_header().items():
-            response.set_header(key, value)
+        if w_resp.get_header() is not None:
+            for key, value in w_resp.get_header().items():
+                response.set_header(key, value)
 
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
@@ -114,8 +115,11 @@ class Endpoint(IEndpoint):
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
                 if w_item["secureWrite"] and not self.check_header(a_headers):
                     return EndpointResponse(401)
-                w_id = str(uuid.uuid4())
-                w_manager.up_sert(w_item.id, w_id, a_body)
+                if "id" in a_body:
+                    w_id = a_body["id"]
+                else:
+                    w_id = str(uuid.uuid4())
+                w_manager.up_sert(w_item["id"], w_id, a_body)
                 w_meta = {
                     "type": "array"
                 }
@@ -211,7 +215,7 @@ class Endpoint(IEndpoint):
                 if w_item["secureRead"] and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
-                    w_resp = w_manager.get_one(w_item["id"], w_url_path.get_params()["id"])
+                    w_resp = w_manager.get_one(w_item["id"], w_url_path.get_params()["id"], w_url_path.get_params())
                     w_meta = {
                         "type": "object",
                         "size": 1
@@ -260,7 +264,7 @@ class Endpoint(IEndpoint):
                     "type": "object",
                     "size": 1
                 }
-                return EndpointResponse(200, w_meta, w_resp)
+                return EndpointResponse(200, None, w_meta, w_resp)
             return EndpointResponse(501)
         return EndpointResponse(400)
 

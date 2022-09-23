@@ -1,11 +1,12 @@
-from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference
+from ycappuccino.core.model.decorators import Item, Property, Reference, ItemReference, Empty
 from ycappuccino.core.model.model import Model
-_empty = None
 
+@Empty()
 def empty():
     _empty = Role()
     _empty.id("test")
     _empty.name("test")
+    return _empty
 
 @Item(collection="roles", name="role", plural="roles", app="core", secureWrite=True, secureRead=True)
 class Role(Model):
