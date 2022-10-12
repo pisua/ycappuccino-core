@@ -134,6 +134,21 @@ class IService(object):
     def __init__(self):
         pass
 
+    def is_sercure(self):
+        return True
+
+    def has_post(self):
+        return True
+
+    def has_put(self):
+        return False
+
+    def has_get(self):
+        return False
+
+    def has_delete(self):
+        return False
+
     def get_name(self):
         pass
 
@@ -184,6 +199,20 @@ class IManager(object):
     def __init__(self):
         pass
 
+
+class IClobReplaceService(object):
+    """ """
+    name = CFQCN.build("IClobReplaceService")
+
+    def __init__(self):
+        pass
+    
+    def extension(self):
+        pass
+
+    def replace(self, a_in):
+        """ return out string with applyance of replacement """
+
 class ILoginService(object):
     """ """
     name = CFQCN.build("ILoginService")
@@ -206,6 +235,13 @@ class IDefaultManager(IManager):
     def __init__(self):
         pass
 
+
+class IUploadManager(IDefaultManager):
+    """ """
+    name = CFQCN.build("IUploadManager")
+
+    def __init__(self):
+        pass
 
 class IItemManager(IManager):
     """ """

@@ -1,0 +1,20 @@
+
+
+/*
+ * Usage of $resource:
+ *  $resource(url, [paramDefaults], [actions], options);
+ *  see : https://docs.angularjs.org/api/ngResource/service/$resource
+ */
+angular.module('restapi').
+  factory('restapiServivce', ['$resource', '$rootScope',
+    function($resource, $rootScope) {   
+        current_url = window.location.protocol+"//"+window.location.hostname;
+        if( window.location.port ){
+          current_url=current_url+":"+window.location.port;
+        }
+        current_url+="/api"
+        return {
+            ${rest_api_resource}
+        }
+    }
+  ]);

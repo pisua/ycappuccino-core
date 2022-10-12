@@ -8,6 +8,7 @@ from ycappuccino.core.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate, Property
 import ycappuccino.core.model.decorators
 
+
 _logger = logging.getLogger(__name__)
 
 from  ycappuccino.core.bundles import util_swagger
@@ -46,12 +47,17 @@ class Endpoint(IEndpoint):
 
     def do_POST(self, request, response):
         """ """
-        w_str = request.read_data().decode()
-        w_path = request.get_path()
         w_header = request.get_headers()
-        w_json = json.loads(w_str)
+        w_resp = None
+        if "multipart/form-data" in w_header:
+            pass
+        else:
+            w_str = request.read_data().decode()
+            w_path = request.get_path()
+            w_json = json.loads(w_str)
 
-        w_resp = self.post(w_path, w_header, w_json)
+            w_resp = self.post(w_path, w_header, w_json)
+
         if w_resp.get_header() is not None:
             for key, value in w_resp.get_header().items():
                 response.set_header(key, value)
@@ -132,14 +138,17 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_service(w_service_name)
             if w_service is not None:
-                w_header, w_body = w_service.post(a_headers, w_url_path.get_params(), a_body)
-                w_meta = {
-                    "type": "array"
-                }
-                if w_body is None:
+                if w_service.is_secure() and not self.check_header(a_headers):
                     return EndpointResponse(401)
                 else:
-                    return EndpointResponse(200, w_header, w_meta, w_body)
+                    w_header, w_body = w_service.post(a_headers, w_url_path.get_params(), a_body)
+                    w_meta = {
+                        "type": "array"
+                    }
+                    if w_body is None:
+                        return EndpointResponse(401)
+                    else:
+                        return EndpointResponse(200, w_header, w_meta, w_body)
             return EndpointResponse(501)
         return EndpointResponse(400)
 
@@ -155,7 +164,7 @@ class Endpoint(IEndpoint):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and w_url_path.get_params()["id"] is not None:
                     w_id = w_url_path.get_params()["id"]
-                    w_manager.up_sert(w_item.id, w_id, a_body)
+                    w_manager.up_sert(w_item["id"], w_id, a_body)
                     w_meta = {
                         "type": "array",
                         "size": 1
@@ -169,11 +178,14 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                w_header, w_body = w_service.put(a_headers, w_url_path.get_params(), a_body)
-                w_meta = {
-                    "type": "array"
-                }
-                return EndpointResponse(200, w_header, w_meta, w_body)
+                if w_service.is_secure() and not self.check_header(a_headers):
+                    return EndpointResponse(401)
+                else:
+                    w_header, w_body = w_service.put(a_headers, w_url_path.get_params(), a_body)
+                    w_meta = {
+                        "type": "array"
+                    }
+                    return EndpointResponse(200, w_header, w_meta, w_body)
             return EndpointResponse(501)
 
         return EndpointResponse(400)
@@ -242,16 +254,19 @@ class Endpoint(IEndpoint):
                     "type": "object",
                     "size": 1
                 }
-                return EndpointResponse(200, w_meta, w_resp)
+                return EndpointResponse(200, None, w_meta, w_resp)
         elif w_url_path.is_service():
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                w_header, w_body = w_service.get(a_headers, w_url_path.get_params())
-                w_meta = {
-                    "type": "array"
-                }
-                return EndpointResponse(200, w_header,  w_meta, w_body)
+                if w_service.is_secure() and not self.check_header(a_headers):
+                    return EndpointResponse(401)
+                else:
+                    w_header, w_body = w_service.get(a_headers, w_url_path.get_params())
+                    w_meta = {
+                        "type": "array"
+                    }
+                    return EndpointResponse(200, w_header,  w_meta, w_body)
             return EndpointResponse(501)
         elif w_url_path.is_empty():
             w_item_plural = w_url_path.get_item_plural_id()
@@ -292,11 +307,14 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                w_header, w_body =  w_service.delete(a_headers, w_url_path.get_params())
-                w_meta = {
-                    "type": "array"
-                }
-                return EndpointResponse(200,w_header, w_meta, w_body)
+                if w_service.is_secure() and not self.check_header(a_headers):
+                    return EndpointResponse(401)
+                else:
+                    w_header, w_body =  w_service.delete(a_headers, w_url_path.get_params())
+                    w_meta = {
+                        "type": "array"
+                    }
+                    return EndpointResponse(200,w_header, w_meta, w_body)
             return EndpointResponse(501)
         return EndpointResponse(400)
 

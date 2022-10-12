@@ -80,6 +80,16 @@ class AccountBootStrap(IBootStrap):
 
         self._manager_login.up_sert_model("swagger", w_client_path_swagger)
 
+        w_client_path_swagger = ClientPath()
+        w_client_path_swagger.id("simpleform")
+        w_client_path_swagger.path("/simpleform")
+        w_client_path_swagger.subpath("simpleform")
+        w_client_path_swagger.priority(1)
+
+        w_client_path_swagger.secure(False)
+
+        self._manager_login.up_sert_model("simpleform", w_client_path_swagger)
+
     @Validate
     def validate(self, context):
         _logger.info("AccountBootStrap validating")

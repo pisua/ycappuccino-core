@@ -45,7 +45,7 @@ class EndpointResponse(object):
                 if w_resp["meta"]["type"] == "array":
                     w_resp["data"] = []
                 else:
-                    w_resp["data"] =  {}
+                    w_resp["data"] = {}
 
             return json.dumps(w_resp)
 

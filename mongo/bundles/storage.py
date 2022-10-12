@@ -54,7 +54,7 @@ class MongoStorage(IStorage):
         """ aggegate data regarding filter and pipeline """
         return self._db[a_collection].aggregate(a_pipeline)
 
-    def get_one(self, a_collection, a_filter):
+    def get_one(self, a_collection, a_filter, a_params=None):
         """ get dict identify by a Id"""
         return self._db[a_collection].find(a_filter)
 

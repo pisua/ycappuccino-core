@@ -54,12 +54,13 @@ class ItemManager(IItemManager, AbsManager):
 
 
     def get_one(self, a_item_id,  a_id):
-        if a_id in ycappuccino.core.model.decorators.get_map_items():
-            w_result = ycappuccino.core.model.decorators.get_map_items()[a_id]
+        w_dicts = ycappuccino.core.model.decorators.get_map_items_emdpoint()
+        if a_id in w_dicts:
+            w_result = w_dicts[a_id]
         return w_result
 
     def get_many(self, a_item_id, a_params):
-        w_result = ycappuccino.core.model.decorators.get_map_items()
+        w_result = ycappuccino.core.model.decorators.get_map_items_emdpoint()
 
         return w_result
 

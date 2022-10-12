@@ -1,4 +1,4 @@
-from ycappuccino.core.api import IActivityLogger
+from ycappuccino.core.api import IActivityLogger, IClobReplaceService
 
 import inspect
 import pelix.remote
@@ -23,6 +23,7 @@ COMPONENT_PROPERTY ="@Property"
 @Provides(specifications=[pelix.http.HTTP_SERVLET])
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_list_path_client",IClientIndexPath.name, aggregate=True, optional=True)
+@Requires("_list_replace_clob",IClobReplaceService.name, aggregate=True, optional=True)
 @Instantiate("IndexEndpoint")
 @Property("_servlet_path", pelix.http.HTTP_SERVLET_PATH, "/")
 @Property("_reject", pelix.remote.PROP_EXPORT_REJECT, pelix.http.HTTP_SERVLET)
@@ -37,7 +38,8 @@ class IndexEndpoint(object):
         self._file_etag = {}
         self._client_path = inspect.getmodule(self).__file__.replace("core{0}bundles{0}indexEndpoint.py".format(os.path.sep), "client")
         self._map_python_file = {}
-
+        self._list_replace_clob = []
+        self._replace_clob = {}
 
 
     @BindField("_list_path_client")
@@ -55,6 +57,14 @@ class IndexEndpoint(object):
         if self._path_client[a_client_path.get_prioity()] is not None:
             del self._path_client[a_client_path.get_prioity()][a_client_path.get_id()]
 
+    @BindField("_list_replace_clob")
+    def bind_replace_clob(self, field, a_replace_clob, a_service_reference):
+        self._replace_clob[a_replace_clob.extension()] = a_replace_clob
+
+
+    @UnbindField("_list_replace_clob")
+    def unbind_replace_clob(self, field, a_replace_clob, a_service_reference):
+        del self._replace_clob[a_replace_clob.extension()]
 
     def manage_python(self, a_path):
         """ manage python component client"""
@@ -67,8 +77,17 @@ class IndexEndpoint(object):
 
             return w_lines_str
 
+    def get_replace_clob_from_extension(self,a_path):
+        w_extension = a_path[a_path.index("."):]
+        w_list =[]
+        for key in self._replace_clob.keys():
+            if key in w_extension:
+                w_list.append(self._replace_clob[key])
+        return w_list
+
     def manage_clob(self, a_path):
         """ return the content of the file and include html trick if needed """
+        w_extension = a_path[a_path.index("."):]
         with open(a_path) as f:
             w_lines = f.readlines()
             w_lines_str = ""
@@ -76,6 +95,10 @@ class IndexEndpoint(object):
                 w_line = self._manage_html_file(w_line)
 
                 w_lines_str = "".join([w_lines_str, w_line])
+            w_replace_services = self.get_replace_clob_from_extension(a_path)
+            for w_replace_service in w_replace_services:
+                w_lines_str = w_replace_service.replace_content(w_lines_str)
+
             return w_lines_str
 
     def manage_blob(self, a_path):
@@ -236,9 +259,11 @@ class IndexEndpoint(object):
         is_clob = self._is_text_file(w_path)
         is_blob = self._is_binary_file(w_path)
         # get date of file and put it as if-none-match
-        if "If-None-Match" in w_header and w_path in self._file_etag:
+        w_exists_replace = len(self.get_replace_clob_from_extension(w_path))>0
+
+        if not w_exists_replace and "If-None-Match" in w_header and w_path in self._file_etag:
             w_etag_header = w_header["If-None-Match"]
-            if w_etag_header == self._file_etag[w_path]:
+            if w_etag_header ==  str(os.path.getmtime(w_path)):
                 response.send_content(304, "", "")
                 return
         if os.path.exists(w_path):

@@ -54,8 +54,10 @@ def get_swagger_description_schema( a_item, a_path):
 
 def get_swagger_description_service( a_service, a_path):
     """ return the path description for the item"""
-    a_path["/$service/" + a_service.get_name()] = {
-        "post": {
+
+    a_path["/$service/" + a_service.get_name()] = {}
+    if a_service.has_post():
+        a_path["/$service/" + a_service.get_name()]["post"] = {
             "tags": [get_swagger_description_service_tag(a_service)],
             "operationId": "service_" + a_service.get_name(),
             "consumes": ["application/json"],
@@ -74,7 +76,27 @@ def get_swagger_description_service( a_service, a_path):
                 }
             }
         }
-    }
+    if a_service.has_put():
+        a_path["/$service/" + a_service.get_name()]["put"] = {
+            "tags": [get_swagger_description_service_tag(a_service)],
+            "operationId": "service_" + a_service.get_name(),
+            "consumes": ["application/json"],
+            "produces": ["application/json"],
+            "parameters": [{
+                "in": "body",
+                "name": "body",
+                "required": True,
+                "schema": {
+                    "type": "string"
+                }
+            }],
+            "responses": {
+                "default": {
+                    "description": "successful operation"
+                }
+            }
+        }
+
 
     return a_path
 

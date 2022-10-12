@@ -90,7 +90,7 @@ class AbsManager(IManager):
                     pass
 
 
-    def get_one(self, a_item_id, a_id, a_params):
+    def get_one(self, a_item_id, a_id, a_params=None):
         w_result = None
         if self._storage is not None:
             w_item = self._items[a_item_id]
@@ -111,7 +111,8 @@ class AbsManager(IManager):
                             w_private_field = True
 
                     for w_model in res:
-
+                        w_model["id"] = w_model["_id"]
+                        del w_model["_id"]
                         if not w_private_field and "private_property" in w_item:
                             # remove private field if not asked
                             for w_priv_prop in w_item["private_property"] :
@@ -134,7 +135,7 @@ class AbsManager(IManager):
     def get_sons_item_id(self, a_item):
         return get_sons_item_id(a_item["id"])
 
-    def get_many(self, a_item_id, a_params):
+    def get_many(self, a_item_id, a_params=None):
         w_result = []
         if self._storage is not None:
             w_item = self._items[a_item_id]
@@ -170,6 +171,8 @@ class AbsManager(IManager):
 
                         if not w_private_field and "private_property" in w_item:
                             # remove private field if not asked
+                            w_model["id"] = w_model["_id"]
+                            del w_model["_id"]
                             for w_priv_prop in w_item["private_property"]:
                                 if w_priv_prop in w_model:
                                     del w_model[w_priv_prop]

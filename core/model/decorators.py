@@ -23,6 +23,18 @@ def get_map_items():
     return w_items
 
 
+
+def get_map_items_emdpoint():
+    w_items = []
+    for w_key in map_item:
+        w_dict = map_item[w_key].copy()
+        del w_dict["_class"]
+        del w_dict["_class_obj"]
+
+        w_items.append(w_dict)
+    return w_items
+
+
 def has_father_item(a_item_id):
     return map_item[a_item_id].father is not None
 
@@ -157,28 +169,51 @@ def Empty():
     return decorator_property
 
 
-def Property(name, private=False):
+
+def Property(name, type="string", minLength=None, maxLength=None, minimum=None, exclusiveMinimum=None, maximum=None, exclusiveMaximum=None,  private=False):
     """ decoration that manage property with another collection """
     def decorator_property(func):
         @functools.wraps(func)
         def wrapper_proprety(*args, **kwargs):
             value = func(*args, **kwargs)
+            w_name = name
+            if name == "_id":
+                w_name= "id"
             if "_mongo_model" not in  args[0].__dict__:
                 args[0]._mongo_model = {}
             if isinstance(args[1],YDict):
-                args[0]._mongo_model[name] = args[1]._mongo_model
+                args[0]._mongo_model[w_name] = args[1]._mongo_model
             else:
-                args[0]._mongo_model[name] = args[1]
+                args[0]._mongo_model[w_name] = args[1]
 
             w_item = map_item_by_class[args[0].__class__.__name__]
-            w_item["schema"]["properties"][name] = {
-                "type": "string",
-                "description": "reference to {}".format(name)
+            w_item["schema"]["properties"][w_name] = {
+                "type": type,
+                "description": "{}".format(w_name)
             }
+            if minLength:
+                w_item["schema"]["properties"][w_name]["minLength"] = minLength
+
+            if maxLength:
+                w_item["schema"]["properties"][w_name]["maxLength"] = maxLength
+
+            if minimum:
+                w_item["schema"]["properties"][w_name]["minimum"] = minimum
+
+            if exclusiveMinimum:
+                w_item["schema"]["properties"][w_name]["exclusiveMinimum"] = exclusiveMinimum
+
+            if maximum:
+                w_item["schema"]["properties"][w_name]["maximum"] = maximum
+
+            if exclusiveMaximum:
+                w_item["schema"]["properties"][w_name]["exclusiveMaximum"] = exclusiveMaximum
+
+
             if "private_property" not in w_item:
                 w_item["private_property"] = []
             if private and name not in w_item["private_property"]:
-                w_item["private_property"].append(name)
+                w_item["private_property"].append(w_name)
             return value
         return wrapper_proprety
     return decorator_property
