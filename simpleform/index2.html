@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)https://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>Y.Cappuccino Simple Form </title>
+      <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+      <link rel="stylesheet" href="css/default.css">
+      <!--  js  -->
+      <script src="./angularjs/angular.js"></script>
+      <script src="./angularjs/angular-resource.min.js"></script>
+      <script src="./jquery/jquery.min.js"></script>
+      <script src="./module/restapi/restapi.module.js"></script>
+      <script src="./module/restapi/restapi.service.js.mdl"></script>
+      <script src="./module/main/main-app.js"></script>
+      <script src="./module/main/main-controller.js"></script>
+      <!-- Custom styles for this template -->
+      <link href="./test_files/dashboard.css" rel="stylesheet">
+   </head>
+   <body ng-app="mainApp" ng-controller="mainCtrl" >
+      <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" ng-hide='!loginOk'>
+         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Company name</a>
+         <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+         <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap" ng-repeat="item in items">
+               <a class="nav-link" href="#item={{item}}&target=listTarget" ng-click="list(item)">{{item}}</a>
+            </li>
+         </ul>
+      </nav>
+      <div class="container-fluid">
+      <div class="row">
+         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+         </nav>
+         <!-- Section: login -->
+         <section class=" text-center text-lg-start" ng-hide='loginOk'>
+            <style>
+               .rounded-t-5 {
+               border-top-left-radius: 0.5rem;
+               border-top-right-radius: 0.5rem;
+               }
+               @media (min-width: 992px) {
+               .rounded-tr-lg-0 {
+               border-top-right-radius: 0;
+               }
+               .rounded-bl-lg-5 {
+               border-bottom-left-radius: 0.5rem;
+               }
+               }
+            </style>
+            <div class="card mb-3" >
+               <div class="row g-0 d-flex align-items-center">
+                  <div class="col-lg-4 d-none d-lg-flex">
+                     <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" alt="Trendy Pants and Shoes"
+                        class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
+                  </div>
+                  <div class="col-lg-8">
+                     <div class="card-body py-5 px-md-5">
+                        <form>
+                           <!-- Email input -->
+                           <div class="form-outline mb-4">
+                              <input type="email" id="form2Example1" class="form-control" />
+                              <label class="form-label" for="form2Example1">Email address</label>
+                           </div>
+                           <!-- Password input -->
+                           <div class="form-outline mb-4">
+                              <input type="password" id="form2Example2" class="form-control" />
+                              <label class="form-label" for="form2Example2">Password</label>
+                           </div>
+                           <!-- 2 column grid layout for inline styling -->
+                           <div class="row mb-4">
+                              <div class="col d-flex justify-content-center">
+                                 <!-- Checkbox -->
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+                                    <label class="form-check-label" for="form2Example31"> Remember me </label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                                 <!-- Simple link -->
+                                 <a href="#!">Forgot password?</a>
+                              </div>
+                           </div>
+                           <!-- Submit button -->
+                           <button type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <!-- action list -->
+         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom" ng-hide='!listTarget'>
+               <h1 class="h2">Dashboard</h1>
+               <div class="btn-toolbar mb-2 mb-md-0">
+                  <div class="btn-group mr-2">
+                     <button ng-click="create()">nouveau</button>
+                  </div>
+               </div>
+            </div>
+            <!-- list value -->
+            <div class="container-fluid sidebar-sticky" ng-hide='!listTarget'>
+               <div class="row">
+                  <div class="table-responsive">
+                     <table class="table table-striped table-sm">
+                        <thead>
+                           <tr>
+                              <th ng-repeat="w_item in fields">{{w_item}}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr ng-repeat="w_model in list_model">
+                              <th scope="row">{{list_model.indexOf(w_model)+1}}</th>
+                              <td ng-repeat="w_key in fields" ng-if="w_key == 'id'" ng-click="read(w_model[w_key])" ><a href="#item={{item_choose}}&target=read&id={{w_model['id']}}">{{w_model[w_key]}}</a></td>
+                              <td ng-repeat="w_key in fields" ng-if="w_key != 'id'"  >{{w_model[w_key]}}</td>
+                              <td><button  ng-click="remove(w_model[w_key])">supprimer</button></td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+         </main>
+         </div>
+      </div>
+   </body>
+</html>
