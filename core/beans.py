@@ -30,13 +30,13 @@ class EndpointResponse(object):
                 if isinstance(self._body, dict):
                     w_resp["data"] = self._body
                 if isinstance(self._body, Model):
-                    w_resp["data"]  = self._body.__dict__
+                    w_resp["data"]  = self._body._mongo_model
                 elif isinstance(self._body, list) :
                     w_body = []
                     if len(self._body) > 0 :
                         if isinstance(self._body[0], Model):
                             for w_model in self._body:
-                                w_body.append(w_model.__dict__)
+                                w_body.append(w_model._mongo_model)
                         else:
                             for w_json in self._body:
                                 w_body.append(w_json)

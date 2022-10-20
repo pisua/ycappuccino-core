@@ -10,8 +10,8 @@ def empty():
 
 @Item(collection="roles", name="role", plural="roles", app="core", secureWrite=True, secureRead=True)
 class Role(Model):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, a_dict=None):
+        super().__init__(a_dict)
         self._name = None
         self._permissions = None
 

@@ -20,6 +20,8 @@ class Login(Model):
         self._login = None
         self._account_ref = None
 
+
+
     @Property(name="login")
     def login(self, a_value):
         self._login = a_value
@@ -31,7 +33,6 @@ class Login(Model):
     @Property(name="password")
     def _private_password(self, a_value):
         self._password = a_value
-
 
     def password(self, a_value):
         self.salt(os.urandom(32).hex())

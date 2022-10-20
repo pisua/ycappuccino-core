@@ -68,7 +68,7 @@ class AccountBootStrap(IBootStrap):
         w_client_path_default.priority(0)
         w_client_path_default.secure(False)
 
-        self._manager_login.up_sert_model("default", w_client_path_default)
+        self._manager_client_path.up_sert_model("default", w_client_path_default)
 
         w_client_path_swagger = ClientPath()
         w_client_path_swagger.id("swagger")
@@ -78,7 +78,7 @@ class AccountBootStrap(IBootStrap):
 
         w_client_path_swagger.secure(False)
 
-        self._manager_login.up_sert_model("swagger", w_client_path_swagger)
+        self._manager_client_path.up_sert_model("swagger", w_client_path_swagger)
 
         w_client_path_swagger = ClientPath()
         w_client_path_swagger.id("simpleform")
@@ -88,7 +88,7 @@ class AccountBootStrap(IBootStrap):
 
         w_client_path_swagger.secure(False)
 
-        self._manager_login.up_sert_model("simpleform", w_client_path_swagger)
+        self._manager_client_path.up_sert_model("simpleform", w_client_path_swagger)
 
     @Validate
     def validate(self, context):

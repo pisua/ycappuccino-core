@@ -21,12 +21,13 @@ class AbsService(IService, ILoginService):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
         w_login = self._manager_login.get_one("login", a_login)
 
-        w_concat = "{}{}".format(w_login.__dict__["salt"], a_password).encode("utf-8")
+        w_concat = "{}{}".format(w_login.__dict__["_salt"], a_password).encode("utf-8")
         result = hashlib.md5(w_concat).hexdigest()
 
-        if w_login.__dict__["password"] == result:
+        if w_login.__dict__["_password"] == result:
             w_login.password(a_new_password)
-            self._manager_login.up_sert_model(w_login["_id"], w_login)
+            return self._manager_login.up_sert_model(w_login._id, w_login)
+
         return None
 
 
@@ -34,10 +35,10 @@ class AbsService(IService, ILoginService):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
         w_login = self._manager_login.get_one("login",  a_login)
 
-        w_concat = "{}{}".format(w_login.__dict__["salt"], a_password).encode("utf-8")
+        w_concat = "{}{}".format(w_login._salt, a_password).encode("utf-8")
         result = hashlib.md5(w_concat).hexdigest()
 
-        if w_login.__dict__["password"] == result:
+        if w_login._password == result:
             w_token = self._jwt.generate(a_login)
             return w_token
         return None
@@ -107,16 +108,23 @@ class ChangePasswordService(AbsService):
         self._manager_login = None
         self._log = None
 
+
+    def is_secure(self):
+        return True
+
+
     def get_name(self):
         return "change_password"
 
     def post(self, a_header, a_params, a_body):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
 
-        self.change_password(a_body["login"], a_body["password"], a_body["new_password"])
-        return {}, {
-            "login": a_body
-        }
+        w_new = self.change_password(a_body["login"], a_body["password"], a_body["new_password"])
+        if w_new is not None:
+            return {}, {
+                "login": a_body
+            }
+        return None, None
 
 
     def put(self, a_header, a_params, a_body):

@@ -12,6 +12,8 @@ map_item_by_class = {}
 # identified list of ref by class name on source item
 map_item_link = {}
 
+def get_item_by_class(a_class):
+    return map_item_by_class[a_class.__name__]
 
 def get_item(a_id):
     return map_item[a_id]
@@ -177,8 +179,7 @@ def Property(name, type="string", minLength=None, maxLength=None, minimum=None, 
         def wrapper_proprety(*args, **kwargs):
             value = func(*args, **kwargs)
             w_name = name
-            if name == "_id":
-                w_name= "id"
+
             if "_mongo_model" not in  args[0].__dict__:
                 args[0]._mongo_model = {}
             if isinstance(args[1],YDict):

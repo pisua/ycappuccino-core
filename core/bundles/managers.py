@@ -111,14 +111,14 @@ class AbsManager(IManager):
                             w_private_field = True
 
                     for w_model in res:
-                        w_model["id"] = w_model["_id"]
-                        del w_model["_id"]
                         if not w_private_field and "private_property" in w_item:
                             # remove private field if not asked
                             for w_priv_prop in w_item["private_property"] :
                                 if w_priv_prop in w_model:
                                     del w_model[w_priv_prop]
-                        w_result = Model(w_model)
+                        w_instance = w_item["_class_obj"](w_model)
+                        w_instance.on_read()
+                        w_result = w_instance
         return w_result
 
     def get_schema(self, a_item_id):
@@ -176,7 +176,9 @@ class AbsManager(IManager):
                             for w_priv_prop in w_item["private_property"]:
                                 if w_priv_prop in w_model:
                                     del w_model[w_priv_prop]
-                        w_result.append(Model(w_model))
+                        w_instance = w_item["_class_obj"](w_model)
+                        w_instance.on_read()
+                        w_result.append(w_instance)
         return w_result
 
     def up_sert(self, a_item_id, a_id, a_new_field):
@@ -187,6 +189,7 @@ class AbsManager(IManager):
 
             if w_item is not None:
                 model = w_item["_class_obj"]()
+                model.on_update()
                 for prop in a_new_field:
                     getattr(model,prop)(a_new_field[prop])
                 res = self._up_sert(w_item, a_id, model.__dict__)
@@ -197,7 +200,7 @@ class AbsManager(IManager):
     def _up_sert(self, a_item, a_id, a_new_field):
         res = self._storage.up_sert(a_item, a_id, a_new_field)
         if res is not None:
-            return Model(res)
+            return res
 
     def up_sert_model(self, a_id, a_model):
         """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the model create """
@@ -209,14 +212,14 @@ class AbsManager(IManager):
 
                 res = self._up_sert(w_item, a_id, a_model.__dict__)
                 if res is not None:
-                    return Model(res)
+                    return res
         return None
 
     def up_sert_many(self, a_item_id,a_new_fields):
         res = []
 
         for w_dict in a_new_fields:
-            w_res = self.up_sert(a_item_id, w_dict.id,w_dict)
+            w_res = self.up_sert(a_item_id, w_dict._id,w_dict)
 
             if w_res is not None:
                 res.append(w_res)
@@ -226,7 +229,7 @@ class AbsManager(IManager):
         res = []
 
         for w_dict in a_new_models:
-            w_res = self.up_sert_model( w_dict.id, w_dict)
+            w_res = self.up_sert_model( w_dict._id, w_dict)
 
             if w_res is not None:
                 res.append(w_res)

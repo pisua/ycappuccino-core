@@ -1,4 +1,4 @@
-from ycappuccino.core.api import IActivityLogger, IManager, IBootStrap, YCappuccino, IClientIndexPathFactory, IClientIndexPath
+from ycappuccino.core.api import IActivityLogger, IManager, IBootStrap, YCappuccino, IClientIndexPathFactory, IClientIndexPath, IConfiguration
 import logging, os
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property,  Provides, Instantiate, BindField, UnbindField
 from pelix.ipopo.constants import use_ipopo
@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 @ComponentFactory('ClientPath-Factory')
 @Provides(specifications=[IClientIndexPath.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
+@Requires("_config", IConfiguration.name)
 @Property('_id', "id", "default")
 @Property('_subpath', "subpath", "client")
 @Property('_secure', "secure", False)
@@ -30,6 +31,7 @@ class ClientPath(IClientIndexPath):
         self._id = None
         self._priority = None
         self._subpath = None
+        self._config = None
 
     def get_path(self):
         w_path =[self.path_app+self._subpath,self.path_core+self._subpath]
@@ -107,16 +109,16 @@ class ClientPathFactory(IClientIndexPathFactory):
 
     def create_client_path(self, a_model,   a_bundle_context):
 
-        if a_model.id not in self._map_client_path.keys():
+        if a_model._id not in self._map_client_path.keys():
             with use_ipopo(a_bundle_context) as ipopo:
                 # use the iPOPO core service with the "ipopo" variable
-                if "subpath" in a_model.__dict__.keys():
-                    ipopo.instantiate("ClientPath-Factory", "ClientPath-{}".format(a_model.id),
-                                      {"id": a_model.path,"subpath":a_model.subpath,"priority":a_model.priority,  "secure": a_model.secure} )
+                if "_subpath" in a_model.__dict__.keys():
+                    ipopo.instantiate("ClientPath-Factory", "ClientPath-{}".format(a_model._id),
+                                      {"id": a_model._path,"subpath":a_model._subpath,"priority":a_model._priority,  "secure": a_model._secure} )
                 else:
-                    ipopo.instantiate("ClientPath-Factory", "ClientPath-{}".format(a_model.id),
-                                      {"id": a_model.path, "subpath": "","priority":a_model.priority, "secure": a_model.secure})
-                self._map_client_path[a_model.id] = True
+                    ipopo.instantiate("ClientPath-Factory", "ClientPath-{}".format(a_model._id),
+                                      {"id": a_model._path, "subpath": "","priority":a_model._priority, "secure": a_model._secure})
+                self._map_client_path[a_model._id] = True
 
     def create_client_paths(self):
         if self._context is not None:
