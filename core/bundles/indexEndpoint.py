@@ -103,10 +103,10 @@ class IndexEndpoint(object):
 
     def manage_blob(self, a_path):
         """ return the content of the blob"""
-
-        with open(a_path,mode = "rb") as f:
-            w_lines = f.read()
-            return w_lines
+        if os.path.exists(a_path):
+            with open(a_path,mode = "rb") as f:
+                w_lines = f.read()
+                return w_lines
 
 
     def _call_decorator_factory(self, to_added_line,  a_factory_name, a_component_prop):
@@ -278,8 +278,10 @@ class IndexEndpoint(object):
                 w_lines_str = self.manage_clob(w_path)
             elif is_blob:
                 w_lines_str = self.manage_blob(w_path)
-
-            response.send_content(200, w_lines_str, mimetypes.guess_type(w_req_path)[0])
+            if w_lines_str is None:
+                response.send_content(404,"")
+            else:
+                response.send_content(200, w_lines_str, mimetypes.guess_type(w_req_path)[0])
         except Exception as e:
             _logger.info("fail to return content for path {}".format(w_path))
             _logger.exception(e)

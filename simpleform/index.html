@@ -45,13 +45,14 @@
 		<table class="table">
 			<thead class="thead-light">
 				<tr>
+					<th scope="col"></th>
 					<th scope="col" ng-repeat="w_item in fields">{{w_item}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="w_model in list_model">
 					<th scope="row">{{list_model.indexOf(w_model)+1}}</th>
-					<td ng-repeat="w_key in fields" ng-if="w_key == 'id'" ng-click="read(w_model[w_key])" ><a href="#item={{item_choose}}&target=read&id={{w_model['id']}}">{{w_model[w_key]}}</a></td>
+					<td ng-repeat="w_key in fields" ng-if="w_key == 'id'" ng-click="read(w_model[w_key])" ><a href="#item={{item_choose}}&target=read&id={{w_model['id']}}">{{w_model['id']}}</a></td>
 					<td ng-repeat="w_key in fields" ng-if="w_key != 'id'"  >{{w_model[w_key]}}</td>
 					<td><button  ng-click="remove(w_model[w_key])">delete</button></td>
 
@@ -59,12 +60,12 @@
 			</tbody>
 		</table>
 	</div>
-	<div id="formItemUpdate pull-right" >
+	<div id="formItemUpdate" >
 		<button  ng-hide="!detailTarget" ng-click="update()">update</button>
 
 	</div>
 
-	<div id="htmlForm" ng-hide="!detailTarget" class="form-group row pull-right">
+	<div id="htmlForm" ng-hide="!detailTarget" class="form-group row ">
 
 	</div>
 	<footer class="container-fluid">

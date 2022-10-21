@@ -145,9 +145,9 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                    model[key] = document.getElementById(key).value
                 });
             }
-           if ( model["id"] ){
+           if ( model["_id"] ){
                 var w_update = new restapiServivce[$scope.item_choose](model)
-                w_update.$update({"id":model["id"]}, function(aData) {
+                w_update.$update({"id":model["_id"]}, function(aData) {
                     $scope.listTarget = $scope.loginOk
                     $scope.detailTarget = !$scope.listTarget
                 })
@@ -162,7 +162,11 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                 $scope.schema = aData.data;
                 $scope.fields = []
                 Object.keys($scope.schema.properties).forEach(function(key){
-                    $scope.fields.push(key)
+                    if (key == "_id"){
+                        $scope.fields.push("id")
+                    }else{
+                        $scope.fields.push(key)
+                    }
                 });
             })
 

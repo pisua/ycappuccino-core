@@ -191,7 +191,11 @@ class AbsManager(IManager):
                 model = w_item["_class_obj"]()
                 model.on_update()
                 for prop in a_new_field:
-                    getattr(model,prop)(a_new_field[prop])
+                    if prop[0] == "_":
+                        getattr(model,prop[1:])(a_new_field[prop])
+                    else:
+                        getattr(model,prop)(a_new_field[prop])
+
                 res = self._up_sert(w_item, a_id, model.__dict__)
                 if res is not None:
                     return Model(res)
