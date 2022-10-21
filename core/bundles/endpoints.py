@@ -38,6 +38,7 @@ class Endpoint(IEndpoint):
         """  """
         w_path = request.get_path()
         w_header = request.get_headers()
+        _logger.info("get path={}".format( w_path))
 
         if "swagger.json" in w_path:
             w_resp = self.get_swagger_descriptions(["https","http"])
@@ -55,6 +56,7 @@ class Endpoint(IEndpoint):
             w_str = request.read_data().decode()
             w_path = request.get_path()
             w_json = json.loads(w_str)
+            _logger.info("post path={}, data={}".format(w_path, w_str))
 
             w_resp = self.post(w_path, w_header, w_json)
 
@@ -70,6 +72,7 @@ class Endpoint(IEndpoint):
         w_path = request.get_path()
         w_header = request.get_headers()
         w_json = json.loads(w_str)
+        _logger.info("put path={}, data={}".format(w_path, w_str))
 
         w_resp = self.put(w_path, w_header, w_json)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
@@ -78,6 +81,7 @@ class Endpoint(IEndpoint):
         """ """
         w_path = request.get_path()
         w_header = request.get_headers()
+        _logger.info("delete path={}".format( w_path))
 
         w_resp = self.delete(w_path, w_header)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
@@ -92,13 +96,17 @@ class Endpoint(IEndpoint):
                 return False
         elif "Cookie" in a_headers:
             w_cookies = a_headers["Cookie"]
+            w_token = ""
             if ";" in w_cookies:
                 w_arr = w_cookies.split(";")
                 for w_cookie in w_arr:
                     if "_ycappuccino" in w_cookie:
                         w_token = w_cookie.split("=")[1]
-                        return self._jwt.verify(w_token)
-                return False
+            else:
+                w_token = w_cookies.split("=")[1]
+            _logger.info("token {}".format(w_token))
+            return self._jwt.verify(w_token)
+
 
     def find_service(self, a_service_name):
         if a_service_name not in self._map_services:
@@ -139,6 +147,7 @@ class Endpoint(IEndpoint):
             w_service = self.find_service(w_service_name)
             if w_service is not None:
                 if w_service.is_secure() and not self.check_header(a_headers):
+                    _logger.info("failed authorization service ")
                     return EndpointResponse(401)
                 else:
                     w_header, w_body = w_service.post(a_headers, w_url_path.get_params(), a_body)
@@ -179,6 +188,8 @@ class Endpoint(IEndpoint):
             w_service = self.find_services(w_service_name)
             if w_service is not None:
                 if w_service.is_secure() and not self.check_header(a_headers):
+                    _logger.info("failed authorization service ")
+
                     return EndpointResponse(401)
                 else:
                     w_header, w_body = w_service.put(a_headers, w_url_path.get_params(), a_body)
@@ -225,6 +236,8 @@ class Endpoint(IEndpoint):
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
                 if w_item["secureRead"] and not self.check_header(a_headers):
+                    _logger.info("failed authorization service ")
+
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
                     w_resp = w_manager.get_one(w_item["id"], w_url_path.get_params()["id"], w_url_path.get_params())
@@ -260,6 +273,8 @@ class Endpoint(IEndpoint):
             w_service = self.find_services(w_service_name)
             if w_service is not None:
                 if w_service.is_secure() and not self.check_header(a_headers):
+                    _logger.info("failed authorization service ")
+
                     return EndpointResponse(401)
                 else:
                     w_header, w_body = w_service.get(a_headers, w_url_path.get_params())

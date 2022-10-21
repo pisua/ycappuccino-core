@@ -32,13 +32,15 @@ class Jwt(IJwt):
 
     def generate(self,login):
         # tody manage right / account / tenant
-        milliseconds = int(round(time.time() * 1000))+self._timeout
-        return jwt.encode({'iss': 'auth0', 'login': login, "iat": milliseconds }, self._key , algorithm='HS256')
+        seconds = int(round(time.time()))
+        exp = int(round(time.time()))+self._timeout
+
+        return jwt.encode({'sub': login, "iat": seconds, "exp" : exp }, self._key , algorithm='HS256')
 
     def verify(self, a_token):
         w_res = jwt.decode(a_token, self._key, algorithms='HS256')
-        milliseconds = int(round(time.time() * 1000))
-        if w_res is not None and "iat" in w_res and w_res["iat"] > milliseconds:
+        seconds = int(round(time.time() ))
+        if w_res is not None and "exp" in w_res and w_res["exp"] > seconds:
             return True
         return False
 

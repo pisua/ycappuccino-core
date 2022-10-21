@@ -1,4 +1,4 @@
-from ycappuccino.core.api import IActivityLogger, IManager, IService, YCappuccino, IJwt,ILoginService
+from ycappuccino.core.api import IActivityLogger, IManager, IService, YCappuccino, IJwt, ILoginService
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 import hashlib
@@ -19,6 +19,8 @@ class AbsService(IService, ILoginService):
 
     def change_password(self, a_login, a_password, a_new_password):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
+        _logger.info("change password")
+
         w_login = self._manager_login.get_one("login", a_login)
 
         w_concat = "{}{}".format(w_login.__dict__["_salt"], a_password).encode("utf-8")
@@ -26,6 +28,8 @@ class AbsService(IService, ILoginService):
 
         if w_login.__dict__["_password"] == result:
             w_login.password(a_new_password)
+            _logger.info(" password changed")
+
             return self._manager_login.up_sert_model(w_login._id, w_login)
 
         return None
@@ -118,12 +122,15 @@ class ChangePasswordService(AbsService):
 
     def post(self, a_header, a_params, a_body):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
+        _logger.info("post change password")
 
         w_new = self.change_password(a_body["login"], a_body["password"], a_body["new_password"])
         if w_new is not None:
             return {}, {
                 "login": a_body
             }
+
+        _logger.info("post change password failed")
         return None, None
 
 

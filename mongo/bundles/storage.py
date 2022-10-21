@@ -82,7 +82,7 @@ class MongoStorage(IStorage):
         count = self._db[a_item["collection"]].count_documents(w_filter)
 
         if res != None and count != 0:
-            model = Model(res[0])
+            model = a_item["_class_obj"](res[0])
             model._mongo_model = res[0]
 
             if "_mongo_model" in a_new_dict:
