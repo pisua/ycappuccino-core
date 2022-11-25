@@ -11,10 +11,12 @@ def empty():
 
     return _empty
 
-@Item(collection="medias", name="media", plural="medias", app="core", secureWrite=True, secureRead=True)
+
+@Item(collection="medias", name="media", plural="medias", app="core", secure_write=True, secure_read=True,
+      multipart="path")
 class Media(Model):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, a_dict=None):
+        super().__init__(a_dict)
         self._file_name = None
         self._path = None
         self._extension = None

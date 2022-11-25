@@ -2,8 +2,9 @@ from ycappuccino.core.model.decorators import Item, Property,  Reference, ItemRe
 from ycappuccino.core.model.model import Model
 _empty = None
 
-@Item(collection="layouts", name="layout", plural="layouts", app="core.ui", secureWrite=True, secureRead=True)
-@ItemReference(field="_layout_parent", item="layout")
+
+@Item(collection="layouts", name="layout", plural="layouts", app="core.ui", secure_write=True, secure_read=True)
+@ItemReference(from_name="layout",field="_layout_parent", item="layout")
 class Layout(Model):
     """ describe an account in the application """
     def __init__(self, a_dict=None):

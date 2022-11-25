@@ -1,17 +1,19 @@
 from ycappuccino.core.api import IEndpoint, IActivityLogger, IJwt, IManager, IItemManager, IService, IProxyManager
 import uuid
 import pelix.http
+import multipart
+import os
 import pelix.remote
 import logging
 import json
 from ycappuccino.core.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate, Property
 import ycappuccino.core.model.decorators
-
+import base64
 
 _logger = logging.getLogger(__name__)
 
-from  ycappuccino.core.bundles import util_swagger
+from ycappuccino.core.bundles import util_swagger
 
 @ComponentFactory('Endpoint-Factory')
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
@@ -33,6 +35,7 @@ class Endpoint(IEndpoint):
         self._item_manager = None
         self._services = None
         self._map_services = {}
+        self._file_dir = None
 
     def do_GET(self, request, response):
         """  """
@@ -50,11 +53,16 @@ class Endpoint(IEndpoint):
         """ """
         w_header = request.get_headers()
         w_resp = None
-        if "multipart/form-data" in w_header:
-            pass
+        w_data = request.read_data()
+        w_path = request.get_path()
+
+        if w_header["Content-Type"] == "multipart/form-data":
+            # need to parse multipart
+
+            self.upload_media(w_path, w_header, w_data)
+            print(w_data)
         else:
-            w_str = request.read_data().decode()
-            w_path = request.get_path()
+            w_str = w_data.decode()
             w_json = json.loads(w_str)
             _logger.info("post path={}, data={}".format(w_path, w_str))
 
@@ -120,6 +128,37 @@ class Endpoint(IEndpoint):
 
         return None
 
+    def upload_media(self, a_path, a_headers,  a_content):
+        w_url_path = UrlPath(a_path)
+        if w_url_path.is_crud():
+            w_item_plural = w_url_path.get_item_plural_id()
+            w_manager = self.find_manager(w_item_plural)
+            if w_manager is not None:
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+                if w_item["secureWrite"] and not self.check_header(a_headers):
+                    return EndpointResponse(401)
+
+                w_id = w_url_path.get_params()["id"]
+                if w_url_path.is_draft():
+                    # concat the draft id
+                    w_id = w_id + "_" + w_url_path.get_draft()
+
+                # create file in data
+                w_filename = "test"
+                w_path = self._file_dir+"/"+w_filename;
+                with open(w_path,"w") as f:
+                    f.write(a_content)
+
+                w_instance = w_manager.get_aggregate_one(w_item["id"], w_id)
+                w_instance[w_item["multipart"]] = w_path
+                w_manager.up_sert(w_item["id"], w_id, w_instance.__dict__)
+                w_meta = {
+                    "type": "object"
+                }
+                return EndpointResponse(201, None, w_meta, {"id": w_id})
+            else:
+                return EndpointResponse(405)
+
     def post(self,a_path, a_headers, a_body):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():
@@ -133,6 +172,9 @@ class Endpoint(IEndpoint):
                     w_id = a_body["id"]
                 else:
                     w_id = str(uuid.uuid4())
+                if w_url_path.is_draft():
+                    # concat the draft id
+                    w_id = w_id + "_" + w_url_path.get_draft()
                 w_manager.up_sert(w_item["id"], w_id, a_body)
                 w_meta = {
                     "type": "array"
@@ -173,6 +215,9 @@ class Endpoint(IEndpoint):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and w_url_path.get_params()["id"] is not None:
                     w_id = w_url_path.get_params()["id"]
+                    if w_url_path.is_draft():
+                        # concat the draft id
+                        w_id = w_id + "_" + w_url_path.get_draft()
                     w_manager.up_sert(w_item["id"], w_id, a_body)
                     w_meta = {
                         "type": "array",
@@ -240,14 +285,33 @@ class Endpoint(IEndpoint):
 
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
-                    w_resp = w_manager.get_one(w_item["id"], w_url_path.get_params()["id"], w_url_path.get_params())
+                    w_id = w_url_path.get_params()["id"]
+                    if w_url_path.is_draft():
+                        # concat the draft id
+                        w_id = w_id + "_" + w_url_path.get_draft()
+                    w_resp = w_manager.get_one(w_item["id"], w_id, w_url_path.get_params())
+                    if w_resp is None:
+                        w_resp = w_manager.get_one(w_item["id"], w_url_path.get_params()["id"], w_url_path.get_params())
                     w_meta = {
                         "type": "object",
                         "size": 1
                     }
                 else:
 
-                    w_resp = w_manager.get_many(w_item["id"],w_url_path.get_params())
+                    w_resp_temp = w_manager.get_aggregate_many(w_item["id"],w_url_path.get_params())
+                    w_resp = []
+                    if w_url_path.is_draft():
+                        # check if duplicate element with draft exists and only keep the draft one
+                        w_draft =  w_url_path.get_draft()
+                        w_to_removes = []
+                        for w_elem in w_resp_temp:
+                            if w_draft in w_elem["_id"]:
+                                w_to_removes.append(w_elem["_id"][0:-len(w_draft)+1])
+                        for w_elem in w_resp:
+                            if w_elem["_id"] not in w_to_removes:
+                                w_resp.append(w_elem)
+                    else:
+                        w_resp = w_resp_temp
                     w_meta = {
                         "type": "array",
                         "size": len(w_resp)
@@ -263,6 +327,21 @@ class Endpoint(IEndpoint):
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
                 w_resp = w_manager.get_schema(w_item["id"])
+                w_meta = {
+                    "type": "object",
+                    "size": 1
+                }
+                return EndpointResponse(200, None, w_meta, w_resp)
+        elif w_url_path.is_multipart():
+            w_item_plural = w_url_path.get_item_plural_id()
+
+            w_manager = self.find_manager(w_item_plural)
+            if w_manager is not None:
+                w_item = w_manager.get_item_from_id_plural(w_item_plural)
+
+                w_resp = {
+                    "is_multipart" : w_item["multipart"] is not None
+                }
                 w_meta = {
                     "type": "object",
                     "size": 1
@@ -361,6 +440,13 @@ class Endpoint(IEndpoint):
     def validate(self, context):
         _logger.info("Endpoint validating")
 
+        w_data_path = os.getcwd() + "/data"
+        if not os.path.isdir(w_data_path):
+            os.mkdir(w_data_path)
+
+        self._file_dir = os.path.join(w_data_path, "files")
+        if not os.path.isdir(self._file_dir):
+            os.mkdir(self._file_dir)
         _logger.info("Endpoint validated")
 
     @Invalidate

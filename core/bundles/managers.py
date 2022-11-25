@@ -73,21 +73,86 @@ class AbsManager(IManager):
         return ids
 
 
-    def aggregate(self, a_item_id, a_id, a_expand):
-        """ return the element with an aggregation with item define in a_expand expression
-            e.g : /services/item1/id?expand=item2,item3
-            @param a_item_id : id of the item to read to retreive collection
-            @param a_id : id of the document link to the item to read
-            @param a_expand :  list of aggregate item to expand the expand admit this kind of url => item2[(filter={}|count|offset=0limit=10|sort=toto(asc))]
-        """
-        w_expands = []
-        if a_expand is not None:
-            w_expands = a_expand.split(",")
-        if a_item_id in self._items and  len(w_expands) > 0:
-            w_item = self._items[a_item_id]
-            for w_expand_item in w_expands:
-                if w_expand_item in w_item["refs"]:
-                    pass
+
+
+    def _generate_pipeline(self, a_item ,a_filter, a_expand, a_select=None):
+        w_pipeline = None
+        w_expand_split = a_expand.split(",")
+        for w_exp in w_expand_split:
+            w_item_target_id = w_exp
+            w_item_target_constraint = None
+            w_lookup_params = {}
+
+            if "(" in w_exp :
+                w_item_target_id = w_exp[0:w_exp.index("(")]
+                w_item_target_constraint = w_exp[w_exp.index("(")+1:w_exp.index(")")]
+                w_lookup_params_str = None
+                if "|" in w_item_target_constraint:
+                    w_lookup_params_str = w_item_target_constraint.split("|")
+                else:
+                    w_lookup_params_str = w_item_target_constraint
+                if w_lookup_params_str is not None:
+                    w_lookup_params_splitted = {}
+                    for w_elem in w_lookup_params_str:
+                        if "=" in w_elem:
+                            w_lookup_params[ w_elem.split("=")[0]] =  w_elem.split("=")[1]
+
+            if "refs" in a_item.keys() and w_item_target_id in a_item["refs"]:
+                if w_pipeline is None:
+                   w_pipeline = {
+                       "filter": {},
+                       "lookup": [],
+                       "group": [],
+                       "project": []
+                   }
+                w_prop_lookup = a_item["refs"][w_item_target_id][w_item_target_id+".ref"]
+                w_item_target = self._items[w_item_target_id]
+                # add lookup
+                w_pipeline["lookup"].append({
+                    "$lookup": {
+                       "from": w_item_target["collection"],
+                       "let": {
+                           "localid":  "$"+w_prop_lookup["local_field"]
+                       },
+                       "pipeline": [
+                            {
+                                "$match": {
+                                    "$and":[
+                                        {
+                                            "$expr":{
+                                                "$eq":["$"+w_prop_lookup["foreign_field"],"$$localid"]
+                                            }
+                                        },
+                                        w_lookup_params["filter"] if "filter" in w_lookup_params.keys() else {}
+                                    ]
+                                }
+
+                            }
+                       ],
+                       "as": w_item_target_id+"_doc"
+                     }
+                })
+                # add undind
+                w_pipeline["lookup"].append({
+                    "$unwind": {
+                        "path": "$"+w_item_target_id+"_doc",
+                        "preserveNullAndEmptyArrays" : True
+                    }
+                })
+
+
+
+        w_pipeline_arr = []
+        if w_pipeline is not None:
+            if len(w_pipeline["filter"].keys()) > 0:
+                w_pipeline_arr.append(w_pipeline["filter"])
+            for w_elem in w_pipeline["lookup"]:
+                w_pipeline_arr.append(w_elem)
+
+            for w_elem in reversed(w_pipeline["group"]):
+                w_pipeline_arr.append(w_elem)
+
+        return w_pipeline_arr
 
 
     def get_one(self, a_item_id, a_id, a_params=None):
@@ -104,21 +169,75 @@ class AbsManager(IManager):
                 }
 
                 res = self._storage.get_one(w_item["collection"], w_filter)
-                if res is not None:
-                    w_private_field = False
-                    if a_params is not None and "content" in a_params:
-                        if "privateField" in a_params["content"]:
-                            w_private_field = True
+                w_result = self._manage_return_result_from_one_instance(w_item, res, a_params)
 
-                    for w_model in res:
-                        if not w_private_field and "private_property" in w_item:
-                            # remove private field if not asked
-                            for w_priv_prop in w_item["private_property"] :
-                                if w_priv_prop in w_model:
-                                    del w_model[w_priv_prop]
-                        w_instance = w_item["_class_obj"](w_model)
-                        w_instance.on_read()
-                        w_result = w_instance
+        return w_result
+
+    def get_aggregate_one(self, a_item_id, a_id, a_params=None):
+        w_result = None
+        if self._storage is not None:
+            w_item = self._items[a_item_id]
+            if w_item is not None:
+                w_items = self.get_sons_item_id(w_item)
+                w_filter = {
+                    "_id": a_id,
+                    "_item_id":{
+                        "$in":w_items
+                    }
+                }
+                if a_params is not None and "expand" in a_params:
+                    w_expand = a_params["expand"]
+                    w_filter = a_params["filter"] if  a_params.keys() else {}
+
+                    w_pipeline = self._generate_pipeline(w_item, w_filter, w_expand)
+                    if w_pipeline is not None:
+                        res = self._storage.aggregate(w_item["collection"], w_pipeline)
+                        return self._manage_return_result_from_one_instance(w_item, res,a_params)
+
+                w_result = self.get_one(a_item_id, a_id, a_params)
+
+        return w_result
+
+
+    def _manage_return_result_from_one_instance(self, a_item,  res, a_params, a_aggregate=False):
+        w_result = None
+        if res is not None:
+            w_private_field = False
+            if a_params is not None and "content" in a_params:
+                if "privateField" in a_params["content"]:
+                    w_private_field = True
+
+            for w_model in res:
+                if not w_private_field and "private_property" in a_item:
+                    # remove private field if not asked
+                    for w_priv_prop in a_item["private_property"]:
+                        if w_priv_prop in w_model:
+                            del w_model[w_priv_prop]
+                w_instance = a_item["_class_obj"](w_model)
+                w_instance.on_read(a_aggregate)
+                w_result = w_instance
+        return w_result
+
+    def _manage_return_result_from_many_instance(self, a_item, res, a_params, a_aggregate=False):
+        w_result = []
+        if res is not None:
+            w_private_field = False
+            if a_params is not None and "content" in a_params:
+                if "privateField" in a_params["content"]:
+                    w_private_field = True
+
+            for w_model in res:
+
+                if not w_private_field and "private_property" in a_item:
+                    # remove private field if not asked
+                    w_model["id"] = w_model["_id"]
+                    del w_model["_id"]
+                    for w_priv_prop in a_item["private_property"]:
+                        if w_priv_prop in w_model:
+                            del w_model[w_priv_prop]
+                w_instance = a_item["_class_obj"](w_model)
+                w_instance.on_read(a_aggregate)
+                w_result.append(w_instance)
         return w_result
 
     def get_schema(self, a_item_id):
@@ -161,24 +280,46 @@ class AbsManager(IManager):
                     "$in":w_items
                 }
                 res = self._storage.get_many(w_item["collection"], w_filter, w_offset, w_limit, w_sort)
-                if res is not None:
-                    w_private_field = False
-                    if a_params is not None and  "content" in a_params:
-                        if "privateField" in a_params["content"]:
-                            w_private_field = True
+                w_result = self._manage_return_result_from_many_instance(w_item, res,a_params)
+        return w_result
 
-                    for w_model in res:
+    def get_aggregate_many(self, a_item_id, a_params=None):
+        w_result = []
+        if self._storage is not None:
+            w_item = self._items[a_item_id]
+            if w_item is not None:
+                w_filter = {}
+                w_sort = None
+                w_offset = None
+                w_limit = None
+                w_sort = None
 
-                        if not w_private_field and "private_property" in w_item:
-                            # remove private field if not asked
-                            w_model["id"] = w_model["_id"]
-                            del w_model["_id"]
-                            for w_priv_prop in w_item["private_property"]:
-                                if w_priv_prop in w_model:
-                                    del w_model[w_priv_prop]
-                        w_instance = w_item["_class_obj"](w_model)
-                        w_instance.on_read()
-                        w_result.append(w_instance)
+                if a_params is not None and "filter" in a_params:
+                    w_filter = json.loads(a_params["filter"])
+                if a_params is not None and "limit" in a_params:
+                    w_limit = int(a_params["limit"])
+                if a_params is not None and "offset" in a_params:
+                    w_offset = int(a_params["offset"])
+                if a_params is not None and "sort" in a_params:
+                    w_sort = a_params["sort"]
+
+                w_items = self.get_sons_item_id(w_item)
+
+                w_filter["_item_id"] = {
+                    "$in": w_items
+                }
+                if a_params is not None and "expand" in a_params:
+                    w_expand = a_params["expand"]
+                    w_filter = a_params["filter"] if "filter" in a_params.keys() else {}
+
+                    w_pipeline = self._generate_pipeline(w_item, w_filter, w_expand)
+                    if w_pipeline is not None:
+                        res = self._storage.aggregate(w_item["collection"], w_pipeline)
+                        return self._manage_return_result_from_many_instance(w_item, res, a_params, True)
+
+                w_result = self.get_many(a_item_id, a_params)
+
+
         return w_result
 
     def up_sert(self, a_item_id, a_id, a_new_field):

@@ -57,9 +57,11 @@ def get_sons_item_id(a_item_id):
             w_list_son.append(w_item["id"])
     return w_list_son
 
+
 class Item(object):
     # Make copy of original __init__, so we can call it without recursion
-    def __init__(self, collection, name, plural, abstract=False,  module="system", app="core", secureRead=False,secureWrite=False):
+    def __init__(self, collection, name, plural, abstract=False,  module="system", app="core", secure_read=False,
+                 secure_write=False, multipart=None):
         self._meta_name = name
         self._meta_collection = collection
         self._meta_module = module
@@ -69,9 +71,10 @@ class Item(object):
             "abstract": abstract,
             "collection": collection,
             "plural": plural,
-            "secureRead": secureRead,
-            "secureWrite": secureWrite,
+            "secureRead": secure_read,
+            "secureWrite": secure_write,
             "app":app,
+            "multipart":multipart,
             "schema":{
                 "$id": name,
                 "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -108,6 +111,7 @@ class Item(object):
         map_item[w_id]["father"] = self._item["father"]
         map_item[w_id]["app"] = self._item["app"]
         map_item[w_id]["schema"] = self._item["schema"]
+        map_item[w_id]["multipart"] = self._item["multipart"]
 
         # create empty
 
@@ -119,9 +123,10 @@ class Item(object):
 
 class ItemReference(object):
     # Make copy of original __init__, so we can call it without recursion
-    def __init__(self, field,  item):
+    def __init__(self, from_name ,field,  item):
         self._local_field = field
         self._item_id = item
+        self._from_name = from_name
 
     def __call__(self, obj):
         a_class = obj.__name__
@@ -145,7 +150,8 @@ class ItemReference(object):
                 w_item["refs"][a_item_id][local_field + ".ref"] = {
                     "local_field": local_field + ".ref",
                     "foreign_field": "_id",
-                    "item_id": a_item_id
+                    "item_id": a_item_id,
+                    "reverse": False
                 }
                 w_item["schema"]["properties"][local_field] = {
                     "ref":{
@@ -155,6 +161,17 @@ class ItemReference(object):
                 }
 
             # TODO reverse ref
+            if a_item_id not in map_item.keys():
+                map_item[a_item_id] = {"refs":{}}
+            if "refs" not in  map_item[a_item_id]:
+                map_item[a_item_id]["refs"] = {}
+            map_item[a_item_id]["refs"][self._from_name]={}
+            map_item[a_item_id]["refs"][self._from_name][local_field + ".ref"] = {
+                "foreign_field": local_field + ".ref",
+                "local_field": "_id",
+                "item_id": self._from_name,
+                "reverse": True
+            }
         return obj
 
 def Empty():
@@ -192,6 +209,7 @@ def Property(name, type="string", minLength=None, maxLength=None, minimum=None, 
                 "type": type,
                 "description": "{}".format(w_name)
             }
+
             if minLength:
                 w_item["schema"]["properties"][w_name]["minLength"] = minLength
 

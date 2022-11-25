@@ -9,12 +9,13 @@ def empty():
     _empty.rights("test")
     return _empty
 
-@Item(collection="rolePermissions", name="rolePermission", plural="role-permissions", app="core", secureWrite=True, secureRead=True)
-@ItemReference(field="permission", item="permission")
-@ItemReference(field="role", item="role")
+
+@Item(collection="rolePermissions", name="rolePermission", plural="role-permissions", app="core", secure_write=True, secure_read=True)
+@ItemReference(from_name="rolePermission", field="permission", item="permission")
+@ItemReference(from_name="rolePermission",field="role", item="role")
 class RolePermission(Model):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, a_dict=None):
+        super().__init__(a_dict)
         self._role = None
         self._permission = None
 

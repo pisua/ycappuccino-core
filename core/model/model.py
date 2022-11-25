@@ -1,6 +1,6 @@
 from ycappuccino.core.model.decorators import Item, Property
 from ycappuccino.core.model.utils import YDict
-from ycappuccino.core.model.decorators import get_item_by_class
+from ycappuccino.core.model.decorators import get_item_by_class, get_item
 
 
 @Item(collection="models", name="model", plural="models", abstract=True, app="core")
@@ -12,7 +12,7 @@ class Model(YDict):
         self._id = None
         self._mongo_model = {}
 
-    def on_read(self):
+    def on_read(self, a_aggregate):
         w_item = get_item_by_class(self.__class__)
         for key in self._dict.keys():
             w_method = "";
@@ -25,6 +25,14 @@ class Model(YDict):
             if w_key_model is not None and w_key_model in self.__dict__:
                 self.__dict__[w_key_model] = self._dict[key]
                 self._mongo_model[key] = self._dict[key]
+
+            elif isinstance(self._dict[key] ,dict) :
+                w_subitem = get_item(self._dict[key]["_item_id"])
+                w_instance_subitem = w_subitem["_class_obj"](self._dict[key])
+                w_instance_subitem.on_read(a_aggregate);
+                self._mongo_model[key] = w_instance_subitem._mongo_model
+
+            # TODO add lookup field
 
     def on_update(self):
         w_item = get_item_by_class(self.__class__)

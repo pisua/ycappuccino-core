@@ -8,6 +8,7 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
         // get band information with members
         $scope.items = null
         $scope.item_choose = null
+        $scope.htmlFormUpload = null
 
         $scope.htmlForm = null
         $scope.login = null
@@ -65,9 +66,8 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                     if( aData.data ){
                         $scope.items = []
                         aData.data.forEach(function(wItem){
-                              if (wItem.app=="yblues"){
-                                $scope.items.push(wItem.id);
-                            }
+                            $scope.items.push(wItem.id);
+
                         })
                     }
                 })
@@ -90,16 +90,12 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
         var model = {}
         $scope.create = function() {
             $scope.loadForm()
-            if( $scope.schema.properties ){
-                Object.keys($scope.schema.properties).forEach(function(key){
-                   model[key] = document.getElementById(key).value
-                });
-            }
-            var w_update = new restapiServivce[$scope.item_choose](model)
-            w_update.$save(function(aData) {
+            $scope.detailTarget = $scope.loginOk
+            $scope.listTarget = !$scope.detailTarget
 
-            })
         }
+
+
         $scope.read = function(a_model_id) {
             $scope.loadSchema($scope.item_choose)
             $scope.loadForm()
@@ -109,6 +105,20 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                    model[key] = document.getElementById(key).value
                 });
             }
+              if ($scope.multipart && a_model_id ) {
+
+                    $scope.htmlFormUpload='<form action="/api/'+$scope.item_choose+'s/'+a_model_id+'/blob"  method="post" enctype="multipart/form-data">'+
+                      '<div>'+
+                        '<label for="file">Choose file to upload</label>'+
+                        '<input type="file" id="file" name="file" multiple />'+
+                     ' </div>'+
+                      '<div>'+
+                       ' <button>upload</button>'+
+                      '</div>'+
+                    '</form>'
+
+                }
+                document.getElementById("htmlForm").innerHTML = $scope.htmlForm + $scope.htmlFormUpload
             if ( a_model_id ){
                 restapiServivce[$scope.item_choose].get({"id":a_model_id},function(aData) {
                     var w_read_model = aData.data
@@ -151,6 +161,7 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                     $scope.listTarget = $scope.loginOk
                     $scope.detailTarget = !$scope.listTarget
                 })
+
             }
         }
 
@@ -170,6 +181,10 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                 });
             })
 
+            restapiServivce[a_item+"sMultipart"].get({},function(aData) {
+                $scope.multipart = aData.data.is_multipart
+
+            })
         }
         // get gig informations
         $scope.loadForm = function() {
@@ -182,8 +197,10 @@ app.controller("mainCtrl",['$scope', 'restapiServivce',  '$location',
                     }else{
                         $scope.htmlForm+="<label  class='col-sm-2 col-form-label'>"+w_label +"</label><input id='"+key+"' ></input>\n</br>"
                     }
-                    document.getElementById("htmlForm").innerHTML = $scope.htmlForm
                 });
+
+                document.getElementById("htmlForm").innerHTML = $scope.htmlForm
+
             }
         }
 

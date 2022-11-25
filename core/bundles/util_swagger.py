@@ -51,6 +51,21 @@ def get_swagger_description_schema( a_item, a_path):
         }
     }
 
+    a_path["/" + a_item["plural"] + "/$multipart"] = {
+        "get": {
+            "tags": [get_swagger_description_tag(a_item)],
+            "operationId": "multipart_" + a_item["plural"],
+            "consumes": ["application/json"],
+            "produces": ["application/json"],
+            "parameters": [],
+            "responses": {
+                "default": {
+                    "description": "successful operation"
+                }
+            }
+        }
+    }
+
 
 def get_swagger_description_service( a_service, a_path):
     """ return the path description for the item"""
@@ -128,6 +143,11 @@ def get_swagger_description( a_item, a_path):
                 "default": 50,
                 "format": "int32"
             }, {
+                "name": "expand",
+                "in": "query",
+                "required": False,
+                "type": "string"
+            }, {
                 "name": "sort",
                 "in": "query",
                 "required": False,
@@ -159,6 +179,37 @@ def get_swagger_description( a_item, a_path):
             }
         }
     }
+    if a_item["multipart"] :
+        a_path[get_swagger_description_path(a_item, True)+"/blob"] = {
+            "post": {
+                "tags": [get_swagger_description_tag(a_item)+"/blob"],
+                "operationId": "createBlob_" + a_item["id"],
+                "consumes": ["multipart/form-data"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "attachmentType",
+                    "description": "The attachment type.",
+                    "required": False,
+                    "schema": {
+                        "type": "string"
+                    }
+                }, {
+                    "in": "body",
+                    "name": "attachmentName",
+                    "description": "The attachment type.",
+                    "required": False,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
     a_path[get_swagger_description_path(a_item, True)] = {
         "get": {
             "tags": [get_swagger_description_tag(a_item)],
@@ -168,6 +219,11 @@ def get_swagger_description( a_item, a_path):
                 "name": "id",
                 "in": "path",
                 "required": True,
+                "type": "string"
+            }, {
+                "name": "expand",
+                "in": "query",
+                "required": False,
                 "type": "string"
             }],
             "responses": {

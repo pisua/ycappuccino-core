@@ -2,8 +2,9 @@ from ycappuccino.core.model.decorators import Item, Property,  Reference, ItemRe
 from ycappuccino.core.model.model import Model
 _empty = None
 
+
 @Item(collection="clientPaths", name="clientPath", plural="clientPaths", app="core.ui")
-@ItemReference(field="_layout_parent", item="layout")
+@ItemReference(from_name="clientPath",field="_layout_parent", item="layout")
 class ClientPath(Model):
     """ describe an account in the application """
     def __init__(self, a_dict=None):

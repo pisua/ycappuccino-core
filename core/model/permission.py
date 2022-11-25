@@ -8,7 +8,10 @@ def empty():
     _empty.name("admin")
     _empty.permission("tout")
     return _empty
-@Item(collection="permissions", name="permission", plural="permissions", app="core", secureWrite=True, secureRead=True)
+
+
+@Item(collection="permissions", name="permission", plural="permissions", app="core", secure_write=True,
+      secure_read=True)
 class Permission(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

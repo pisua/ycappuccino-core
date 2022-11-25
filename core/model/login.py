@@ -11,7 +11,8 @@ def empty():
     _empty.account_ref("test")
     return _empty
 
-@Item(collection="logins",name="login", plural="logins", app="core", secureWrite=True, secureRead=True)
+
+@Item(collection="logins",name="login", plural="logins", app="core", secure_write=True, secure_read=True)
 class Login(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

@@ -35,7 +35,8 @@ class JSReplaceService(IClobReplaceService):
                 w_add=",\n"
             w_add = w_add+"{}s: $resource(current_url+'/{}s'),\n".format(w_item_id, w_item_id)
             w_add = w_add+"{}: $resource(current_url+'/{}s/:id'".format(w_item_id, w_item_id)+", null, {'update':{method:'PUT'}}),\n"
-            w_add = w_add+"{}sSchema: $resource(current_url+'/{}s/$schema')".format(w_item_id, w_item_id)
+            w_add = w_add+"{}sSchema: $resource(current_url+'/{}s/$schema'),\n".format(w_item_id, w_item_id)
+            w_add = w_add+"{}sMultipart: $resource(current_url+'/{}s/$multipart')".format(w_item_id, w_item_id)
 
             w_replace_angularjs=w_replace_angularjs+w_add
 

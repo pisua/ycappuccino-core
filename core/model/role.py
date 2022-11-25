@@ -8,7 +8,8 @@ def empty():
     _empty.name("test")
     return _empty
 
-@Item(collection="roles", name="role", plural="roles", app="core", secureWrite=True, secureRead=True)
+
+@Item(collection="roles", name="role", plural="roles", app="core", secure_write=True, secure_read=True)
 class Role(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

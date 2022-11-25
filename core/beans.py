@@ -64,16 +64,22 @@ class UrlPath(object):
             w_url_no_query = w_url_no_query.split("?")[0]
         w_split_url = w_url_no_query.split("api/")[1].split("/")
         self._is_service = "$service" in w_split_url
+
         self._is_schema = "$schema" in w_split_url
+        self._is_multipart = "$multipart" in w_split_url
+
         self._is_empty = "$empty" in w_split_url
         if self._is_empty:
             self._item_plural_id = w_split_url[0]
-            pass
+
         if self._is_service :
             self._service_name = w_split_url[1]
         elif self._is_schema:
             self._item_plural_id = w_split_url[0]
-            pass
+
+        elif self._is_multipart:
+            self._item_plural_id = w_split_url[0]
+
         else:
             self._item_plural_id = w_split_url[0]
             if len(w_split_url)>1:
@@ -86,10 +92,19 @@ class UrlPath(object):
         return self._is_service
 
     def is_crud(self):
-        return not self._is_service and not self._is_schema and not self._is_empty
+        return not self._is_service and not self._is_schema and not self._is_empty and not self._is_multipart
+
+    def is_draft(self):
+        return  self._query_param is not None and "draft" in self._query_param
+
+    def get_draft(self):
+        return self._query_param["draft"] if self.is_draft() else None
 
     def is_schema(self):
         return self._is_schema
+
+    def is_multipart(self):
+        return self._is_multipart
 
     def is_empty(self):
         return self._is_empty
