@@ -86,8 +86,8 @@ class AbsManager(IManager):
 
             w_item_target_id = w_exp
             if "(" in w_exp:
-                w_item_target_id = w_exp[0:a_exp.index("(")]
-                w_item_target_constraint = w_exp[a_exp.index("(") + 1:w_exp.index(")")]
+                w_item_target_id = w_exp[0:w_exp.index("(")]
+                w_item_target_constraint = w_exp[w_exp.index("(") + 1:w_exp.index(")")]
                 w_lookup_params_str = None
                 if "|" in w_item_target_constraint:
                     w_lookup_params_str = w_item_target_constraint.split("|")
@@ -124,9 +124,12 @@ class AbsManager(IManager):
         w_item_target_id = a_result_elem["target"]
         w_prefix = a_result_elem["prefix"]+"." if "prefix" in a_result_elem else ""
 
-        w_lookup_as = w_prefix+w_item_target_id + "_doc"
-        w_lookup_as = w_prefix+w_lookup_params["as"] if "as" in w_lookup_params.keys() else w_lookup_as
         if "refs" in a_item.keys() and w_item_target_id in a_item["refs"]:
+            w_doc = "_doc"
+            if a_item["refs"][w_item_target_id][w_item_target_id + ".ref"]["reverse"]:
+                w_doc = "_docs"
+            w_lookup_as = w_prefix + w_item_target_id + w_doc
+            w_lookup_as = w_prefix + w_lookup_params["as"] if "as" in w_lookup_params.keys() else w_lookup_as
 
             w_prop_lookup = a_item["refs"][w_item_target_id][w_item_target_id + ".ref"]
             w_item_target = self._items[w_item_target_id]
