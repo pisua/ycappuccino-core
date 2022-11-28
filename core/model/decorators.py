@@ -146,8 +146,7 @@ class ItemReference(object):
 
         if w_item is not None:
             if a_item_id not in w_item["refs"]:
-                w_item["refs"][a_item_id]={}
-                w_item["refs"][a_item_id][local_field + ".ref"] = {
+                w_item["refs"][a_item_id]= {
                     "local_field": local_field + ".ref",
                     "foreign_field": "_id",
                     "item_id": a_item_id,
@@ -165,8 +164,7 @@ class ItemReference(object):
                 map_item[a_item_id] = {"refs":{}}
             if "refs" not in  map_item[a_item_id]:
                 map_item[a_item_id]["refs"] = {}
-            map_item[a_item_id]["refs"][self._from_name]={}
-            map_item[a_item_id]["refs"][self._from_name][local_field + ".ref"] = {
+            map_item[a_item_id]["refs"][self._from_name]= {
                 "foreign_field": local_field + ".ref",
                 "local_field": "_id",
                 "item_id": self._from_name,

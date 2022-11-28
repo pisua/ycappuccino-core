@@ -126,12 +126,12 @@ class AbsManager(IManager):
 
         if "refs" in a_item.keys() and w_item_target_id in a_item["refs"]:
             w_doc = "_doc"
-            if a_item["refs"][w_item_target_id][w_item_target_id + ".ref"]["reverse"]:
+            if a_item["refs"][w_item_target_id]["reverse"]:
                 w_doc = "_docs"
             w_lookup_as = w_prefix + w_item_target_id + w_doc
             w_lookup_as = w_prefix + w_lookup_params["as"] if "as" in w_lookup_params.keys() else w_lookup_as
 
-            w_prop_lookup = a_item["refs"][w_item_target_id][w_item_target_id + ".ref"]
+            w_prop_lookup = a_item["refs"][w_item_target_id]
             w_item_target = self._items[w_item_target_id]
             # add lookup
             a_pipeline["lookup"].append({
@@ -149,7 +149,7 @@ class AbsManager(IManager):
                                             "$eq": ["$" + w_prop_lookup["foreign_field"], "$$localid"]
                                         }
                                     },
-                                    w_lookup_params["filter"] if "filter" in w_lookup_params.keys() else {}
+                                    json.loads(w_lookup_params["filter"]) if "filter" in w_lookup_params.keys() else {}
                                 ]
                             }
                         }, {
@@ -163,12 +163,13 @@ class AbsManager(IManager):
                 }
             })
             # add undind
-            a_pipeline["lookup"].append({
-                "$unwind": {
-                    "path": "$" + w_lookup_as,
-                    "preserveNullAndEmptyArrays": True
-                }
-            })
+            if not a_item["refs"][w_item_target_id]["reverse"]:
+                a_pipeline["lookup"].append({
+                    "$unwind": {
+                        "path": "$" + w_lookup_as,
+                        "preserveNullAndEmptyArrays": True
+                    }
+                })
             for w_elem_key_son in a_result_elem.keys():
                 if w_elem_key_son != "params" and w_elem_key_son != "target" and w_elem_key_son != "prefix":
                     # get item
