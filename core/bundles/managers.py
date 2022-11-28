@@ -73,74 +73,117 @@ class AbsManager(IManager):
         return ids
 
 
+    def _get_lookup_param(self, a_exp):
+        w_result = {}
+        if "." in a_exp:
+            w_target_split = a_exp.split(".")
+        else:
+            w_target_split = [a_exp]
 
-
-    def _generate_pipeline(self, a_item ,a_filter, a_expand, a_select=None):
-        w_pipeline = None
-        w_expand_split = a_expand.split(",")
-        for w_exp in w_expand_split:
-            w_item_target_id = w_exp
-            w_item_target_constraint = None
+        w_item_target_id_father = None
+        for w_exp in w_target_split:
             w_lookup_params = {}
 
-            if "(" in w_exp :
-                w_item_target_id = w_exp[0:w_exp.index("(")]
-                w_item_target_constraint = w_exp[w_exp.index("(")+1:w_exp.index(")")]
+            w_item_target_id = w_exp
+            if "(" in w_exp:
+                w_item_target_id = w_exp[0:a_exp.index("(")]
+                w_item_target_constraint = w_exp[a_exp.index("(") + 1:w_exp.index(")")]
                 w_lookup_params_str = None
                 if "|" in w_item_target_constraint:
                     w_lookup_params_str = w_item_target_constraint.split("|")
                 else:
-                    w_lookup_params_str = w_item_target_constraint
+                    w_lookup_params_str = [w_item_target_constraint]
                 if w_lookup_params_str is not None:
-                    w_lookup_params_splitted = {}
                     for w_elem in w_lookup_params_str:
                         if "=" in w_elem:
-                            w_lookup_params[ w_elem.split("=")[0]] =  w_elem.split("=")[1]
+                            w_lookup_params[w_elem.split("=")[0]] = w_elem.split("=")[1]
+            w_key = w_item_target_id
+            w_result_current = w_result
+            if w_item_target_id_father is not None:
+                w_prefix = None
+                for w_father in w_item_target_id_father.split("."):
+                    w_result_current = w_result_current[w_father]
+                    w_lookup_as = w_result_current["params"]["as"] if "as" in w_result_current["params"].keys() else w_result_current["target"]+ "_doc"
+                    w_prefix = w_prefix+"."+w_lookup_as if w_prefix is not None else w_lookup_as
+                w_result_current[w_key] = {
+                    "target": w_item_target_id,
+                    "params": w_lookup_params,
+                    "prefix": w_prefix
+                }
+            else:
+                w_result_current[w_key] = {
+                    "target": w_item_target_id,
+                    "params": w_lookup_params
+                }
+            w_item_target_id_father = w_item_target_id_father+"."+w_key if w_item_target_id_father is not None else w_key
 
-            if "refs" in a_item.keys() and w_item_target_id in a_item["refs"]:
-                if w_pipeline is None:
-                   w_pipeline = {
-                       "filter": {},
-                       "lookup": [],
-                       "group": [],
-                       "project": []
-                   }
-                w_prop_lookup = a_item["refs"][w_item_target_id][w_item_target_id+".ref"]
-                w_item_target = self._items[w_item_target_id]
-                # add lookup
-                w_pipeline["lookup"].append({
-                    "$lookup": {
-                       "from": w_item_target["collection"],
-                       "let": {
-                           "localid":  "$"+w_prop_lookup["local_field"]
-                       },
-                       "pipeline": [
-                            {
-                                "$match": {
-                                    "$and":[
-                                        {
-                                            "$expr":{
-                                                "$eq":["$"+w_prop_lookup["foreign_field"],"$$localid"]
-                                            }
-                                        },
-                                        w_lookup_params["filter"] if "filter" in w_lookup_params.keys() else {}
-                                    ]
-                                }
+        return w_result
 
+    def _add_lookup_pipeline(self, a_pipeline, a_item, a_result_elem):
+        w_lookup_params = a_result_elem["params"]
+        w_item_target_id = a_result_elem["target"]
+        w_prefix = a_result_elem["prefix"]+"." if "prefix" in a_result_elem else ""
+
+        w_lookup_as = w_prefix+w_item_target_id + "_doc"
+        w_lookup_as = w_prefix+w_lookup_params["as"] if "as" in w_lookup_params.keys() else w_lookup_as
+        if "refs" in a_item.keys() and w_item_target_id in a_item["refs"]:
+
+            w_prop_lookup = a_item["refs"][w_item_target_id][w_item_target_id + ".ref"]
+            w_item_target = self._items[w_item_target_id]
+            # add lookup
+            a_pipeline["lookup"].append({
+                "$lookup": {
+                    "from": w_item_target["collection"],
+                    "let": {
+                        "localid": "$" + w_prefix + w_prop_lookup["local_field"]
+                    },
+                    "pipeline": [
+                        {
+                            "$match": {
+                                "$and": [
+                                    {
+                                        "$expr": {
+                                            "$eq": ["$" + w_prop_lookup["foreign_field"], "$$localid"]
+                                        }
+                                    },
+                                    w_lookup_params["filter"] if "filter" in w_lookup_params.keys() else {}
+                                ]
                             }
-                       ],
-                       "as": w_item_target_id+"_doc"
-                     }
-                })
-                # add undind
-                w_pipeline["lookup"].append({
-                    "$unwind": {
-                        "path": "$"+w_item_target_id+"_doc",
-                        "preserveNullAndEmptyArrays" : True
-                    }
-                })
+                        }, {
+                            "$skip": w_lookup_params["skip"] if "skip" in w_lookup_params.keys() else 0
+                        },
+                        {
+                            "$limit": w_lookup_params["limit"] if "limit" in w_lookup_params.keys() else 50
+                        }
+                    ],
+                    "as": w_lookup_as
+                }
+            })
+            # add undind
+            a_pipeline["lookup"].append({
+                "$unwind": {
+                    "path": "$" + w_lookup_as,
+                    "preserveNullAndEmptyArrays": True
+                }
+            })
+            for w_elem_key_son in a_result_elem.keys():
+                if w_elem_key_son != "params" and w_elem_key_son != "target" and w_elem_key_son != "prefix":
+                    # get item
+                    self._add_lookup_pipeline(a_pipeline, w_item_target, a_result_elem[w_elem_key_son])
 
-
+    def _generate_pipeline(self, a_item ,a_filter, a_expand, a_select=None):
+        w_pipeline = None
+        w_expand_split = a_expand.split(",")
+        w_pipeline = {
+            "filter": {},
+            "lookup": [],
+            "group": [],
+            "project": []
+        }
+        for w_exp in w_expand_split:
+            w_result = self._get_lookup_param(w_exp)
+            for w_result_elem in w_result.keys():
+                self._add_lookup_pipeline(w_pipeline, a_item, w_result[w_result_elem])
 
         w_pipeline_arr = []
         if w_pipeline is not None:
@@ -153,7 +196,6 @@ class AbsManager(IManager):
                 w_pipeline_arr.append(w_elem)
 
         return w_pipeline_arr
-
 
     def get_one(self, a_item_id, a_id, a_params=None):
         w_result = None
