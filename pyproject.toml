@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ycappuccino-core"
+version = "0.0.1"
+authors = [
+  { name="Aurélien PISU", email="aurelien.pisu@gmail.com" },
+]
+description = "A iPOPO based framework that easier a application creation"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/pisua/ycappuccino-core"
+"Bug Tracker" = "https://github.com/pisua/ycappuccino-core/issues"

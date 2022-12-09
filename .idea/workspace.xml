@@ -20,7 +20,101 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ae9c08a-8355-45eb-82a6-2b36b76a453c" name="Default Changelist" comment="ten">
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/endpoints/api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/endpoints/bundles/endpoints.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/endpoints/bundles/server_path.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/beans.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/path/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/services/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/ui/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/storage/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/storage/api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/storage/bundles/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ycappuccino/storage/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ycappuccino.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ycappuccino.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/application.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/bundles/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pelix/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pelix/framework.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pelix/ipopo/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints/bundles/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pelix/ipopo/decorators.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pelix/ipopo/proxy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/beans.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints/beans.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/activity_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/activity_logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/configuration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/core_bootstrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/core_bootstrap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/bundles/endpoint_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/indexEndpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/indexEndpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/item_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/storage/bundles/item_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/js/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/js/replace_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/js/replace_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/jwt.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints/bundles/jwt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/manager_upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/storage/bundles/manager_upload.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/storage/bundles/managers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/path/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/bundles/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/path/server_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/path/server_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/proxy.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/bundles/proxy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/mongo/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/services/login_services.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/services/login_services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/bundles/util_swagger.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints/bundles/util_swagger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/executorService.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/executorService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/framework.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/framework.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/RolePermission.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/RolePermission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/mongo/bundles/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/storage/models/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/media.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/media.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/storage/models/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/permission.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/permission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/role.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/ui/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/ui/client_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/ui/client_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/ui/layout.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/models/ui/layout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/storage/models/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/core/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/log/Log-Activity-main.log" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/data/log/Log-Activity-main.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/mongo/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo/bundles/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo/bundles/storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/mongo/bundles/storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/angularjs/angular-resource.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/angularjs/angular-resource.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/angularjs/angular-resource.min.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/angularjs/angular-resource.min.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/angularjs/angular.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/angularjs/angular.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.css" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap.css" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/css/bootstrap.min.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/css/bootstrap.min.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/js/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/js/bootstrap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/js/bootstrap.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/js/bootstrap.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/bootstrap-3.3.7-dist/js/npm.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/bootstrap-3.3.7-dist/js/npm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/css/default.css" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/css/default.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/index2.html" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/index2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/jquery/jquery.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/jquery/jquery.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/module/main/main-app.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/module/main/main-app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/module/main/main-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/module/main/main-controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/module/restapi/restapi.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/module/restapi/restapi.module.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simpleform/module/restapi/restapi.service.js.mdl" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints_storage/simpleform/module/restapi/restapi.service.js.mdl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/endpoints/swagger/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test" beforeDir="false" afterPath="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/js/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,110 +145,26 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ycappuccino/endpoints/bundles" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/yblues/client/img/picture" />
-      <recent name="$PROJECT_DIR$/yblues/bundles" />
-      <recent name="$PROJECT_DIR$/yblues/model" />
-      <recent name="$PROJECT_DIR$/ycappuccino/core/model" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/ycappuccino/core" />
+      <recent name="$PROJECT_DIR$/ycappuccino/rest_app_base/bundles" />
+      <recent name="$PROJECT_DIR$/ycappuccino/rest_app_base" />
       <recent name="$PROJECT_DIR$/ycappuccino" />
-      <recent name="$PROJECT_DIR$/ycappuccino/core/bundles" />
-      <recent name="$PROJECT_DIR$/ycappuccino-mongo" />
+      <recent name="$PROJECT_DIR$/storage/bundles" />
+      <recent name="$PROJECT_DIR$/endpoints" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ycappuccino/endpoints/bundles" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/storage/models" />
+      <recent name="$PROJECT_DIR$/endpoints_storage" />
+      <recent name="$PROJECT_DIR$/endpoints_storage/bundles" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main (5)">
-    <configuration name="decorators" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="ycappuccino" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ycappuccino/core/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ycappuccino/core/model/decorators.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="ycappuccino" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main (3)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="ycappuccino" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/iotill" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/iotill/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main (4)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="ycappuccino" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/yblues" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/yblues/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager">
     <configuration name="main (5)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ycappuccino" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -179,10 +189,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main (5)" />
-        <item itemvalue="Python.main (4)" />
-        <item itemvalue="Python.main (3)" />
-        <item itemvalue="Python.main (2)" />
-        <item itemvalue="Python.decorators" />
       </list>
     </recent_temporary>
   </component>
@@ -213,33 +219,99 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="142" y="123" width="2318" height="1217" key="DiffContextDialog" timestamp="1621608505211">
-      <screen x="34" y="23" width="2526" height="1417" />
+    <state x="728" y="401" width="1071" height="772" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1670588228864">
+      <screen x="35" y="23" width="2525" height="1417" />
     </state>
-    <state x="142" y="123" width="2318" height="1217" key="DiffContextDialog/34.23.2526.1417@34.23.2526.1417" timestamp="1621608505211" />
-    <state width="2497" height="584" key="GridCell.Tab.0.bottom" timestamp="1621608671567">
-      <screen x="42" y="23" width="2518" height="1417" />
+    <state x="728" y="401" key="#com.intellij.execution.impl.EditConfigurationsDialog/35.23.2525.1417@35.23.2525.1417" timestamp="1670588228864" />
+    <state x="732" y="401" width="1071" height="772" key="#com.intellij.execution.impl.EditConfigurationsDialog/41.23.2519.1417@41.23.2519.1417" timestamp="1669813365282" />
+    <state width="1042" height="466" key="DebuggerActiveHint" timestamp="1669817201516">
+      <screen x="41" y="23" width="2519" height="1417" />
     </state>
-    <state width="2497" height="584" key="GridCell.Tab.0.bottom/42.23.2518.1417@42.23.2518.1417" timestamp="1621608671567" />
-    <state width="2497" height="584" key="GridCell.Tab.0.center" timestamp="1621608671567">
-      <screen x="42" y="23" width="2518" height="1417" />
+    <state width="1042" height="466" key="DebuggerActiveHint/41.23.2519.1417@41.23.2519.1417" timestamp="1669817201516" />
+    <state width="2504" height="295" key="GridCell.Tab.0.bottom" timestamp="1670589410753">
+      <screen x="35" y="23" width="2525" height="1417" />
     </state>
-    <state width="2497" height="584" key="GridCell.Tab.0.center/42.23.2518.1417@42.23.2518.1417" timestamp="1621608671567" />
-    <state width="2497" height="584" key="GridCell.Tab.0.left" timestamp="1621608671566">
-      <screen x="42" y="23" width="2518" height="1417" />
+    <state width="1618" height="355" key="GridCell.Tab.0.bottom/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256190" />
+    <state width="2504" height="295" key="GridCell.Tab.0.bottom/35.23.2525.1417@35.23.2525.1417" timestamp="1670589410753" />
+    <state width="2380" height="569" key="GridCell.Tab.0.bottom/40.23.2520.1417@40.23.2520.1417" timestamp="1669819465470" />
+    <state width="2380" height="569" key="GridCell.Tab.0.bottom/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547315" />
+    <state width="2504" height="295" key="GridCell.Tab.0.center" timestamp="1670589410752">
+      <screen x="35" y="23" width="2525" height="1417" />
     </state>
-    <state width="2497" height="584" key="GridCell.Tab.0.left/42.23.2518.1417@42.23.2518.1417" timestamp="1621608671566" />
-    <state width="2497" height="584" key="GridCell.Tab.0.right" timestamp="1621608671567">
-      <screen x="42" y="23" width="2518" height="1417" />
+    <state width="1618" height="355" key="GridCell.Tab.0.center/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256189" />
+    <state width="2504" height="295" key="GridCell.Tab.0.center/35.23.2525.1417@35.23.2525.1417" timestamp="1670589410752" />
+    <state width="2380" height="569" key="GridCell.Tab.0.center/40.23.2520.1417@40.23.2520.1417" timestamp="1669819465469" />
+    <state width="2380" height="569" key="GridCell.Tab.0.center/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547314" />
+    <state width="2504" height="295" key="GridCell.Tab.0.left" timestamp="1670589410752">
+      <screen x="35" y="23" width="2525" height="1417" />
     </state>
-    <state width="2497" height="584" key="GridCell.Tab.0.right/42.23.2518.1417@42.23.2518.1417" timestamp="1621608671567" />
-    <state x="810" y="370" key="SettingsEditor" timestamp="1621608670371">
-      <screen x="42" y="23" width="2518" height="1417" />
+    <state width="1618" height="355" key="GridCell.Tab.0.left/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256189" />
+    <state width="2504" height="295" key="GridCell.Tab.0.left/35.23.2525.1417@35.23.2525.1417" timestamp="1670589410752" />
+    <state width="2380" height="569" key="GridCell.Tab.0.left/40.23.2520.1417@40.23.2520.1417" timestamp="1669819465469" />
+    <state width="2380" height="569" key="GridCell.Tab.0.left/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547313" />
+    <state width="2504" height="295" key="GridCell.Tab.0.right" timestamp="1670589410753">
+      <screen x="35" y="23" width="2525" height="1417" />
     </state>
-    <state x="810" y="370" key="SettingsEditor/42.23.2518.1417@42.23.2518.1417" timestamp="1621608670371" />
+    <state width="1618" height="355" key="GridCell.Tab.0.right/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256190" />
+    <state width="2504" height="295" key="GridCell.Tab.0.right/35.23.2525.1417@35.23.2525.1417" timestamp="1670589410753" />
+    <state width="2380" height="569" key="GridCell.Tab.0.right/40.23.2520.1417@40.23.2520.1417" timestamp="1669819465470" />
+    <state width="2380" height="569" key="GridCell.Tab.0.right/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547314" />
+    <state width="2504" height="295" key="GridCell.Tab.1.bottom" timestamp="1670589403461">
+      <screen x="35" y="23" width="2525" height="1417" />
+    </state>
+    <state width="1618" height="355" key="GridCell.Tab.1.bottom/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256191" />
+    <state width="2504" height="295" key="GridCell.Tab.1.bottom/35.23.2525.1417@35.23.2525.1417" timestamp="1670589403461" />
+    <state width="2380" height="569" key="GridCell.Tab.1.bottom/40.23.2520.1417@40.23.2520.1417" timestamp="1669819468970" />
+    <state width="2380" height="569" key="GridCell.Tab.1.bottom/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547222" />
+    <state width="2504" height="295" key="GridCell.Tab.1.center" timestamp="1670589403460">
+      <screen x="35" y="23" width="2525" height="1417" />
+    </state>
+    <state width="1618" height="355" key="GridCell.Tab.1.center/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256190" />
+    <state width="2504" height="295" key="GridCell.Tab.1.center/35.23.2525.1417@35.23.2525.1417" timestamp="1670589403460" />
+    <state width="2380" height="569" key="GridCell.Tab.1.center/40.23.2520.1417@40.23.2520.1417" timestamp="1669819468970" />
+    <state width="2380" height="569" key="GridCell.Tab.1.center/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547222" />
+    <state width="2504" height="295" key="GridCell.Tab.1.left" timestamp="1670589403459">
+      <screen x="35" y="23" width="2525" height="1417" />
+    </state>
+    <state width="1618" height="355" key="GridCell.Tab.1.left/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256190" />
+    <state width="2504" height="295" key="GridCell.Tab.1.left/35.23.2525.1417@35.23.2525.1417" timestamp="1670589403459" />
+    <state width="2380" height="569" key="GridCell.Tab.1.left/40.23.2520.1417@40.23.2520.1417" timestamp="1669819468969" />
+    <state width="2380" height="569" key="GridCell.Tab.1.left/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547221" />
+    <state width="2504" height="295" key="GridCell.Tab.1.right" timestamp="1670589403461">
+      <screen x="35" y="23" width="2525" height="1417" />
+    </state>
+    <state width="1618" height="355" key="GridCell.Tab.1.right/33.23.1647.1027@33.23.1647.1027" timestamp="1670508256191" />
+    <state width="2504" height="295" key="GridCell.Tab.1.right/35.23.2525.1417@35.23.2525.1417" timestamp="1670589403461" />
+    <state width="2380" height="569" key="GridCell.Tab.1.right/40.23.2520.1417@40.23.2520.1417" timestamp="1669819468970" />
+    <state width="2380" height="569" key="GridCell.Tab.1.right/41.23.2519.1417@41.23.2519.1417" timestamp="1669817547222" />
+    <state x="772" y="378" key="SettingsEditor" timestamp="1670588269161">
+      <screen x="35" y="23" width="2525" height="1417" />
+    </state>
+    <state x="772" y="378" key="SettingsEditor/35.23.2525.1417@35.23.2525.1417" timestamp="1670588269161" />
+    <state x="776" y="378" key="SettingsEditor/41.23.2519.1417@41.23.2519.1417" timestamp="1669817545930" />
+    <state width="500" height="445" key="SwitcherDM" timestamp="1669818591509">
+      <screen x="40" y="23" width="2520" height="1417" />
+    </state>
+    <state width="500" height="445" key="SwitcherDM/40.23.2520.1417@40.23.2520.1417" timestamp="1669818591509" />
+    <state x="974" y="495" width="586" height="490" key="find.popup" timestamp="1669816242481">
+      <screen x="41" y="23" width="2519" height="1417" />
+    </state>
+    <state x="974" y="495" width="586" height="490" key="find.popup/41.23.2519.1417@41.23.2519.1417" timestamp="1669816242481" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ycappuccino/rest_app_base/bundles/indexEndpoint.py</url>
+          <line>276</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ycappuccino/endpoints_storage/bundles/endpoint_storage.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -250,7 +322,7 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="w_resp" language="Python" />
+        <watch expression="self._path_client" language="Python" />
       </configuration>
     </watches-manager>
   </component>
