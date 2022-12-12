@@ -140,7 +140,7 @@ class Endpoint(IEndpoint):
                         return EndpointResponse(200, w_header, w_meta, w_body)
             if w_url_path.get_Type() in self._map_handler_endpoints.keys():
                 w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-                w_handler_endpoint.post(a_path, a_headers, a_body)
+                return w_handler_endpoint.post(a_path, a_headers, a_body)
         return EndpointResponse(400)
 
     def put(self, a_path, a_headers, a_body):
@@ -163,7 +163,7 @@ class Endpoint(IEndpoint):
             return EndpointResponse(501)
         if w_url_path.get_Type() in self._map_handler_endpoints.keys():
             w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-            w_handler_endpoint.put(a_path, a_headers, a_body)
+            return w_handler_endpoint.put(a_path, a_headers, a_body)
         return EndpointResponse(400)
 
 
@@ -205,9 +205,9 @@ class Endpoint(IEndpoint):
                     }
                     return EndpointResponse(200, w_header,  w_meta, w_body)
             return EndpointResponse(501)
-        if w_url_path.get_Type() in self._map_handler_endpoints.keys():
-            w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-            w_handler_endpoint.put(a_path, a_headers, a_body)
+        if w_url_path.get_type() in self._map_handler_endpoints.keys():
+            w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_type()]
+            return w_handler_endpoint.get(a_path, a_headers)
         return EndpointResponse(400)
 
     def delete(self, a_path, a_headers):
@@ -226,7 +226,7 @@ class Endpoint(IEndpoint):
                     return EndpointResponse(200,w_header, w_meta, w_body)
         if w_url_path.get_Type() in self._map_handler_endpoints.keys():
             w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-            w_handler_endpoint.put(a_path, a_headers, a_body)
+            return w_handler_endpoint.put(a_path, a_headers, a_body)
         return EndpointResponse(400)
 
     @BindField("_handler_endpoints")

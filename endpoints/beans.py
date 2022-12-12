@@ -55,7 +55,7 @@ class UrlPath(object):
             self._query_param = dict(parse_qsl(urlsplit(a_url).query))
             w_url_no_query = w_url_no_query.split("?")[0]
         w_split_url = w_url_no_query.split("api/")[1].split("/")
-        self._type = w_split_url[0]
+        self._type = w_split_url[0][1:]
         self._is_service = "$service" in w_split_url
 
         if self._is_service :

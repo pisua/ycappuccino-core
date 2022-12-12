@@ -61,7 +61,7 @@ class UrlPath(object):
             self._query_param = dict(parse_qsl(urlsplit(a_url).query))
             w_url_no_query = w_url_no_query.split("?")[0]
         w_split_url = w_url_no_query.split("api/")[1].split("/")
-        self._type = w_split_url[0]
+        self._type = w_split_url[0][1:]
 
         self._is_schema = "$schema" in w_split_url
         self._is_multipart = "$multipart" in w_split_url
@@ -70,8 +70,6 @@ class UrlPath(object):
         if self._is_empty:
             self._item_plural_id = w_split_url[0]
 
-        if self._is_service :
-            self._service_name = w_split_url[1]
         elif self._is_schema:
             self._item_plural_id = w_split_url[0]
 
@@ -79,18 +77,19 @@ class UrlPath(object):
             self._item_plural_id = w_split_url[0]
 
         else:
-            self._item_plural_id = w_split_url[0]
             if len(w_split_url)>1:
-                # an id is specified
-                if self._query_param is None:
-                    self._query_param = {}
-                self._query_param["id"] = w_split_url[1]
+                self._item_plural_id = w_split_url[1]
+                if len(w_split_url)>2:
+                    # an id is specified
+                    if self._query_param is None:
+                        self._query_param = {}
+                    self._query_param["id"] = w_split_url[2]
 
     def get_type(self):
         return self._type
 
     def is_crud(self):
-        return not self._is_service and not self._is_schema and not self._is_empty and not self._is_multipart
+        return  not self._is_schema and not self._is_empty and not self._is_multipart
 
     def is_draft(self):
         return  self._query_param is not None and "draft" in self._query_param

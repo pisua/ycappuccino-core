@@ -23,8 +23,8 @@ class ClientPath(IClientIndexPath):
 
     def __init__(self):
         super(IClientIndexPath, self).__init__();
-        self.path_core = inspect.getmodule(self).__file__.replace("endpoints{0}bundles{0}path{0}server_path.py".format(os.path.sep), "")
-        self.path_app = inspect.getmodule(self).__file__.replace("ycappuccino{0}endpoints{0}bundles{0}path{0}server_path.py".format(os.path.sep), "")
+        self.path_core = inspect.getmodule(self).__file__.replace("endpoints{0}bundles{0}server_path.py".format(os.path.sep), "")
+        self.path_app = inspect.getmodule(self).__file__.replace("ycappuccino{0}endpoints{0}bundles{0}server_path.py".format(os.path.sep), "")
         self._log =None
         self._secure =None
         self._user = None

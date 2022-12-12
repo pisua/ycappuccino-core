@@ -10,7 +10,7 @@ def get_swagger_description_service_tag( a_service):
 
 def get_swagger_description_path( a_item, a_with_id):
     """ query can be get, getAll, put, post and delete """
-    w_path = "/" + a_item["plural"]
+    w_path = "/$crud/" + a_item["plural"]
     if a_with_id:
         w_path = w_path + "/{id}"
     return w_path
