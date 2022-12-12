@@ -18,7 +18,7 @@ def get_swagger_description_path( a_item, a_with_id):
 
 def get_swagger_description_empty( a_item, a_path):
     """ return the path description for the item"""
-    a_path["/" + a_item["plural"] + "/$empty"] = {
+    a_path["/$empty/" + a_item["plural"]] = {
         "get": {
             "tags": [get_swagger_description_tag(a_item)],
             "operationId": "empty_" + a_item["plural"],
@@ -36,7 +36,7 @@ def get_swagger_description_empty( a_item, a_path):
 
 def get_swagger_description_schema( a_item, a_path):
     """ return the path description for the item"""
-    a_path["/" + a_item["plural"] + "/$schema"] = {
+    a_path["/$schema/" + a_item["plural"] ] = {
         "get": {
             "tags": [get_swagger_description_tag(a_item)],
             "operationId": "schema_" + a_item["plural"],
@@ -51,7 +51,7 @@ def get_swagger_description_schema( a_item, a_path):
         }
     }
 
-    a_path["/" + a_item["plural"] + "/$multipart"] = {
+    a_path["/$multipart/" + a_item["plural"] ] = {
         "get": {
             "tags": [get_swagger_description_tag(a_item)],
             "operationId": "multipart_" + a_item["plural"],

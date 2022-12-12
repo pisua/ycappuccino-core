@@ -67,23 +67,14 @@ class UrlPath(object):
         self._is_multipart = "$multipart" in w_split_url
 
         self._is_empty = "$empty" in w_split_url
-        if self._is_empty:
-            self._item_plural_id = w_split_url[0]
 
-        elif self._is_schema:
-            self._item_plural_id = w_split_url[0]
-
-        elif self._is_multipart:
-            self._item_plural_id = w_split_url[0]
-
-        else:
-            if len(w_split_url)>1:
-                self._item_plural_id = w_split_url[1]
-                if len(w_split_url)>2:
-                    # an id is specified
-                    if self._query_param is None:
-                        self._query_param = {}
-                    self._query_param["id"] = w_split_url[2]
+        if len(w_split_url)>1:
+            self._item_plural_id = w_split_url[1]
+            if len(w_split_url)>2:
+                # an id is specified
+                if self._query_param is None:
+                    self._query_param = {}
+                self._query_param["id"] = w_split_url[2]
 
     def get_type(self):
         return self._type
