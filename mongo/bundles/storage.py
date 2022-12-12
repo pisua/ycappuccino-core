@@ -1,10 +1,10 @@
-from core import  IActivityLogger, YCappuccino, IConfiguration
-from storage.api import IStorage
+from ycappuccino.core.api import  IActivityLogger, YCappuccino, IConfiguration
+from ycappuccino.storage.api import IStorage
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate
 from pymongo import MongoClient
 import time
-from core import RunnableProcess, ThreadPoolExecutorCallable
+from ycappuccino.core.executor_service import RunnableProcess, ThreadPoolExecutorCallable
 from uuid import uuid4
 import json
 

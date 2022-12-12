@@ -1,5 +1,5 @@
-from core import IActivityLogger,  IConfiguration
-from endpoints import IJwt
+from ycappuccino.core.api import IActivityLogger,  IConfiguration
+from ycappuccino.endpoints.api import IJwt
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate

@@ -1,14 +1,14 @@
-from core import  IActivityLogger,   IService
-from endpoints import IEndpoint, IHandlerEndpoint,  IJwt
+from ycappuccino.core.api import  IActivityLogger,   IService
+from ycappuccino.endpoints.api import IEndpoint, IHandlerEndpoint,  IJwt
 
 import pelix.http
 import os
 import pelix.remote
 import logging
 import json
-from endpoints.beans import UrlPath, EndpointResponse
+from ycappuccino.endpoints.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate, Property
-from endpoints.bundles import util_swagger
+from ycappuccino.endpoints.bundles import util_swagger
 
 _logger = logging.getLogger(__name__)
 

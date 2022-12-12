@@ -1,6 +1,6 @@
-from core import IActivityLogger
-from storage.api import IManager, IBootStrap
-from rest_app_base import IClientIndexPathFactory
+from ycappuccino.core.api import IActivityLogger
+from ycappuccino.storage.api import IManager, IBootStrap
+from ycappuccino.rest_app_base.api import IClientIndexPathFactory
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate, BindField, UnbindField

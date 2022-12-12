@@ -1,6 +1,6 @@
-from app.pelix.ipopo.constants import use_ipopo
-from app.ycappuccino.core.api import IUploadManager, IActivityLogger, IStorage, ITrigger
-from app.ycappuccino.core.bundles.managers import AbsManager
+from pelix.ipopo.constants import use_ipopo
+from ycappuccino.core.api import IUploadManager, IActivityLogger, IStorage, ITrigger
+from ycappuccino.core.bundles.managers import AbsManager
 
 import logging
 

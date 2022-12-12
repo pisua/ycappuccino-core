@@ -1,13 +1,13 @@
-from core import IActivityLogger,  YCappuccino
-from storage.api import IManager, IBootStrap
+from ycappuccino.core.api import IActivityLogger,  YCappuccino
+from ycappuccino.storage.api import IManager, IBootStrap
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate
 
-from rest_app_base.models import Account
-from rest_app_base.models import Login
-from rest_app_base.models import Role
-from rest_app_base.models import ClientPath
+from ycappuccino.rest_app_base.models.account import Account
+from ycappuccino.rest_app_base.models.login import Login
+from ycappuccino.rest_app_base.models.role import Role
+from ycappuccino.rest_app_base.models.ui.client_path import ClientPath
 
 
 _logger = logging.getLogger(__name__)

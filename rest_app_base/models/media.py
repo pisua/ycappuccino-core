@@ -1,5 +1,5 @@
-from storage.models import Item, Property, Empty
-from storage.models import Model
+from ycappuccino.storage.models.decorators  import Item, Property, Empty
+from ycappuccino.storage.models.model import Model
 
 @Empty()
 def empty():

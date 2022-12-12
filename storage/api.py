@@ -1,4 +1,4 @@
-from core import CFQCN
+from ycappuccino.core.api import CFQCN
 
 class IBootStrap(object):
     """ Manage bootstrap interface. it allow to initialize for an item data or do a bootstrap operation"""

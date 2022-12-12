@@ -1,5 +1,5 @@
-from core import IActivityLogger
-from rest_app_base import IClobReplaceService
+from ycappuccino.core.api import IActivityLogger
+from ycappuccino.rest_app_base.api import IClobReplaceService
 
 import inspect
 import pelix.remote
@@ -10,7 +10,7 @@ import os
 from os import path
 
 from pelix.ipopo.decorators import BindField
-from endpoints import IClientIndexPath
+from ycappuccino.endpoints.api import IClientIndexPath
 
 _logger = logging.getLogger(__name__)
 

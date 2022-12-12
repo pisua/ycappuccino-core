@@ -1,6 +1,5 @@
-from core import IActivityLogger,  IConfiguration
-from storage.api import IBootStrap
-from endpoints import IClientIndexPath
+from ycappuccino.core.api import IActivityLogger,  IConfiguration
+from ycappuccino.endpoints.api import IClientIndexPath
 
 import logging, os
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property,  Provides, Instantiate
@@ -85,7 +84,6 @@ class ClientPath(IClientIndexPath):
 @ComponentFactory('ClientPathSwagger-Factory')
 @Provides(specifications=[IClientIndexPath.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
-@Requires("_bootstraps", specification=IBootStrap.name, aggregate=True, optional=True)
 @Instantiate("ClientPathSwagger")
 class ClientPathSwagger(IClientIndexPath):
 

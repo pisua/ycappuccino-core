@@ -1,17 +1,17 @@
-from core import  IActivityLogger
-from endpoints import IHandlerEndpoint
-from storage.api import IManager, IItemManager
+from ycappuccino.core.api import  IActivityLogger
+from ycappuccino.endpoints.api import IHandlerEndpoint
+from ycappuccino.storage.api import IManager, IItemManager
 
 import uuid
 import os
 import logging
-from endpoints_storage.beans import UrlPath, EndpointResponse
+from ycappuccino.endpoints_storage.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate
-import storage.models.decorators
+import ycappuccino.storage.models.decorators
 
 _logger = logging.getLogger(__name__)
 
-from endpoints.bundles import util_swagger
+from ycappuccino.endpoints.bundles import util_swagger
 
 
 @ComponentFactory('EndpointStorage-Factory')
@@ -128,7 +128,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
     def get_swagger_descriptions(self, a_tag, a_swagger, a_scheme):
 
         util_swagger.get_swagger_description_item(a_swagger["paths"])
-        for w_item in storage.models.decorators.get_map_items():
+        for w_item in ycappuccino.storage.models.decorators.get_map_items():
             if not w_item["abstract"]:
                 util_swagger.get_swagger_description(w_item, a_swagger["paths"])
                 a_tag.append({"name": util_swagger.get_swagger_description_tag(w_item)})

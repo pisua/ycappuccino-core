@@ -1,12 +1,12 @@
-from core import  IActivityLogger, IConfiguration, YCappuccino,  IProxyManager
-from storage.bundles.managers import AbsManager, ProxyManager
-from storage.api import IItemManager,  IStorage,   IManager,  IDefaultManager
+from ycappuccino.core.api import  IActivityLogger, IConfiguration, YCappuccino,  IProxyManager
+from ycappuccino.storage.bundles.managers import AbsManager, ProxyManager
+from ycappuccino.storage.api import IItemManager,  IStorage,   IManager,  IDefaultManager
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 
-import core.framework as framework
+import ycappuccino.core.framework as framework
 
-import storage.models.decorators
+import ycappuccino.storage.models.decorators
 
 _logger = logging.getLogger(__name__)
 
@@ -50,13 +50,13 @@ class ItemManager(IItemManager, AbsManager):
 
 
     def get_one(self, a_item_id,  a_id):
-        w_dicts = core.model.decorators.get_map_items_emdpoint()
+        w_dicts = ycappuccino.storage.models.decorators.get_map_items_emdpoint()
         if a_id in w_dicts:
             w_result = w_dicts[a_id]
         return w_result
 
     def get_many(self, a_item_id, a_params):
-        w_result = core.model.decorators.get_map_items_emdpoint()
+        w_result = ycappuccino.storage.models.decorators.get_map_items_emdpoint()
 
         return w_result
 
@@ -74,7 +74,7 @@ class ItemManager(IItemManager, AbsManager):
             if w_item_id not in self._map_managers:
                 self._map_managers[w_item_id] = a_manager
                 if not isinstance(a_manager,ProxyManager):
-                    w_item = core.model.decorators.get_item(w_item_id)
+                    w_item = ycappuccino.storage.models.decorators.get_item(w_item_id)
                     a_manager.add_item(w_item, self._context)
 
     @BindField("_default_manager")
@@ -96,7 +96,7 @@ class ItemManager(IItemManager, AbsManager):
 
     def load_item(self):
         """ """
-        for w_item in storage.models.decorators.get_map_items():
+        for w_item in ycappuccino.storage.models.decorators.get_map_items():
             if w_item["id"] not in self._map_managers and self._default_manager is not None:
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item
                 if not w_item["abstract"]:

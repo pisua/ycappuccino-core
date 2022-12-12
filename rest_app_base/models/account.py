@@ -1,5 +1,5 @@
-from storage.models import Item, Property,  Reference, ItemReference, Empty
-from storage.models import Model
+from ycappuccino.storage.models.decorators  import Item, Property,  Reference, ItemReference, Empty
+from ycappuccino.storage.models.model import Model
 
 
 

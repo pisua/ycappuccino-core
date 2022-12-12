@@ -1,6 +1,6 @@
-from storage.models import Item, Property
-from storage.models.utils import YDict
-from storage.models import get_item_by_class, get_item
+from ycappuccino.storage.models.decorators import Item, Property
+from ycappuccino.storage.models.utils import YDict
+from ycappuccino.storage.models.decorators  import get_item_by_class, get_item
 
 
 @Item(collection="models", name="models", plural="models", abstract=True, app="core")

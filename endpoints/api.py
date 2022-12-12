@@ -1,5 +1,5 @@
 
-from core import CFQCN
+from ycappuccino.core.api import CFQCN
 
 
 

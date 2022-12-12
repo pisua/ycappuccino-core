@@ -1,9 +1,9 @@
-from core import IActivityLogger, YCappuccino, IService
-from rest_app_base import IClobReplaceService
+from ycappuccino.core.api import IActivityLogger, YCappuccino, IService
+from ycappuccino.rest_app_base.api import IClobReplaceService
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Provides, BindField, UnbindField, Instantiate
-from storage.models import get_map_items
+from ycappuccino.storage.models.decorators import get_map_items
 
 
 _logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
-from core import IActivityLogger, IService, YCappuccino
-from storage.api import IManager
-from endpoints import IJwt
-from rest_app_base import ILoginService
+from ycappuccino.core.api import IActivityLogger, IService, YCappuccino
+from ycappuccino.storage.api import IManager
+from ycappuccino.endpoints.api import IJwt
+from ycappuccino.rest_app_base.api import ILoginService
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate

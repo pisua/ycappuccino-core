@@ -1,6 +1,6 @@
 import json
 from urllib.parse import parse_qsl, urlsplit
-from storage.models import Model
+from ycappuccino.storage.models.model import Model
 
 
 class EndpointResponse(object):

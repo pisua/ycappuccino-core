@@ -7,8 +7,8 @@ Starts the Pelix framework and ycappuccino_core ycappuccino_core
 import logging
 import sys
 import os
-from core import utils
-from core import MyMetaFinder
+from ycappuccino.core import utils
+from ycappuccino.core.utils import MyMetaFinder
 
 
 sys.path.append(os.getcwd())
