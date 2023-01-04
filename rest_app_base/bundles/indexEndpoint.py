@@ -1,3 +1,4 @@
+#app="all"
 from ycappuccino.core.api import IActivityLogger
 from ycappuccino.rest_app_base.api import IClobReplaceService
 

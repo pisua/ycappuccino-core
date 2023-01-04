@@ -10,7 +10,7 @@ def empty():
     return _empty
 
 
-@Item(collection="permissions", name="permission", plural="permissions", app="core", secure_write=True,
+@Item(collection="permissions", name="permission", plural="permissions", app="all", secure_write=True,
       secure_read=True)
 class Permission(Model):
     def __init__(self, a_dict=None):

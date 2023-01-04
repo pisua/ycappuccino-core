@@ -1,9 +1,11 @@
+#app="all"
 import sys
 import os.path, glob
 
 from threading import current_thread
 from importlib.abc import Loader, MetaPathFinder
 from importlib.util import spec_from_file_location
+import ycappuccino.core.framework
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -16,10 +18,19 @@ def load_bundle(a_file, a_module_name,a_context):
     try:
         with open(a_file, "r") as f:
             content = f.read()
-            if "pelix" not in a_module_name and "@ComponentFactory" in content and "pelix.ipopo.decorators" in content:
+            if "pelix" not in a_module_name and \
+                    "@ComponentFactory" in content and \
+                    "pelix.ipopo.decorators" in content and \
+                    ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
+                      "app=\"all\"" in content or \
+                      ycappuccino.core.framework.app_name is None ) :
+
                 bundle_loaded.append(a_module_name)
                 a_context.install_bundle(a_module_name).start()
-            if "@Item" in content:
+            if "@Item" in content and \
+                    ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
+                      "app=\"all\"" in content or \
+                      ycappuccino.core.framework.app_name is None ):
                 # import this models
                 return a_module_name
     except Exception as e:

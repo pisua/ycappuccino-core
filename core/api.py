@@ -1,3 +1,5 @@
+#app="all"
+
 import logging
 
 

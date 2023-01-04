@@ -3,7 +3,7 @@ from ycappuccino.storage.models.utils import YDict
 from ycappuccino.storage.models.decorators  import get_item_by_class, get_item
 
 
-@Item(collection="models", name="models", plural="models", abstract=True, app="core")
+@Item(collection="models", name="models", plural="models", abstract=True, app="all")
 class Model(YDict):
     """ default bean that represent a models to manipulate / store in a database """
     def __init__(self, a_dict=None):

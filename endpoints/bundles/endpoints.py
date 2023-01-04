@@ -1,3 +1,4 @@
+#app="all"
 from ycappuccino.core.api import  IActivityLogger,   IService
 from ycappuccino.endpoints.api import IEndpoint, IHandlerEndpoint,  IJwt
 

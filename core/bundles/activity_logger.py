@@ -1,3 +1,5 @@
+#app="all"
+
 '''
 Created on 8 dec. 2017
 

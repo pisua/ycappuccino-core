@@ -1,3 +1,4 @@
+#app="all"
 from ycappuccino.core.api import  IActivityLogger, YCappuccino, IConfiguration
 from ycappuccino.storage.api import IStorage
 import logging

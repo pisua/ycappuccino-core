@@ -1,3 +1,4 @@
+#app="all"
 
 import os
 import logging

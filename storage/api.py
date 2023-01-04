@@ -1,3 +1,4 @@
+#app="all"
 from ycappuccino.core.api import CFQCN
 
 class IBootStrap(object):

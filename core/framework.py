@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -- Content-Encoding: UTF-8 --
+#app="all"
+
 """
 Starts the Pelix framework and ycappuccino_core ycappuccino_core
 """
@@ -45,11 +47,14 @@ def init_subsystem(a_path):
     subsystem.append(a_path)
     utils.find_and_install_bundle(a_path, "", context)
 
-def init(root_dir=None, port=9000):
+app_name = None
+
+def init(root_dir=None, app=None, port=9000):
     """ """
     global item_manager
     global context
-
+    global app_name
+    app_name = app
     # Create the Pelix framework
     framework = create_framework((
         # iPOPO

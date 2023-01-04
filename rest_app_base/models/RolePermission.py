@@ -10,7 +10,7 @@ def empty():
     return _empty
 
 
-@Item(collection="rolePermissions", name="rolePermission", plural="role-permissions", app="core", secure_write=True, secure_read=True)
+@Item(collection="rolePermissions", name="rolePermission", plural="role-permissions", app="all", secure_write=True, secure_read=True)
 @ItemReference(from_name="rolePermission", field="permission", item="permission")
 @ItemReference(from_name="rolePermission",field="role", item="role")
 class RolePermission(Model):

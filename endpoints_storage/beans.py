@@ -1,3 +1,4 @@
+#app="all"
 import json
 from urllib.parse import parse_qsl, urlsplit
 from ycappuccino.storage.models.model import Model

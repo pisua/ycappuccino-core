@@ -1,3 +1,4 @@
+#app="all"
 import types
 from pprint import pformat
 

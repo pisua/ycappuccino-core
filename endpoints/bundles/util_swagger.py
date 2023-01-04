@@ -1,3 +1,4 @@
+#app="all"
 
 
 def get_swagger_description_tag( a_item):

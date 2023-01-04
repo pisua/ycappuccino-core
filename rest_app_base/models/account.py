@@ -13,7 +13,7 @@ def empty():
     return _empty
 
 
-@Item(collection="accounts" ,name="account", plural="accounts", app="core", secure_write=True, secure_read=True)
+@Item(collection="accounts" ,name="account", plural="accounts", app="all", secure_write=True, secure_read=True)
 @ItemReference(from_name="account", field="login" ,item="login")
 @ItemReference(from_name="account",field="role" ,item="role")
 class Account(Model):

@@ -1,3 +1,4 @@
+#app="all"
 # decorators to describe item and element to store in mongo if it's mongo element
 import functools
 from ycappuccino.storage.models.utils import YDict

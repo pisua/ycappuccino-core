@@ -1,9 +1,10 @@
+#app="all"
 from ycappuccino.storage.models.decorators  import Item, Property,  Reference, ItemReference
 from ycappuccino.storage.models.model import Model
 _empty = None
 
 
-@Item(collection="layouts", name="layout", plural="layouts", app="core.ui", secure_write=True, secure_read=True)
+@Item(collection="layouts", name="layout", plural="layouts", app="all", secure_write=True, secure_read=True)
 @ItemReference(from_name="layout",field="_layout_parent", item="layout")
 class Layout(Model):
     """ describe an account in the application """

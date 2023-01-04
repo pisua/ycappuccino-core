@@ -1,3 +1,4 @@
+#app="all"
 
 from core import CFQCN
 

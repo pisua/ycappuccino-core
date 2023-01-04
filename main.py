@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    core.init(root_path=args.root_path, port=args.port)
+    core.init(root_path=args.root_path, app="test", port=args.port)
     # Run the server
     core.start()
 

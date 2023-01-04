@@ -1,3 +1,4 @@
+#app="all"
 from pelix.ipopo.constants import use_ipopo
 from ycappuccino.core.api import  IActivityLogger
 from ycappuccino.storage.api import IManager, IStorage, ITrigger, IDefaultManager

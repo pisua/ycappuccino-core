@@ -1,3 +1,5 @@
+
+#app="all"
 from threading import Semaphore, current_thread
 from concurrent.futures.thread import ThreadPoolExecutor
 import logging

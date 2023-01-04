@@ -1,3 +1,5 @@
+#app="all"
+
 from ycappuccino.core.api import  IActivityLogger, IConfiguration, YCappuccino, IServerProxy
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField

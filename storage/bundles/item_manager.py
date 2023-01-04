@@ -1,3 +1,4 @@
+#app="all"
 from ycappuccino.core.api import  IActivityLogger, IConfiguration, YCappuccino,  IProxyManager
 from ycappuccino.storage.bundles.managers import AbsManager, ProxyManager
 from ycappuccino.storage.api import IItemManager,  IStorage,   IManager,  IDefaultManager
@@ -97,11 +98,12 @@ class ItemManager(IItemManager, AbsManager):
     def load_item(self):
         """ """
         for w_item in ycappuccino.storage.models.decorators.get_map_items():
-            if w_item["id"] not in self._map_managers and self._default_manager is not None:
+            if "id" in w_item.keys() and  w_item["id"] not in self._map_managers and self._default_manager is not None:
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item
                 if not w_item["abstract"]:
                     self._default_manager.add_item(w_item, self._context)
-
+            else:
+                print("error")
 
     @Validate
     def validate(self, context):
