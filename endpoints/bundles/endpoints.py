@@ -93,14 +93,32 @@ class Endpoint(IEndpoint):
         w_resp = self.delete(w_path, w_header)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
+    def get_tenant(self, a_headers):
+        w_token = self._get_token_from_header(a_headers)
+        if w_token is None:
+            return None
+        return self._jwt.decode(w_token)
+
+    def get_account(self, a_headers):
+        w_token = self.__get_token_from_header(a_headers)
+        if w_token is None:
+            return None
+        return self._jwt.decode(w_token)
+
     def check_header(self, a_headers):
+        w_token = self._get_token_from_header(a_headers)
+        if w_token is None:
+            return False
+        return self._jwt.verify(w_token)
+
+    def _get_token_from_header(self, a_headers):
         if "authorization" in a_headers:
             w_authorization = a_headers["authorization"]
             if w_authorization is not None and "Bearer" in w_authorization:
                 w_token = w_authorization[len("Bearer "):]
-                return self._jwt.verify(w_token)
+                return w_token
             else:
-                return False
+                return None
         elif "Cookie" in a_headers:
             w_cookies = a_headers["Cookie"]
             w_token = ""
@@ -112,8 +130,7 @@ class Endpoint(IEndpoint):
             else:
                 w_token = w_cookies.split("=")[1]
             _logger.info("token {}".format(w_token))
-            return self._jwt.verify(w_token)
-
+            return w_token
 
     def find_service(self, a_service_name):
         if a_service_name not in self._map_services:
