@@ -421,9 +421,9 @@ class AbsManager(IManager):
             a_new_field["_mongo_model"]["_tid"] =  a_subject["tid"]
             a_new_field["_mongo_model"]["_account"] = a_subject["sub"]
 
-        self._call_trigger_pre("upsert", a_new_field)
+        self._call_trigger_pre("upsert", a_item["id"], a_new_field)
         res = self._storage.up_sert(a_item, a_id, a_new_field)
-        self._call_trigger_pre("upsert", a_new_field)
+        self._call_trigger_post("upsert", a_item["id"], a_new_field)
 
         if res is not None:
             return res
@@ -468,10 +468,10 @@ class AbsManager(IManager):
 
             if w_item is not None:
                 read = self._storage.get_one(w_item["collection"], a_id)
-                self._call_trigger_pre("delete",read)
+                self._call_trigger_pre("upsert", a_item_id, read)
 
                 self._storage.delete(w_item["collection"], a_id)
-                self._call_trigger_post("delete",read)
+                self._call_trigger_post("delete", a_item_id, read)
 
         return None
 
@@ -479,28 +479,28 @@ class AbsManager(IManager):
     def bind_trigger(self, a_field, a_service, a_service_reference):
         if a_service is not None and a_service.get_item() in self._items.keys():
             for a_action in a_service.get_actions():
-                if a_action not in self._map_trigger:
-                    self._map_trigger[a_action] = {}
-                self._map_trigger[a_action][a_service.get_name()] = a_service
+                if a_action not in self._map_triggers:
+                    self._map_triggers[a_action] = {}
+                self._map_triggers[a_action][a_service.get_name()] = a_service
 
     @UnbindField("_list_trigger")
     def un_bind_trigger(self, a_field, a_service, a_service_reference):
         if a_service is not None and a_service.get_item() in self._items.keys():
             for a_action in a_service.get_actions():
-                if a_action not in self._map_trigger:
-                    self._map_trigger[a_action] = {}
-                if a_service.get_name() in self._map_trigger[a_action]:
-                    del self._map_trigger[a_action][a_service.get_name()]
+                if a_action not in self._map_triggers:
+                    self._map_triggers[a_action] = {}
+                if a_service.get_name() in self._map_triggers[a_action]:
+                    del self._map_triggers[a_action][a_service.get_name()]
 
-    def _call_trigger_pre(self, a_action, a_model=None):
+    def _call_trigger_pre(self, a_action, a_item_id, a_model=None):
         if a_action in self._map_triggers:
             for w_service in self._map_triggers[a_action].values():
-                if not w_service.is_post():
+                if not w_service.is_post() and w_service.get_item() == a_item_id:
                     w_service.execute(a_action, a_model)
-    def _call_trigger_post(self, a_action, a_model=None):
+    def _call_trigger_post(self, a_action, a_item_id, a_model=None):
         if a_action in self._map_triggers:
             for w_service in self._map_triggers[a_action].values():
-                if w_service.is_post():
+                if w_service.is_post() and w_service.get_item() == a_item_id:
                     w_service.execute(a_action, a_model)
 
     def delete_many(self, a_item_id, a_filter, a_subject=None):
@@ -511,10 +511,10 @@ class AbsManager(IManager):
             if w_item is not None:
                 reads = self._storage.get_many(w_item["collection"], a_filter)
                 for w_elem in reads:
-                    self._call_trigger_pre("delete",w_elem)
+                    self._call_trigger_pre("delete", a_item_id, w_elem)
                 self._storage.delete_many(w_item["collection"], a_filter)
                 for w_elem in reads:
-                    self._call_trigger_pre("delete", w_elem)
+                    self._call_trigger_post("delete", a_item_id, w_elem)
 
         return None
 

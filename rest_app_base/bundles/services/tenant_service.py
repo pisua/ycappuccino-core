@@ -14,6 +14,8 @@ from ycappuccino.storage.models.utils import YDict
 
 from ycappuccino.rest_app_base.models.organization import Organization
 
+from ycappuccino.storage.models.model import Model
+
 _logger = logging.getLogger(__name__)
 
 
@@ -64,20 +66,23 @@ class TenantTrigger(ITrigger,IFilter):
         if a_id in self._organization_father.keys():
             for w_id in self._organization_father[a_id]:
                 a_res.append(w_id)
-                self._get_sons_tenant(a_id,a_res)
+                self._get_sons_tenant(w_id,a_res)
 
 
     def execute(self, a_action, organization):
+        w_org = organization
+        if isinstance(w_org,Model):
+            w_org = w_org.__dict__
         if a_action == "delete":
-            del self._organization[organization._id]
-            del self._organization_father[organization._father][organization._id]
+            del self._organization[w_org["_id"]]
+            del self._organization_father[w_org["_father"]][w_org["_id"]]
         else:
-            self._organization[organization._id] = organization
-        if organization._father is not None:
-            if organization._father not in self._organization_father.keys():
-                self._organization_father[organization._father] = [organization._id]
+            self._organization[w_org["_id"]] = w_org
+        if "_father" in w_org.keys() and w_org["_father"] is not None:
+            if w_org["_father"] not in self._organization_father.keys():
+                self._organization_father[w_org["_father"]] = [w_org["_id"]]
             else:
-                self._organization_father[organization._father].append(organization._id)
+                self._organization_father[w_org["_father"]].append(w_org["_id"])
 
 
     @Validate
