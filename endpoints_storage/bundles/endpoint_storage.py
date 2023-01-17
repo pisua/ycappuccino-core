@@ -10,9 +10,12 @@ from ycappuccino.endpoints_storage.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate
 import ycappuccino.storage.models.decorators
 
+from ycappuccino.endpoints.api import IJwt
+
 _logger = logging.getLogger(__name__)
 
 from ycappuccino.endpoints.bundles import util_swagger
+from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_decoded
 
 
 @ComponentFactory('EndpointStorage-Factory')
@@ -21,6 +24,8 @@ from ycappuccino.endpoints.bundles import util_swagger
 @Instantiate("handlerEndpointStorage")
 @Requires("_item_manager", specification=IItemManager.name)
 @Requires("_managers", specification=IManager.name, aggregate=True, optional=True)
+@Requires("_jwt", specification=IJwt.name)
+
 class HandlerEndpointStorage(IHandlerEndpoint):
 
     def __init__(self):
@@ -30,6 +35,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         self._map_managers = {}
         self._item_manager = None
         self._file_dir = None
+        self._jwt = None
 
     def get_types(self):
         return ["crud","schema","empty"]
@@ -72,7 +78,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item["secureWrite"] and not self.check_header(a_headers):
+                if w_item["secureWrite"] and not check_header(self._jwt, a_headers):
                     return EndpointResponse(401)
 
                 w_id = w_url_path.get_params()["id"]
@@ -86,7 +92,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                 with open(w_path,"w") as f:
                     f.write(a_content)
 
-                w_instance = w_manager.get_aggregate_one(w_item["id"], w_id)
+                w_instance = w_manager.get_aggregate_one(w_item["id"], w_id, get_token_decoded(self._jwt, a_headers))
                 w_instance[w_item["multipart"]] = w_path
                 w_manager.up_sert(w_item["id"], w_id, w_instance.__dict__)
                 w_meta = {
@@ -103,7 +109,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item["secureWrite"] and not self.check_header(a_headers):
+                if w_item["secureWrite"] and not  check_header(self._jwt, a_headers):
                     return EndpointResponse(401)
                 if "id" in a_body:
                     w_id = a_body["id"]
@@ -112,7 +118,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                 if w_url_path.is_draft():
                     # concat the draft id
                     w_id = w_id + "_" + w_url_path.get_draft()
-                w_manager.up_sert(w_item["id"], w_id, a_body)
+                w_manager.up_sert(w_item["id"], w_id, a_body, get_token_decoded(self._jwt, a_headers))
                 w_meta = {
                     "type": "array"
                 }
@@ -132,14 +138,14 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
-                if w_item["secureWrite"] and not self.check_header(a_headers):
+                if w_item["secureWrite"] and not  check_header(self._jwt, a_headers):
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and w_url_path.get_params()["id"] is not None:
                     w_id = w_url_path.get_params()["id"]
                     if w_url_path.is_draft():
                         # concat the draft id
                         w_id = w_id + "_" + w_url_path.get_draft()
-                    w_manager.up_sert(w_item["id"], w_id, a_body)
+                    w_manager.up_sert(w_item["id"], w_id, a_body, get_token_decoded(self._jwt, a_headers))
                     w_meta = {
                         "type": "array",
                         "size": 1
@@ -173,7 +179,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
-                if w_item["secureRead"] and not self.check_header(a_headers):
+                if w_item["secureRead"] and not  check_header(self._jwt, a_headers):
                     _logger.info("failed authorization service ")
 
                     return EndpointResponse(401)
@@ -191,7 +197,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                     }
                 else:
 
-                    w_resp_temp = w_manager.get_aggregate_many(w_item["id"],w_url_path.get_params())
+                    w_resp_temp = w_manager.get_aggregate_many(w_item["id"],w_url_path.get_params(), get_token_decoded(self._jwt, a_headers))
                     w_resp = []
                     if w_url_path.is_draft():
                         # check if duplicate element with draft exists and only keep the draft one
@@ -263,14 +269,14 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item.secureWrite and not self.check_header(a_headers):
+                if w_item.secureWrite and not  check_header(self._jwt, a_headers):
                     return EndpointResponse(401)
                 w_meta = {
                     "type": "array",
                     "size": 1
                 }
                 if w_url_path.get_params() is not None and w_url_path.get_params().id is not None:
-                    w_manager.delete(w_item["id"], w_url_path.get_params().id)
+                    w_manager.delete(w_item["id"], w_url_path.get_params().id, get_token_decoded(self._jwt, a_headers))
                     return EndpointResponse(200, None, w_meta)
             else:
                 return EndpointResponse(405)

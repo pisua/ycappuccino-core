@@ -26,6 +26,7 @@ class RunnableProcess(Callable):
         super(RunnableProcess, self).__init__(a_name, a_log)
         self._activate = False
         self._semaphore = Semaphore()
+        self._name = a_name
 
     def process(self):
         """ abstract run class"""

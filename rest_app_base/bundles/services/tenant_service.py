@@ -56,7 +56,7 @@ class TenantTrigger(ITrigger,IFilter):
                 }
             })
     def get_sons_tenant(self, a_id):
-        res = []
+        res = [a_id]
         self._get_sons_tenant(a_id, res)
         return res
 

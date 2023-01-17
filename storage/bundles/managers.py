@@ -418,8 +418,8 @@ class AbsManager(IManager):
 
     def _up_sert(self, a_item, a_id, a_new_field, a_subject=None):
         if a_subject is not None:
-            a_new_field["_tid"] = a_subject is not None if a_subject["tid"] else None
-            a_new_field["_account"] = a_subject is not None if a_subject["account"] else None
+            a_new_field["_mongo_model"]["_tid"] =  a_subject["tid"]
+            a_new_field["_mongo_model"]["_account"] = a_subject["sub"]
 
         self._call_trigger_pre("upsert", a_new_field)
         res = self._storage.up_sert(a_item, a_id, a_new_field)
@@ -556,6 +556,7 @@ class ProxyManager(IManager, Proxy):
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_storage",IStorage.name,optional=True)
 @Requires('_list_trigger', ITrigger.name, aggregate=True, optional=True)
+@Requires('_filters', IFilter.name, aggregate=True, optional=True)
 @Instantiate("Manager-default")
 class DefaultManager(AbsManager):
 

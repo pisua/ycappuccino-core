@@ -10,7 +10,7 @@ import json
 from ycappuccino.endpoints.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate, Property
 from ycappuccino.endpoints.bundles import util_swagger
-
+from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_decoded
 _logger = logging.getLogger(__name__)
 
 
@@ -93,27 +93,17 @@ class Endpoint(IEndpoint):
         w_resp = self.delete(w_path, w_header)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
-    def check_header(self, a_headers):
-        if "authorization" in a_headers:
-            w_authorization = a_headers["authorization"]
-            if w_authorization is not None and "Bearer" in w_authorization:
-                w_token = w_authorization[len("Bearer "):]
-                return self._jwt.verify(w_token)
-            else:
-                return False
-        elif "Cookie" in a_headers:
-            w_cookies = a_headers["Cookie"]
-            w_token = ""
-            if ";" in w_cookies:
-                w_arr = w_cookies.split(";")
-                for w_cookie in w_arr:
-                    if "_ycappuccino" in w_cookie:
-                        w_token = w_cookie.split("=")[1]
-            else:
-                w_token = w_cookies.split("=")[1]
-            _logger.info("token {}".format(w_token))
-            return self._jwt.verify(w_token)
+    def get_tenant(self, a_headers):
+        w_token = self._get_token_from_header(a_headers)
+        if w_token is None:
+            return None
+        return self._jwt.decode(w_token)
 
+    def get_account(self, a_headers):
+        w_token = self.__get_token_from_header(a_headers)
+        if w_token is None:
+            return None
+        return self._jwt.decode(w_token)
 
     def find_service(self, a_service_name):
         if a_service_name not in self._map_services:
@@ -127,7 +117,7 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_service(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not self.check_header(a_headers):
+                if w_service.is_secure() and not check_header(self._jwt, a_headers):
                     _logger.info("failed authorization service ")
                     return EndpointResponse(401)
                 else:
@@ -151,7 +141,7 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not self.check_header(a_headers):
+                if w_service.is_secure() and not check_header(self._jwt, a_headers):
                     _logger.info("failed authorization service ")
 
                     return EndpointResponse(401)
@@ -195,7 +185,7 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not self.check_header(a_headers):
+                if w_service.is_secure() and not check_header(self._jwt, a_headers):
                     _logger.info("failed authorization service ")
 
                     return EndpointResponse(401)
@@ -217,7 +207,7 @@ class Endpoint(IEndpoint):
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not self.check_header(a_headers):
+                if w_service.is_secure() and not check_header(self._jwt, a_headers):
                     return EndpointResponse(401)
                 else:
                     w_header, w_body =  w_service.delete(a_headers, w_url_path.get_params())
@@ -227,7 +217,7 @@ class Endpoint(IEndpoint):
                     return EndpointResponse(200,w_header, w_meta, w_body)
         if w_url_path.get_Type() in self._map_handler_endpoints.keys():
             w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-            return w_handler_endpoint.put(a_path, a_headers, a_body)
+            return w_handler_endpoint.delete(a_path, a_headers)
         return EndpointResponse(400)
 
     @BindField("_handler_endpoints")

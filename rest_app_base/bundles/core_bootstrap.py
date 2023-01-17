@@ -12,6 +12,8 @@ from ycappuccino.rest_app_base.models.ui.client_path import ClientPath
 from ycappuccino.rest_app_base.models.role_permission import RolePermission
 from ycappuccino.rest_app_base.models.role_account import RoleAccount
 
+from ycappuccino.endpoints.api import IJwt
+
 _logger = logging.getLogger(__name__)
 
 
@@ -24,6 +26,8 @@ _logger = logging.getLogger(__name__)
 @Requires("_manager_login", IManager.name, spec_filter="'(item_id=login)'")
 @Requires("_manager_role", IManager.name, spec_filter="'(item_id=role)'")
 @Requires("_manager_client_path", IManager.name, spec_filter="'(item_id=clientPath)'")
+@Requires("_jwt", IJwt.name)
+
 @Property("_id", "id", "core")
 
 @Instantiate("AccountBootStrap")
@@ -36,6 +40,7 @@ class AccountBootStrap(IBootStrap):
         self._manager_role =None
         self._manager_role_permission =None
         self._manager_role_account =None
+        self._jwt =None
 
         self._manager_client_path = None
         self._log =None
@@ -45,6 +50,8 @@ class AccountBootStrap(IBootStrap):
         return self._id
 
     def bootstrap(self):
+
+        w_subject = self._jwt.get_token_subject("bootstrap", "system")
 
         w_admin_login = Login()
         w_admin_login.id("superadmin")
@@ -72,13 +79,13 @@ class AccountBootStrap(IBootStrap):
         w_admin_role_account.account("superadmin")
         w_admin_role_account.organization("system")
 
-        self._manager_role.up_sert_model("superadmin", w_admin_role)
-        self._manager_account.up_sert_model("superadmin", w_admin_account)
-        self._manager_role_permission.up_sert_model("superadmin", w_admin_role_permission)
-        self._manager_role_account.up_sert_model("superadmin", w_admin_role_account)
+        self._manager_role.up_sert_model("superadmin", w_admin_role, w_subject)
+        self._manager_account.up_sert_model("superadmin", w_admin_account, w_subject)
+        self._manager_role_permission.up_sert_model("superadmin", w_admin_role_permission, w_subject)
+        self._manager_role_account.up_sert_model("superadmin", w_admin_role_account, w_subject)
 
-        if self._manager_login.get_one("login","superadmin") is None:
-            self._manager_login.up_sert_model("superadmin", w_admin_login)
+        if self._manager_login.get_one("login","superadmin", w_subject) is None:
+            self._manager_login.up_sert_model("superadmin", w_admin_login, w_subject)
 
         w_client_path_default = ClientPath()
         w_client_path_default.id("default")
@@ -87,7 +94,7 @@ class AccountBootStrap(IBootStrap):
         w_client_path_default.priority(0)
         w_client_path_default.secure(False)
 
-        self._manager_client_path.up_sert_model("default", w_client_path_default)
+        self._manager_client_path.up_sert_model("default", w_client_path_default, w_subject)
 
 
         w_client_path_swagger = ClientPath()
@@ -98,7 +105,7 @@ class AccountBootStrap(IBootStrap):
 
         w_client_path_swagger.secure(False)
 
-        self._manager_client_path.up_sert_model("simpleform", w_client_path_swagger)
+        self._manager_client_path.up_sert_model("simpleform", w_client_path_swagger, w_subject)
 
     @Validate
     def validate(self, context):
