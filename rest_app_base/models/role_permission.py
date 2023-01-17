@@ -18,8 +18,9 @@ class RolePermission(Model):
         super().__init__(a_dict)
         self._role = None
         self._permission = None
+        self._organization = None
 
-    @Reference(name="name")
+    @Reference(name="role")
     def role(self, a_value):
         self._role = a_value
 
@@ -27,5 +28,7 @@ class RolePermission(Model):
     def rights(self, a_values):
         """ list of right permission """
         self._permissions = a_values
+
+
 
 empty()

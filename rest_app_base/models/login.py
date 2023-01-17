@@ -8,7 +8,6 @@ def empty():
     _empty = Login()
     _empty.id("admin")
     _empty.password("admin")
-    _empty.account_ref("test")
     return _empty
 
 
@@ -40,9 +39,7 @@ class Login(Model):
         w_concat = "{}{}".format(self._salt, a_value).encode("utf-8")
         self._private_password(hashlib.md5(w_concat).hexdigest())
 
-    @Property(name="account_ref")
-    def account_ref(self, a_value):
-        self._account_ref = a_value
+
 
 
 empty()

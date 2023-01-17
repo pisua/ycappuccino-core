@@ -31,20 +31,24 @@ class ITrigger(object):
     """ """
     name = CFQCN.build("ITrigger")
 
-    def __init__(self, a_name, a_item_id, a_synchronous=False, a_post=False):
+    def __init__(self, a_name, a_item_id, a_actions, a_synchronous=False, a_post=False):
         self._synchronous = a_synchronous
         self._post = a_post
         self._name = a_name
         self._item_id = a_item_id
+        self._actions = a_actions
 
-    def execute(self, a_model_before, a_model_after):
+    def execute(self, a_action, a_model):
         pass
 
     def is_synchronous(self):
         return self._synchronous
 
-    def get_item_id(self):
+    def get_item(self):
         return self._item_id
+
+    def get_actions(self):
+        return self._actions
 
     def get_name(self):
         return self._name
@@ -55,6 +59,15 @@ class ITrigger(object):
     def is_pre(self):
         return not self._post
 
+class IFilter(object):
+    """ """
+    name = CFQCN.build("IFilter")
+
+    def __init__(self):
+        pass
+
+    def get_filter(self, a_tenant=None):
+        pass
 
 class IManager(object):
     """ """
@@ -71,6 +84,13 @@ class IDefaultManager(IManager):
     def __init__(self):
         pass
 
+
+class IOrganizationManager(IManager):
+    """ """
+    name = CFQCN.build("IOrganizationManager")
+
+    def __init__(self):
+        pass
 
 class IUploadManager(IDefaultManager):
     """ """

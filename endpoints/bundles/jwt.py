@@ -27,21 +27,22 @@ class Jwt(IJwt):
         self._key = None
         self._config = None
         self._timeout = None
+        self._token
 
     def load_configuration(self):
         self._key = self._config.get("jwt.token.key", KEY)
         self._timeout = self._config.get("jwt.token.timeout", TIMEOUT)
 
-    def generate(self,login):
+    def generate(self,account, role_account):
         # tody manage right / account / tenant
         seconds = int(round(time.time()))
         exp = int(round(time.time()))+self._timeout
 
-        return jwt.encode({'sub': login, "iat": seconds, "exp" : exp }, self._key , algorithm='HS256')
+        return jwt.encode({'sub': account._id, "tid": role_account._organization, "iat": seconds, "exp" : exp }, self._key , algorithm='HS256')
 
     def verify(self, a_token):
         w_res = jwt.decode(a_token, self._key, algorithms='HS256')
-        seconds = int(round(time.time() ))
+        seconds = int(round(time.time()))
         if w_res is not None and "exp" in w_res and w_res["exp"] > seconds:
             return True
         return False

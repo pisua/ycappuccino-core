@@ -1,4 +1,6 @@
 #app="all"
+import json
+
 from ycappuccino.core.api import IActivityLogger, IService, YCappuccino
 from ycappuccino.storage.api import IManager
 from ycappuccino.endpoints.api import IJwt
@@ -17,6 +19,8 @@ class AbsService(IService, ILoginService):
     def __init__(self):
         super(IService, self).__init__();
         self._manager_login = None
+        self._manager_account = None
+        self._manager_role_account = None
         self._log = None
         self._jwt = None
 
@@ -45,18 +49,27 @@ class AbsService(IService, ILoginService):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
         w_login = self._manager_login.get_one("login",  a_login)
 
-        w_concat = "{}{}".format(w_login._salt, a_password).encode("utf-8")
-        result = hashlib.md5(w_concat).hexdigest()
+        w_filter = json.dumps({"login.ref":w_login._id})
+        w_account = self._manager_account.get_many( "account", a_params={"filter":w_filter})
+        if w_account is not None and len(w_account)>0:
+            w_filter = json.dumps({"account.ref":w_account[0]._id})
 
-        if w_login._password == result:
-            w_token = self._jwt.generate(a_login)
-            return w_token
+            w_role_account = self._manager_role_account.get_many( "roleAccount", a_params={"filter":w_filter})
+
+            w_concat = "{}{}".format(w_login._salt, a_password).encode("utf-8")
+            result = hashlib.md5(w_concat).hexdigest()
+
+            if w_login._password == result:
+                w_token = self._jwt.generate(w_account[0], w_role_account[0])
+                return w_token
         return None
 
 @ComponentFactory('LoginService-Factory')
 @Provides(specifications=[IService.name, YCappuccino.name,ILoginService.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_manager_login", IManager.name, spec_filter="'(item_id=login)'")
+@Requires("_manager_account", IManager.name, spec_filter="'(item_id=account)'")
+@Requires("_manager_role_account", IManager.name, spec_filter="'(item_id=roleAccount)'")
 @Requires("_jwt", IJwt.name)
 @Instantiate("LoginService")
 class LoginService(AbsService):
@@ -166,6 +179,8 @@ class ChangePasswordService(AbsService):
 @Provides(specifications=[IService.name, YCappuccino.name,ILoginService.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_manager_login", IManager.name, spec_filter="'(item_id=login)'")
+@Requires("_manager_account", IManager.name, spec_filter="'(item_id=account)'")
+@Requires("_manager_role_account", IManager.name, spec_filter="'(item_id=roleAccount)'")
 @Requires("_jwt", IJwt.name)
 @Instantiate("LoginCookieService")
 class LoginCookieService(AbsService):

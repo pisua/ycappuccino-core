@@ -100,7 +100,7 @@ class ItemManager(IItemManager, AbsManager):
         for w_item in ycappuccino.storage.models.decorators.get_map_items():
             if "id" in w_item.keys() and  w_item["id"] not in self._map_managers and self._default_manager is not None:
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item
-                if not w_item["abstract"]:
+                if not w_item["abstract"] :
                     self._default_manager.add_item(w_item, self._context)
             else:
                 print("error")

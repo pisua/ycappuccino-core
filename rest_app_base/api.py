@@ -27,3 +27,10 @@ class IClientIndexPathFactory(object):
     def __init__(self):
         """ abstract constructor """
         pass
+class ITenantTrigger(object):
+    """ interface of YCappuccino component """
+    name = CFQCN.build("ITenantTrigger")
+
+    def __init__(self):
+        """ abstract constructor """
+        pass

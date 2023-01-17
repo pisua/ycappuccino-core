@@ -39,6 +39,32 @@ class HandlerEndpointStorage(IHandlerEndpoint):
              return self._map_managers[a_item_plural_id]
         return None
 
+    def check_header(self, a_headers):
+        if "authorization" in a_headers:
+            w_authorization = a_headers["authorization"]
+            if w_authorization is not None and "Bearer" in w_authorization:
+                w_token = w_authorization[len("Bearer "):]
+                return self._jwt.verify(w_token)
+            else:
+                return False
+        elif "Cookie" in a_headers:
+            w_cookies = a_headers["Cookie"]
+            w_token = ""
+            if ";" in w_cookies:
+                w_arr = w_cookies.split(";")
+                for w_cookie in w_arr:
+                    if "_ycappuccino" in w_cookie:
+                        w_token = w_cookie.split("=")[1]
+            else:
+                w_token = w_cookies.split("=")[1]
+            _logger.info("token {}".format(w_token))
+            return self._jwt.verify(w_token)
+
+    def get_token(self, a_headers):
+
+        return self._jwt.verify(w_token)
+
+
     def upload_media(self, a_path, a_headers,  a_content):
         w_url_path = UrlPath(a_path)
         if w_url_path.is_crud():

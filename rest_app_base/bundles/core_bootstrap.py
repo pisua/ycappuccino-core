@@ -9,7 +9,8 @@ from ycappuccino.rest_app_base.models.account import Account
 from ycappuccino.rest_app_base.models.login import Login
 from ycappuccino.rest_app_base.models.role import Role
 from ycappuccino.rest_app_base.models.ui.client_path import ClientPath
-
+from ycappuccino.rest_app_base.models.role_permission import RolePermission
+from ycappuccino.rest_app_base.models.role_account import RoleAccount
 
 _logger = logging.getLogger(__name__)
 
@@ -18,6 +19,8 @@ _logger = logging.getLogger(__name__)
 @Provides(specifications=[IBootStrap.name, YCappuccino.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_manager_account", IManager.name, spec_filter="'(item_id=account)'")
+@Requires("_manager_role_permission", IManager.name, spec_filter="'(item_id=rolePermission)'")
+@Requires("_manager_role_account", IManager.name, spec_filter="'(item_id=roleAccount)'")
 @Requires("_manager_login", IManager.name, spec_filter="'(item_id=login)'")
 @Requires("_manager_role", IManager.name, spec_filter="'(item_id=role)'")
 @Requires("_manager_client_path", IManager.name, spec_filter="'(item_id=clientPath)'")
@@ -31,6 +34,9 @@ class AccountBootStrap(IBootStrap):
         self._manager_account =None
         self._manager_login =None
         self._manager_role =None
+        self._manager_role_permission =None
+        self._manager_role_account =None
+
         self._manager_client_path = None
         self._log =None
         self._id = "core"
@@ -55,8 +61,22 @@ class AccountBootStrap(IBootStrap):
         w_admin_account.login("superadmin")
         w_admin_account.role("superadmin")
 
+
+        w_admin_role_permission = RolePermission({})
+        w_admin_role_permission.id("superadmin")
+        w_admin_role_permission.role("superadmin")
+
+        w_admin_role_account = RoleAccount({})
+        w_admin_role_account.id("superadmin")
+        w_admin_role_account.role("superadmin")
+        w_admin_role_account.account("superadmin")
+        w_admin_role_account.organization("system")
+
         self._manager_role.up_sert_model("superadmin", w_admin_role)
         self._manager_account.up_sert_model("superadmin", w_admin_account)
+        self._manager_role_permission.up_sert_model("superadmin", w_admin_role_permission)
+        self._manager_role_account.up_sert_model("superadmin", w_admin_role_account)
+
         if self._manager_login.get_one("login","superadmin") is None:
             self._manager_login.up_sert_model("superadmin", w_admin_login)
 

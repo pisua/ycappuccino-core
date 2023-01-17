@@ -1,7 +1,7 @@
 #app="all"
 from pelix.ipopo.constants import use_ipopo
 from ycappuccino.core.api import  IActivityLogger
-from ycappuccino.storage.api import IManager, IStorage, ITrigger, IDefaultManager
+from ycappuccino.storage.api import IManager, IStorage, ITrigger, IDefaultManager, IOrganizationManager
 from ycappuccino.storage.models.model import Model
 from ycappuccino.storage.models.decorators import get_sons_item, get_sons_item_id
 from ycappuccino.storage.models.utils import Proxy
@@ -9,6 +9,8 @@ import json
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Property,  Invalidate, Provides, BindField, UnbindField, \
     Instantiate
+
+from ycappuccino.storage.api import IFilter
 
 _logger = logging.getLogger(__name__)
 
@@ -22,9 +24,12 @@ class AbsManager(IManager):
         self._items_class = {}
         self._items_plural = {}
         self._triggers = None
+        self._map_triggers = {}
+
         self._loaded = False
         self._storage = None
         self._list_component = {}
+        self._filters = None
 
     def add_item(self, a_item, a_bundle_context):
         """ add item in map manage by the manager"""
@@ -121,7 +126,7 @@ class AbsManager(IManager):
 
         return w_result
 
-    def _add_lookup_pipeline(self, a_pipeline, a_item, a_result_elem):
+    def _add_lookup_pipeline(self, a_pipeline, a_item, a_result_elem, a_subject=None):
         w_lookup_params = a_result_elem["params"]
         w_item_target_id = a_result_elem["target"]
         w_prefix = a_result_elem["prefix"]+"." if "prefix" in a_result_elem else ""
@@ -177,7 +182,7 @@ class AbsManager(IManager):
                     # get item
                     self._add_lookup_pipeline(a_pipeline, w_item_target, a_result_elem[w_elem_key_son])
 
-    def _generate_pipeline(self, a_item ,a_filter, a_expand, a_select=None):
+    def _generate_pipeline(self, a_item ,a_filter, a_expand, a_select=None, a_subject=None):
         w_pipeline = None
         w_expand_split = a_expand.split(",")
         w_pipeline = {
@@ -203,7 +208,13 @@ class AbsManager(IManager):
 
         return w_pipeline_arr
 
-    def get_one(self, a_item_id, a_id, a_params=None):
+    def _manage_filter(self, a_filter_res, a_tenant):
+        if self._filters is not None and len(self._filters):
+            for a_filter in self._filters:
+                w_filter = a_filter.get_filter(a_tenant)
+                a_filter_res[w_filter.key] = w_filter.value
+
+    def get_one(self, a_item_id, a_id, a_params=None, a_subject=None):
         w_result = None
         if self._storage is not None:
             w_item = self._items[a_item_id]
@@ -215,34 +226,39 @@ class AbsManager(IManager):
                         "$in":w_items
                     }
                 }
+                if a_subject is not None:
+                    self._manage_filter(w_filter, a_subject["tid"] )
 
                 res = self._storage.get_one(w_item["collection"], w_filter)
                 w_result = self._manage_return_result_from_one_instance(w_item, res, a_params)
+                self._call_trigger_post("read", w_result)
 
         return w_result
 
-    def get_aggregate_one(self, a_item_id, a_id, a_params=None):
+    def get_aggregate_one(self, a_item_id, a_id, a_params=None, a_subject=None):
         w_result = None
         if self._storage is not None:
             w_item = self._items[a_item_id]
             if w_item is not None:
                 w_items = self.get_sons_item_id(w_item)
-                w_filter = {
-                    "_id": a_id,
-                    "_item_id":{
-                        "$in":w_items
-                    }
-                }
+
+
                 if a_params is not None and "expand" in a_params:
                     w_expand = a_params["expand"]
                     w_filter = a_params["filter"] if  a_params.keys() else {}
+                    w_filter["_id"] = a_id,
+                    w_filter["_item_id"] = {
+                        "$in": w_items
+                    }
 
+                    self._manage_filter(w_filter, a_subject["tid"])
                     w_pipeline = self._generate_pipeline(w_item, w_filter, w_expand)
                     if w_pipeline is not None:
                         res = self._storage.aggregate(w_item["collection"], w_pipeline)
                         return self._manage_return_result_from_one_instance(w_item, res,a_params)
 
                 w_result = self.get_one(a_item_id, a_id, a_params)
+                self._call_trigger_post("read", w_result)
 
         return w_result
 
@@ -302,7 +318,7 @@ class AbsManager(IManager):
     def get_sons_item_id(self, a_item):
         return get_sons_item_id(a_item["id"])
 
-    def get_many(self, a_item_id, a_params=None):
+    def get_many(self, a_item_id, a_params=None, a_subject=None):
         w_result = []
         if self._storage is not None:
             w_item = self._items[a_item_id]
@@ -327,11 +343,16 @@ class AbsManager(IManager):
                 w_filter["_item_id"] = {
                     "$in":w_items
                 }
+                if a_subject is not None:
+                    self._manage_filter(w_filter, a_subject["tid"] )
+
                 res = self._storage.get_many(w_item["collection"], w_filter, w_offset, w_limit, w_sort)
                 w_result = self._manage_return_result_from_many_instance(w_item, res,a_params)
+                self._call_trigger_post("read", w_result)
+
         return w_result
 
-    def get_aggregate_many(self, a_item_id, a_params=None):
+    def get_aggregate_many(self, a_item_id, a_params=None, a_subject=None):
         w_result = []
         if self._storage is not None:
             w_item = self._items[a_item_id]
@@ -353,24 +374,29 @@ class AbsManager(IManager):
 
                 w_items = self.get_sons_item_id(w_item)
 
-                w_filter["_item_id"] = {
-                    "$in": w_items
-                }
+
                 if a_params is not None and "expand" in a_params:
                     w_expand = a_params["expand"]
                     w_filter = a_params["filter"] if "filter" in a_params.keys() else {}
+                    w_filter["_item_id"] = {
+                        "$in": w_items
+                    }
+                    self._manage_filter(w_filter, a_subject["tid"])
 
                     w_pipeline = self._generate_pipeline(w_item, w_filter, w_expand)
                     if w_pipeline is not None:
                         res = self._storage.aggregate(w_item["collection"], w_pipeline)
-                        return self._manage_return_result_from_many_instance(w_item, res, a_params, True)
+                        w_result = self._manage_return_result_from_many_instance(w_item, res, a_params, True)
+                        self._call_trigger_post("read", w_result)
+                        return w_result
 
-                w_result = self.get_many(a_item_id, a_params)
+                w_result = self.get_many(a_item_id, a_params, a_subject)
+                self._call_trigger_post("read", w_result)
 
 
         return w_result
 
-    def up_sert(self, a_item_id, a_id, a_new_field):
+    def up_sert(self, a_item_id, a_id, a_new_field, a_subject=None):
         """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the models create """
 
         if self._storage is not None:
@@ -385,17 +411,24 @@ class AbsManager(IManager):
                     else:
                         getattr(model,prop)(a_new_field[prop])
 
-                res = self._up_sert(w_item, a_id, model.__dict__)
+                res = self._up_sert(w_item, a_id, model.__dict__, a_subject)
                 if res is not None:
                     return Model(res)
         return None
 
-    def _up_sert(self, a_item, a_id, a_new_field):
+    def _up_sert(self, a_item, a_id, a_new_field, a_subject=None):
+        if a_subject is not None:
+            a_new_field["_tid"] = a_subject is not None if a_subject["tid"] else None
+            a_new_field["_account"] = a_subject is not None if a_subject["account"] else None
+
+        self._call_trigger_pre("upsert", a_new_field)
         res = self._storage.up_sert(a_item, a_id, a_new_field)
+        self._call_trigger_pre("upsert", a_new_field)
+
         if res is not None:
             return res
 
-    def up_sert_model(self, a_id, a_model):
+    def up_sert_model(self, a_id, a_model, a_subject=None):
         """ update (insert if no exists) a collection with bson (a_new_field) for the id specify in parameter and return the models create """
 
         if self._storage is not None:
@@ -403,50 +436,86 @@ class AbsManager(IManager):
 
             if w_item is not None:
 
-                res = self._up_sert(w_item, a_id, a_model.__dict__)
+                res = self._up_sert(w_item, a_id, a_model.__dict__, a_subject)
+
                 if res is not None:
                     return res
         return None
 
-    def up_sert_many(self, a_item_id,a_new_fields):
+    def up_sert_many(self, a_item_id,a_new_fields, a_subject=None):
         res = []
 
         for w_dict in a_new_fields:
-            w_res = self.up_sert(a_item_id, w_dict._id,w_dict)
+            w_res = self.up_sert(a_item_id, w_dict._id,w_dict, a_subject)
 
             if w_res is not None:
                 res.append(w_res)
         return res
 
-    def up_sert_many_model(self,  a_new_models):
+    def up_sert_many_model(self,  a_new_models, a_subject=None):
         res = []
 
         for w_dict in a_new_models:
-            w_res = self.up_sert_model( w_dict._id, w_dict)
+            w_res = self.up_sert_model( w_dict._id, w_dict, a_subject)
 
             if w_res is not None:
                 res.append(w_res)
         return res
 
-    def delete(self, a_item_id, a_id):
+    def delete(self, a_item_id, a_id, a_subject=None):
         if self._storage is not None:
             w_item = self._items[a_item_id]
 
             if w_item is not None:
-                res = self._storage.delete(w_item["collection"], a_id)
-                if res is not None:
-                    return Model(res)
+                read = self._storage.get_one(w_item["collection"], a_id)
+                self._call_trigger_pre("delete",read)
+
+                self._storage.delete(w_item["collection"], a_id)
+                self._call_trigger_post("delete",read)
+
         return None
 
+    @BindField("_list_trigger")
+    def bind_trigger(self, a_field, a_service, a_service_reference):
+        if a_service is not None and a_service.get_item() in self._items.keys():
+            for a_action in a_service.get_actions():
+                if a_action not in self._map_trigger:
+                    self._map_trigger[a_action] = {}
+                self._map_trigger[a_action][a_service.get_name()] = a_service
 
-    def delete_many(self, a_item_id, a_filter):
+    @UnbindField("_list_trigger")
+    def un_bind_trigger(self, a_field, a_service, a_service_reference):
+        if a_service is not None and a_service.get_item() in self._items.keys():
+            for a_action in a_service.get_actions():
+                if a_action not in self._map_trigger:
+                    self._map_trigger[a_action] = {}
+                if a_service.get_name() in self._map_trigger[a_action]:
+                    del self._map_trigger[a_action][a_service.get_name()]
+
+    def _call_trigger_pre(self, a_action, a_model=None):
+        if a_action in self._map_triggers:
+            for w_service in self._map_triggers[a_action].values():
+                if not w_service.is_post():
+                    w_service.execute(a_action, a_model)
+    def _call_trigger_post(self, a_action, a_model=None):
+        if a_action in self._map_triggers:
+            for w_service in self._map_triggers[a_action].values():
+                if w_service.is_post():
+                    w_service.execute(a_action, a_model)
+
+    def delete_many(self, a_item_id, a_filter, a_subject=None):
         if self._storage is not None:
             w_item = self._items[a_item_id]
+            self._manage_filter(a_filter, a_subject["tid"])
 
             if w_item is not None:
-                res = self._storage.delete_many(w_item["collection"], a_filter)
-                if res is not None:
-                    return Model(res)
+                reads = self._storage.get_many(w_item["collection"], a_filter)
+                for w_elem in reads:
+                    self._call_trigger_pre("delete",w_elem)
+                self._storage.delete_many(w_item["collection"], a_filter)
+                for w_elem in reads:
+                    self._call_trigger_pre("delete", w_elem)
+
         return None
 
 
@@ -478,6 +547,8 @@ class ProxyManager(IManager, Proxy):
         _logger.info("Manager default invalidating")
 
         _logger.info("Manager default invalidated")
+
+
 
 
 @ComponentFactory('DefaultManager-Factory')
@@ -514,17 +585,6 @@ class DefaultManager(AbsManager):
         if a_item["id"] in self._list_component:
             with use_ipopo(a_bundle_context) as ipopo:
                 ipopo.kill(self._list_component[a_item["id"]].name)
-
-    @BindField("_list_trigger")
-    def bind_trigger(self, a_field, a_service, a_service_reference):
-        if a_service is not None and a_service.get_item() == self._item_id:
-            self._map_trigger[a_service.get_name()] = a_service
-
-    @UnbindField("_list_trigger")
-    def un_bind_trigger(self, a_field, a_service, a_service_reference):
-        if a_service is not None and a_service.get_item() == self._item_id:
-            if a_service.get_name() in self._map_trigger[a_service.get_name()]:
-                del self._map_trigger[a_service.get_name()]
 
     @Validate
     def validate(self, context):

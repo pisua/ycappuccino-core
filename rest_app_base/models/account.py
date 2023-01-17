@@ -10,6 +10,7 @@ def empty():
     _empty.login("admin")
     _empty.name("admin")
     _empty.role("admin")
+
     return _empty
 
 
