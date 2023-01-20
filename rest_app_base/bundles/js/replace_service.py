@@ -20,7 +20,7 @@ class JSReplaceService(IClobReplaceService):
     def __init__(self):
         self._services = None
         self._map_services = {}
-
+        self._log = None
     def extension(self):
         return ".js.mdl"
 

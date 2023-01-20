@@ -95,16 +95,16 @@ class Jwt(IJwt):
 
     @Validate
     def validate(self, context):
-        _logger.info("Endpoint validating")
+        self._log.info("Endpoint validating")
         self.load_configuration()
         self._runnable = PurgeToken(self, self._log)
 
         self._runnable.set_activate(True)
         self._executor_service.submit(self._runnable)
-        _logger.info("Endpoint validated")
+        self._log.info("Endpoint validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Endpoint invalidating")
+        self._log.info("Endpoint invalidating")
         self._runnable.set_activate(False)
-        _logger.info("Endpoint invalidated")
+        self._log.info("Endpoint invalidated")

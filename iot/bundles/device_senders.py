@@ -1,0 +1,1 @@
+# component that decribe fetcher by kind of channel (protocol supported)

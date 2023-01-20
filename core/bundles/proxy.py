@@ -44,12 +44,12 @@ class Proxy(object):
 
     @Validate
     def validate(self, context):
-        _logger.info("serverProxy validating")
+        self._log.info("serverProxy validating")
 
-        _logger.info("serverProxy validated")
+        self._log.info("serverProxy validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("serverProxy invalidating")
+        self._log.info("serverProxy invalidating")
 
-        _logger.info("serverProxy invalidated")
+        self._log.info("serverProxy invalidated")

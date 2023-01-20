@@ -25,7 +25,6 @@ from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_d
 @Requires("_item_manager", specification=IItemManager.name)
 @Requires("_managers", specification=IManager.name, aggregate=True, optional=True)
 @Requires("_jwt", specification=IJwt.name)
-
 class HandlerEndpointStorage(IHandlerEndpoint):
 
     def __init__(self):
@@ -63,7 +62,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                         w_token = w_cookie.split("=")[1]
             else:
                 w_token = w_cookies.split("=")[1]
-            _logger.info("token {}".format(w_token))
+            self._log.info("token {}".format(w_token))
             return self._jwt.verify(w_token)
 
     def get_token(self, a_headers):
@@ -180,7 +179,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
                 if w_item["secureRead"] and not  check_header(self._jwt, a_headers):
-                    _logger.info("failed authorization service ")
+                    self._log.info("failed authorization service ")
 
                     return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
@@ -301,7 +300,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
 
     @Validate
     def validate(self, context):
-        _logger.info("HandlerEndpointStorage validating")
+        self._log.info("HandlerEndpointStorage validating")
 
         w_data_path = os.getcwd() + "/data"
         if not os.path.isdir(w_data_path):
@@ -310,10 +309,10 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         self._file_dir = os.path.join(w_data_path, "files")
         if not os.path.isdir(self._file_dir):
             os.mkdir(self._file_dir)
-        _logger.info("HandlerEndpointStorage validated")
+        self._log.info("HandlerEndpointStorage validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("HandlerEndpointStorage invalidating")
+        self._log.info("HandlerEndpointStorage invalidating")
 
-        _logger.info("HandlerEndpointStorage invalidated")
+        self._log.info("HandlerEndpointStorage invalidated")

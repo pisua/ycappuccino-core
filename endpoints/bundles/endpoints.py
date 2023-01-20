@@ -40,7 +40,7 @@ class Endpoint(IEndpoint):
         """  """
         w_path = request.get_path()
         w_header = request.get_headers()
-        _logger.info("get path={}".format( w_path))
+        self._log.info("get path={}".format( w_path))
 
         if "swagger.json" in w_path:
             w_resp = self.get_swagger_descriptions(["https","http"])
@@ -63,7 +63,7 @@ class Endpoint(IEndpoint):
         else:
             w_str = w_data.decode()
             w_json = json.loads(w_str)
-            _logger.info("post path={}, data={}".format(w_path, w_str))
+            self._log.info("post path={}, data={}".format(w_path, w_str))
 
             w_resp = self.post(w_path, w_header, w_json)
 
@@ -79,7 +79,7 @@ class Endpoint(IEndpoint):
         w_path = request.get_path()
         w_header = request.get_headers()
         w_json = json.loads(w_str)
-        _logger.info("put path={}, data={}".format(w_path, w_str))
+        self._log.info("put path={}, data={}".format(w_path, w_str))
 
         w_resp = self.put(w_path, w_header, w_json)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
@@ -88,7 +88,7 @@ class Endpoint(IEndpoint):
         """ """
         w_path = request.get_path()
         w_header = request.get_headers()
-        _logger.info("delete path={}".format( w_path))
+        self._log.info("delete path={}".format( w_path))
 
         w_resp = self.delete(w_path, w_header)
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
@@ -118,7 +118,7 @@ class Endpoint(IEndpoint):
             w_service = self.find_service(w_service_name)
             if w_service is not None:
                 if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    _logger.info("failed authorization service ")
+                    self._log.info("failed authorization service ")
                     return EndpointResponse(401)
                 else:
                     w_header, w_body = w_service.post(a_headers, w_url_path.get_params(), a_body)
@@ -142,7 +142,7 @@ class Endpoint(IEndpoint):
             w_service = self.find_services(w_service_name)
             if w_service is not None:
                 if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    _logger.info("failed authorization service ")
+                    self._log.info("failed authorization service ")
 
                     return EndpointResponse(401)
                 else:
@@ -186,7 +186,7 @@ class Endpoint(IEndpoint):
             w_service = self.find_services(w_service_name)
             if w_service is not None:
                 if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    _logger.info("failed authorization service ")
+                    self._log.info("failed authorization service ")
 
                     return EndpointResponse(401)
                 else:
@@ -246,7 +246,7 @@ class Endpoint(IEndpoint):
 
     @Validate
     def validate(self, context):
-        _logger.info("Endpoint validating")
+        self._log.info("Endpoint validating")
 
         w_data_path = os.getcwd() + "/data"
         if not os.path.isdir(w_data_path):
@@ -255,10 +255,10 @@ class Endpoint(IEndpoint):
         self._file_dir = os.path.join(w_data_path, "files")
         if not os.path.isdir(self._file_dir):
             os.mkdir(self._file_dir)
-        _logger.info("Endpoint validated")
+        self._log.info("Endpoint validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Endpoint invalidating")
+        self._log.info("Endpoint invalidating")
 
-        _logger.info("Endpoint invalidated")
+        self._log.info("Endpoint invalidated")

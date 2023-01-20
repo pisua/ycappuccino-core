@@ -41,7 +41,7 @@ class IndexEndpoint(object):
         self._map_python_file = {}
         self._list_replace_clob = []
         self._replace_clob = {}
-
+        self._log = None
 
     @BindField("_list_path_client")
     def bind_client_path(self, field, a_client_path, a_service_reference):
@@ -284,11 +284,11 @@ class IndexEndpoint(object):
             else:
                 response.send_content(200, w_lines_str, mimetypes.guess_type(w_req_path)[0])
         except Exception as e:
-            _logger.info("fail to return content for path {}".format(w_path))
-            _logger.exception(e)
+            self._log.info("fail to return content for path {}".format(w_path))
+            self._log.exception(e)
             response.send_content(500, "", "text/plain")
 
     @Validate
     def validate(self,context=None):
-        _logger.info("validating...")
-        _logger.info("validated")
+        self._log.info("validating...")
+        self._log.info("validated")

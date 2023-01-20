@@ -101,24 +101,25 @@ class ItemManager(IItemManager, AbsManager):
             if "id" in w_item.keys() and  w_item["id"] not in self._map_managers and self._default_manager is not None:
                 # instanciate a component regarding the manager factory to use by item and default manage can be multi item
                 if not w_item["abstract"] :
+                    self._log.info("add item {}".format(w_item["id"]))
                     self._default_manager.add_item(w_item, self._context)
             else:
                 print("error")
 
     @Validate
     def validate(self, context):
-        _logger.info("Manager validating")
+        self._log.info("Manager validating")
         try:
             self._context = context
             framework.set_item_manager(self)
         except Exception as e:
-            _logger.error("Manager Error {}".format(e))
-            _logger.exception(e)
+            self._log.error("Manager Error {}".format(e))
+            self._log.exception(e)
 
-        _logger.info("Manager validated")
+        self._log.info("Manager validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Manager invalidating")
+        self._log.info("Manager invalidating")
 
-        _logger.info("Manager invalidated")
+        self._log.info("Manager invalidated")

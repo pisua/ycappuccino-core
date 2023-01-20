@@ -70,16 +70,16 @@ class ClientPath(IClientIndexPath):
 
     @Validate
     def validate(self, context):
-        _logger.info("ClientPath validating")
+        self._log.info("ClientPath validating")
         self.load_configuration()
 
-        _logger.info("ClientPath validated")
+        self._log.info("ClientPath validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("ClientPath invalidating")
+        self._log.info("ClientPath invalidating")
 
-        _logger.info("ClientPath invalidated")
+        self._log.info("ClientPath invalidated")
 
 
 @ComponentFactory('ClientPathSwagger-Factory')
@@ -135,13 +135,13 @@ class ClientPathSwagger(IClientIndexPath):
 
     @Validate
     def validate(self, context):
-        _logger.info("ClientPathSwagger validating")
+        self._log.info("ClientPathSwagger validating")
         self.load_configuration()
 
-        _logger.info("ClientPathSwagger validated")
+        self._log.info("ClientPathSwagger validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("ClientPathSwagger invalidating")
+        self._log.info("ClientPathSwagger invalidating")
 
-        _logger.info("ClientPathSwagger invalidated")
+        self._log.info("ClientPathSwagger invalidated")

@@ -31,7 +31,7 @@ class TenantTrigger(ITrigger,IFilter):
         super(TenantTrigger, self).__init__("tenantTrigger", "organization",["upsert","delete"], a_synchronous=True, a_post=True);
         self._organization = {}
         self._organization_father = {}
-
+        self._log = None
         self._organization_manager = None
 
 
@@ -87,7 +87,7 @@ class TenantTrigger(ITrigger,IFilter):
 
     @Validate
     def validate(self, context):
-        _logger.info("TenantService validating")
+        self._log.info("TenantService validating")
         self._load_tenant_tree()
         if "system" not in self._organization.keys():
             w_organization = Organization()
@@ -96,10 +96,10 @@ class TenantTrigger(ITrigger,IFilter):
 
             self._organization_manager.up_sert_model(w_organization._id, w_organization)
             self.execute("upsert",w_organization)
-        _logger.info("TenantService validated")
+        self._log.info("TenantService validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("TenantService invalidating")
+        self._log.info("TenantService invalidating")
 
-        _logger.info("TenantService invalidated")
+        self._log.info("TenantService invalidated")

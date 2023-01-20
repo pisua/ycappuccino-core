@@ -523,30 +523,31 @@ class AbsManager(IManager):
 @Provides(specifications=IManager.name)
 @Property('_item_id', "item_id", "models",)
 @Requires('_default_manager', IDefaultManager.name)
+@Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 class ProxyManager(IManager, Proxy):
 
     def __init__(self):
         super(ProxyManager, self).__init__()
         self._item_id = None
         self._obj = None
-
+        self._log = None
     @Validate
     def validate(self, context):
-        _logger.info("Manager default validating")
+        self._log.info("proxyManager {} validating".format(self._item_id))
         try:
             self._obj = self._default_manager
             self._obj._objname = "proxy-{}".format(self._item_id)
         except Exception as e:
-            _logger.error("Manager Error default".format(e))
-            _logger.exception(e)
+            self._log.error("Manager Error default".format(e))
+            self._log.exception(e)
 
-        _logger.info("Manager default validated")
+        self._log.info("proxyManager {} validated".format(self._item_id))
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Manager default invalidating")
+        self._log.info("Manager default invalidating")
 
-        _logger.info("Manager default invalidated")
+        self._log.info("Manager default invalidated")
 
 
 
@@ -579,8 +580,11 @@ class DefaultManager(AbsManager):
 
         with use_ipopo(a_bundle_context) as ipopo:
             # use the iPOPO core service with the "ipopo" variable
+            self._log.info("create proxy {}".format(a_item["id"]))
             ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item["id"]),
                               {"item_id": a_item["id"]})
+            self._log.info("end create proxy {}".format(a_item["id"]))
+
 
     def remove_proxy_manager(self, a_item, a_bundle_context):
         if a_item["id"] in self._list_component:
@@ -589,17 +593,17 @@ class DefaultManager(AbsManager):
 
     @Validate
     def validate(self, context):
-        _logger.info("Manager default validating")
+        self._log.info("Manager default validating")
         try:
             pass
         except Exception as e:
-            _logger.error("Manager Error default".format(e))
-            _logger.exception(e)
+            self._log.error("Manager Error default".format(e))
+            self._log.exception(e)
 
-        _logger.info("Manager default validated")
+        self._log.info("Manager default validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Manager default invalidating")
+        self._log.info("Manager default invalidating")
 
-        _logger.info("Manager default invalidated")
+        self._log.info("Manager default invalidated")

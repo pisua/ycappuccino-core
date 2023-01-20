@@ -19,7 +19,7 @@ class UploadManager(AbsManager):
         super(AbsManager, self).__init__()
         self._list_trigger = None
         self._map_trigger = {}
-
+        self._log = None
     def add_item(self, a_item, a_bundle_context):
         """ add item in map manage by the manager"""
         super(AbsManager,self).add_item(a_item, a_bundle_context)
@@ -60,17 +60,17 @@ class UploadManager(AbsManager):
 
     @Validate
     def validate(self, context):
-        _logger.info("Manager default validating")
+        self._log.info("Manager default validating")
         try:
             pass
         except Exception as e:
-            _logger.error("Manager Error default".format(e))
-            _logger.exception(e)
+            self._log.error("Manager Error default".format(e))
+            self._log.exception(e)
 
-        _logger.info("Manager default validated")
+        self._log.info("Manager default validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("Manager default invalidating")
+        self._log.info("Manager default invalidating")
 
-        _logger.info("Manager default invalidated")
+        self._log.info("Manager default invalidated")

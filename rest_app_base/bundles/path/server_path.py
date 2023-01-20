@@ -25,6 +25,7 @@ class ClientPathFactory(IClientIndexPathFactory):
         self._map_boostrap = {}
         self._map_client_path = {}
         self._context = None
+        self._log = None
 
     @BindField("_bootstraps")
     def bind_bootstrap(self, a_field, a_service, a_service_reference):
@@ -59,14 +60,14 @@ class ClientPathFactory(IClientIndexPathFactory):
 
     @Validate
     def validate(self, context):
-        _logger.info("ClientPathFactory validating")
+        self._log.info("ClientPathFactory validating")
         self._context = context
         self.create_client_paths()
-        _logger.info("ClientPathFactory validated")
+        self._log.info("ClientPathFactory validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("ClientPathFactory invalidating")
+        self._log.info("ClientPathFactory invalidating")
 
-        _logger.info("ClientPathFactory invalidated")
+        self._log.info("ClientPathFactory invalidated")
 

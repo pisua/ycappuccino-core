@@ -163,7 +163,7 @@ class MongoStorage(IStorage):
 
     @Validate
     def validate(self, context):
-        _logger.info("MongoStorage validating")
+        self._log.info("MongoStorage validating")
         try:
             self.load_configuration()
             self._client = MongoClient(self._host, int(self._port))
@@ -175,20 +175,20 @@ class MongoStorage(IStorage):
 
 
         except Exception as e:
-            _logger.error("MongoStorage Error {}".format(e))
-            _logger.exception(e)
+            self._log.error("MongoStorage Error {}".format(e))
+            self._log.exception(e)
 
-        _logger.info("MongoStorage validated")
+        self._log.info("MongoStorage validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("MongoStorage invalidating")
+        self._log.info("MongoStorage invalidating")
         try:
             if self._client is not None:
                 self._client.close()
                 self._client = None
                 self._db = None
         except Exception as e:
-            _logger.error("MongoStorage Error {}".format(e))
-            _logger.exception(e)
-        _logger.info("MongoStorage invalidated")
+            self._log.error("MongoStorage Error {}".format(e))
+            self._log.exception(e)
+        self._log.info("MongoStorage invalidated")

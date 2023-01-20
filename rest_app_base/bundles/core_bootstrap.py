@@ -27,9 +27,7 @@ _logger = logging.getLogger(__name__)
 @Requires("_manager_role", IManager.name, spec_filter="'(item_id=role)'")
 @Requires("_manager_client_path", IManager.name, spec_filter="'(item_id=clientPath)'")
 @Requires("_jwt", IJwt.name)
-
 @Property("_id", "id", "core")
-
 @Instantiate("AccountBootStrap")
 class AccountBootStrap(IBootStrap):
 
@@ -109,21 +107,21 @@ class AccountBootStrap(IBootStrap):
 
     @Validate
     def validate(self, context):
-        _logger.info("AccountBootStrap validating")
+        self._log.info("AccountBootStrap validating")
         try:
             self.bootstrap()
         except Exception as e:
-            _logger.error("AccountBootStrap Error {}".format(e))
-            _logger.exception(e)
+            self._log.error("AccountBootStrap Error {}".format(e))
+            self._log.exception(e)
 
-        _logger.info("AccountBootStrap validated")
+        self._log.info("AccountBootStrap validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("AccountBootStrap invalidating")
+        self._log.info("AccountBootStrap invalidating")
         try:
             pass
         except Exception as e:
-            _logger.error("AccountBootStrap Error {}".format(e))
-            _logger.exception(e)
-        _logger.info("AccountBootStrap invalidated")
+            self._log.error("AccountBootStrap Error {}".format(e))
+            self._log.exception(e)
+        self._log.info("AccountBootStrap invalidated")

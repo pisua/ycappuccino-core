@@ -29,7 +29,7 @@ class AbsService(IService, ILoginService):
 
     def change_password(self, a_login, a_password, a_new_password):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
-        _logger.info("change password")
+        self._log.info("change password")
 
         w_login = self._manager_login.get_one("login", a_login)
 
@@ -38,7 +38,7 @@ class AbsService(IService, ILoginService):
 
         if w_login.__dict__["_password"] == result:
             w_login.password(a_new_password)
-            _logger.info(" password changed")
+            self._log.info(" password changed")
 
             return self._manager_login.up_sert_model(w_login._id, w_login)
 
@@ -105,15 +105,15 @@ class LoginService(AbsService):
 
     @Validate
     def validate(self, context):
-        _logger.info("LoginService validating")
+        self._log.info("LoginService validating")
 
-        _logger.info("LoginService validated")
+        self._log.info("LoginService validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("LoginService invalidating")
+        self._log.info("LoginService invalidating")
 
-        _logger.info("LoginService invalidated")
+        self._log.info("LoginService invalidated")
 
 
 
@@ -141,7 +141,7 @@ class ChangePasswordService(AbsService):
 
     def post(self, a_header, a_params, a_body):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
-        _logger.info("post change password")
+        self._log.info("post change password")
 
         w_new = self.change_password(a_body["login"], a_body["password"], a_body["new_password"])
         if w_new is not None:
@@ -149,7 +149,7 @@ class ChangePasswordService(AbsService):
                 "login": a_body
             }
 
-        _logger.info("post change password failed")
+        self._log.info("post change password failed")
         return None, None
 
 
@@ -164,15 +164,15 @@ class ChangePasswordService(AbsService):
 
     @Validate
     def validate(self, context):
-        _logger.info("ChangePasswordService validating")
+        self._log.info("ChangePasswordService validating")
 
-        _logger.info("ChangePasswordService validated")
+        self._log.info("ChangePasswordService validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("ChangePasswordService invalidating")
+        self._log.info("ChangePasswordService invalidating")
 
-        _logger.info("ChangePasswordService invalidated")
+        self._log.info("ChangePasswordService invalidated")
 
 
 @ComponentFactory('LoginCookieService-Factory')
@@ -221,12 +221,12 @@ class LoginCookieService(AbsService):
 
     @Validate
     def validate(self, context):
-        _logger.info("LoginCookieService validating")
+        self._log.info("LoginCookieService validating")
 
-        _logger.info("LoginCookieService validated")
+        self._log.info("LoginCookieService validated")
 
     @Invalidate
     def invalidate(self, context):
-        _logger.info("LoginCookieService invalidating")
+        self._log.info("LoginCookieService invalidating")
 
-        _logger.info("LoginCookieService invalidated")
+        self._log.info("LoginCookieService invalidated")
