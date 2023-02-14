@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 @ComponentFactory('DeviceFetcher-Factory')
 @Provides(specifications=[IService.name, YCappuccino.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
-@Instantiate("DeviceFetcher")
+@Instantiate("deviceFetcher")
 class DeviceFetcher(IService):
 
     def __init__(self):

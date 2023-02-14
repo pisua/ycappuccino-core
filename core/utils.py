@@ -16,23 +16,24 @@ def load_bundle(a_file, a_module_name,a_context):
     """ return list of models to load . need to be load after component"""
     global  item_manager
     try:
-        with open(a_file, "r") as f:
-            content = f.read()
-            if "pelix" not in a_module_name and \
-                    "@ComponentFactory" in content and \
-                    "pelix.ipopo.decorators" in content and \
-                    ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
-                      "app=\"all\"" in content or \
-                      ycappuccino.core.framework.app_name is None ) :
+        if "/" in a_file and not a_file.split("/")[-1].startswith("test_"):
+            with open(a_file, "r") as f:
+                content = f.read()
+                if "pelix" not in a_module_name and \
+                        "@ComponentFactory" in content and \
+                        "pelix.ipopo.decorators" in content and \
+                        ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
+                          "app=\"all\"" in content or \
+                          ycappuccino.core.framework.app_name is None ) :
 
-                bundle_loaded.append(a_module_name)
-                a_context.install_bundle(a_module_name).start()
-            if "@Item" in content and \
-                    ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
-                      "app=\"all\"" in content or \
-                      ycappuccino.core.framework.app_name is None ):
-                # import this models
-                return a_module_name
+                    bundle_loaded.append(a_module_name)
+                    a_context.install_bundle(a_module_name).start()
+                if "@Item" in content and \
+                        ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
+                          "app=\"all\"" in content or \
+                          ycappuccino.core.framework.app_name is None ):
+                    # import this models
+                    return a_module_name
     except Exception as e:
         _logger.exception("fail to load bundle {}".format(repr(e)))
 
@@ -42,28 +43,30 @@ def find_and_install_bundle(a_root, a_module_name, a_context):
     w_list_model = []
 
     for w_file in glob.iglob(a_root + "/*"):
-        if os.path.exists(w_file) and \
-                "pelix" not in w_file and \
-                "pelix" not in a_module_name and \
-                "client" not in a_module_name and \
-                "framework" not in w_file:
-            w_module_name = ""
+        if "/" in w_file and not w_file.split("/")[-1].startswith("test_"):
 
-            if os.path.isdir(w_file) and os.path.isfile(w_file+"/__init__.py"):
-                if a_module_name == "":
-                    w_module_name = w_file.split("/")[-1]
-                else:
-                    w_module_name = a_module_name + "." + w_file.split("/")[-1]
-                find_and_install_bundle(w_file,w_module_name,a_context)
-            elif os.path.isfile(w_file) and w_file.endswith(".py"):
-                w_module_name = a_module_name+"."+w_file.split("/")[-1][:-3]
-                if w_module_name not in bundle_loaded:
-                    w_model = load_bundle(w_file,w_module_name,a_context)
-                    if w_model is not None:
-                        w_list_model.append(w_model)
-    # load models at the end of all component
-    for w_model in w_list_model:
-        a_context.install_bundle(w_model)
+            if os.path.exists(w_file) and \
+                    "pelix" not in w_file and \
+                    "pelix" not in a_module_name and \
+                    "client" not in a_module_name and \
+                    "framework" not in w_file:
+                w_module_name = ""
+
+                if os.path.isdir(w_file) and os.path.isfile(w_file+"/__init__.py"):
+                    if a_module_name == "":
+                        w_module_name = w_file.split("/")[-1]
+                    else:
+                        w_module_name = a_module_name + "." + w_file.split("/")[-1]
+                    find_and_install_bundle(w_file,w_module_name,a_context)
+                elif os.path.isfile(w_file) and w_file.endswith(".py"):
+                    w_module_name = a_module_name+"."+w_file.split("/")[-1][:-3]
+                    if w_module_name not in bundle_loaded:
+                        w_model = load_bundle(w_file,w_module_name,a_context)
+                        if w_model is not None:
+                            w_list_model.append(w_model)
+        # load models at the end of all component
+        for w_model in w_list_model:
+            a_context.install_bundle(w_model)
 
 
 class MyMetaFinder(MetaPathFinder):

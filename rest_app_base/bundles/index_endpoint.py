@@ -55,8 +55,8 @@ class IndexEndpoint(object):
 
     @UnbindField("_list_path_client")
     def unbind_client_path(self, field, a_client_path, a_service_reference):
-        if self._path_client[a_client_path.get_prioity()] is not None:
-            del self._path_client[a_client_path.get_prioity()][a_client_path.get_id()]
+        if self._path_client[a_client_path.get_priority()] is not None:
+            del self._path_client[a_client_path.get_priority()][a_client_path.get_id()]
 
     @BindField("_list_replace_clob")
     def bind_replace_clob(self, field, a_replace_clob, a_service_reference):
