@@ -86,7 +86,7 @@ class LoginService(AbsService):
     def is_sercure(self):
         return False
 
-    def post(self, a_header, a_params, a_body):
+    def post(self, a_header, a_url_path, a_body):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
 
         w_token = self.check_login(a_body["login"], a_body["password"])
@@ -97,11 +97,11 @@ class LoginService(AbsService):
         return None, None
 
 
-    def get(self, a_header, a_params):
-        return self.post(a_header, a_params, None)
+    def get(self, a_header, a_url_path):
+        return self.post(a_header, a_url_path, None)
 
-    def delete(self, a_header, a_params):
-        return self.post(a_header, a_params, None)
+    def delete(self, a_header, a_url_path):
+        return self.post(a_header, a_url_path, None)
 
     @Validate
     def validate(self, context):
@@ -139,7 +139,7 @@ class ChangePasswordService(AbsService):
     def get_name(self):
         return "change_password"
 
-    def post(self, a_header, a_params, a_body):
+    def post(self, a_header, a_url_path, a_body):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
         self._log.info("post change password")
 
@@ -153,13 +153,13 @@ class ChangePasswordService(AbsService):
         return None, None
 
 
-    def put(self, a_header, a_params, a_body):
+    def put(self, a_header, a_url_path, a_body):
         return None
 
-    def get(self, a_header, a_params):
+    def get(self, a_header, a_url_path):
         return None
 
-    def delete(self, a_header, a_params):
+    def delete(self, a_header, a_url_path):
         return None
 
     @Validate
@@ -197,7 +197,7 @@ class LoginCookieService(AbsService):
     def get_name(self):
         return "login"
 
-    def post(self, a_header, a_params, a_body):
+    def post(self, a_header, a_url_path, a_body):
         """ return tuple of 2 element that admit a dictionnary of header and a body"""
 
         w_token = self.check_login(a_body["login"], a_body["password"])
@@ -210,13 +210,13 @@ class LoginCookieService(AbsService):
         return None, None
 
 
-    def put(self, a_header, a_params, a_body):
+    def put(self, a_header, a_url_path, a_body):
         return None
 
-    def get(self, a_header, a_params):
+    def get(self, a_header, a_url_path):
         return None
 
-    def delete(self, a_header, a_params):
+    def delete(self, a_header, a_url_path):
         return None
 
     @Validate

@@ -36,3 +36,23 @@ class DeviceSender(IService):
 
     def has_delete(self):
         return True
+
+    def get_extra_path(self):
+        """ return the list of extra path that are manage by service """
+        return {
+            "post": ["{sensorId}/value"],
+            "get": [],
+            "put": [],
+            "delete": []
+        }
+    def post(self, a_header, a_url_path, a_body):
+        pass
+
+    def put(self, a_header, a_url_path, a_body):
+        pass
+
+    def get(self, a_header, a_url_path):
+        pass
+
+    def delete(self, a_header, a_url_path):
+        pass

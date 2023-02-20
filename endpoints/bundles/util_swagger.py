@@ -68,14 +68,59 @@ def get_swagger_description_schema( a_item, a_path):
     }
 
 
+
+def get_params(a_path):
+    w_params = []
+
+    w_path_param = a_path
+    if "?" in a_path:
+        w_path_param = a_path[0:a_path.indexOf("?")]
+    if "/" in w_path_param:
+        w_path_params = w_path_param.split("/")
+        for w_elem in w_path_params:
+            if w_elem[0] == "{" and w_elem[-1] == "}":
+                w_params.append({
+                    "in": w_elem[1:-2],
+                    "name": w_elem[1:-2],
+                    "required": True,
+                    "schema": {
+                        "type": "string"
+                    }
+                })
+    return w_params
+
+def get_query_params(a_path):
+    w_params = []
+
+    if "?" in a_path:
+        w_path_param = a_path[0:a_path.indexOf("?")]
+        w_query = a_path[a_path.indexOf("?") + 1]
+        w_querys = []
+        if "&" in w_query:
+            w_querys = w_query.split("&")
+        else:
+            w_querys = [w_query]
+        for w_elem in w_querys:
+            if w_elem[0] == "{" and w_elem[-1] == "}":
+                w_params.append({
+                    "in": w_elem[1:-2],
+                    "name": w_elem[1:-2],
+                    "required": True,
+                    "schema": {
+                        "type": "string"
+                    }
+                })
+    return w_params
+
 def get_swagger_description_service( a_service, a_path):
     """ return the path description for the item"""
 
     a_path["/$service/" + a_service.get_name()] = {}
+    w_extra_path = a_service.get_extra_path()
     if a_service.has_post():
         a_path["/$service/" + a_service.get_name()]["post"] = {
             "tags": [get_swagger_description_service_tag(a_service)],
-            "operationId": "service_" + a_service.get_name(),
+            "operationId": "post_service_" + a_service.get_name(),
             "consumes": ["application/json"],
             "produces": ["application/json"],
             "parameters": [{
@@ -92,10 +137,38 @@ def get_swagger_description_service( a_service, a_path):
                 }
             }
         }
+        if "post" in w_extra_path.keys():
+            for w_path in w_extra_path["post"]:
+                w_params = get_params(w_path)
+                w_query_params = get_query_params(w_path)
+
+                if not "/$service/" + a_service.get_name() + "/" + w_path in a_path.keys():
+                    a_path["/$service/" + a_service.get_name() + "/" + w_path] = {}
+
+                a_path["/$service/" + a_service.get_name()+"/"+w_path]["post"] = {
+                    "tags": [get_swagger_description_service_tag(a_service)],
+                    "operationId": "post_service_" + a_service.get_name()+"/"+w_path,
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "parameters": [{
+                        "in": "body",
+                        "name": "body",
+                        "required": True,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }],
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    }
+                }
+
     if a_service.has_put():
         a_path["/$service/" + a_service.get_name()]["put"] = {
             "tags": [get_swagger_description_service_tag(a_service)],
-            "operationId": "service_" + a_service.get_name(),
+            "operationId": "put_service_" + a_service.get_name(),
             "consumes": ["application/json"],
             "produces": ["application/json"],
             "parameters": [{
@@ -112,7 +185,89 @@ def get_swagger_description_service( a_service, a_path):
                 }
             }
         }
+        if "put" in w_extra_path.keys():
+            for w_path in w_extra_path["put"]:
+                w_params = get_params(w_path)
+                w_query_params = get_query_params(w_path)
+                if not "/$service/" + a_service.get_name() + "/" + w_path in a_path.keys():
+                    a_path["/$service/" + a_service.get_name() + "/" + w_path] = {}
 
+                a_path["/$service/" + a_service.get_name() + "/" + w_path]["put"] = {
+                    "tags": [get_swagger_description_service_tag(a_service)],
+                    "operationId": "put_service_" + a_service.get_name() + "/" + w_path,
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "parameters": w_params,
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    }
+                }
+
+    if a_service.has_get():
+        a_path["/$service/" + a_service.get_name()]["get"] = {
+            "tags": [get_swagger_description_service_tag(a_service)],
+            "operationId": "get_service_" + a_service.get_name(),
+            "consumes": ["application/json"],
+            "produces": ["application/json"],
+            "parameters": [],
+            "responses": {
+                "default": {
+                    "description": "successful operation"
+                }
+            }
+        }
+        if "get" in w_extra_path.keys():
+
+            for w_path in w_extra_path["get"]:
+                w_params = get_params(w_path)
+                w_query_params = get_query_params(w_path)
+                if not "/$service/" + a_service.get_name() + "/" + w_path in a_path.keys():
+                    a_path["/$service/" + a_service.get_name() + "/" + w_path] = {}
+                a_path["/$service/" + a_service.get_name() + "/" + w_path]["get"] = {
+                    "tags": [get_swagger_description_service_tag(a_service)],
+                    "operationId": "get_service_" + a_service.get_name() + "/" + w_path,
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "parameters": w_params,
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    }
+                }
+    if a_service.has_delete():
+        a_path["/$service/" + a_service.get_name()]["delete"] = {
+            "tags": [get_swagger_description_service_tag(a_service)],
+            "operationId": "delete_service_" + a_service.get_name(),
+            "consumes": ["application/json"],
+            "produces": ["application/json"],
+            "parameters": [],
+            "responses": {
+                "default": {
+                    "description": "successful operation"
+                }
+            }
+        }
+        if "delete" in w_extra_path.keys():
+            for w_path in w_extra_path["delete"]:
+                w_params = get_params(w_path)
+                w_query_params = get_query_params(w_path)
+                if not "/$service/" + a_service.get_name() + "/" + w_path in a_path.keys():
+                    a_path["/$service/" + a_service.get_name() + "/" + w_path]= {}
+                a_path["/$service/" + a_service.get_name() + "/" + w_path]["delete"] = {
+                    "tags": [get_swagger_description_service_tag(a_service)],
+                    "operationId": "delete_service_" + a_service.get_name() + "/" + w_path,
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "parameters": w_params,
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    }
+                }
 
     return a_path
 

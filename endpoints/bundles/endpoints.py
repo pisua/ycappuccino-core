@@ -121,7 +121,7 @@ class Endpoint(IEndpoint):
                     self._log.info("failed authorization service ")
                     return EndpointResponse(401)
                 else:
-                    w_header, w_body = w_service.post(a_headers, w_url_path.get_params(), a_body)
+                    w_header, w_body = w_service.post(a_headers, w_url_path, a_body)
                     w_meta = {
                         "type": "array"
                     }
@@ -146,7 +146,7 @@ class Endpoint(IEndpoint):
 
                     return EndpointResponse(401)
                 else:
-                    w_header, w_body = w_service.put(a_headers, w_url_path.get_params(), a_body)
+                    w_header, w_body = w_service.put(a_headers, w_url_path, a_body)
                     w_meta = {
                         "type": "array"
                     }
@@ -190,7 +190,7 @@ class Endpoint(IEndpoint):
 
                     return EndpointResponse(401)
                 else:
-                    w_header, w_body = w_service.get(a_headers, w_url_path.get_params())
+                    w_header, w_body = w_service.get(a_headers, w_url_path)
                     w_meta = {
                         "type": "array"
                     }
@@ -210,7 +210,7 @@ class Endpoint(IEndpoint):
                 if w_service.is_secure() and not check_header(self._jwt, a_headers):
                     return EndpointResponse(401)
                 else:
-                    w_header, w_body =  w_service.delete(a_headers, w_url_path.get_params())
+                    w_header, w_body =  w_service.delete(a_headers, w_url_path)
                     w_meta = {
                         "type": "array"
                     }
