@@ -109,7 +109,6 @@ class Item(object):
         map_item[w_id]["_class"] = self._item["_class"]
         map_item[w_id]["_class_obj"] = self._item["_class_obj"]
         map_item[w_id]["father"] = self._item["father"]
-        map_item[w_id]["app"] = self._item["app"]
         map_item[w_id]["schema"] = self._item["schema"]
         map_item[w_id]["multipart"] = self._item["multipart"]
 

@@ -1,8 +1,8 @@
 #app="all"
-
+from ycappuccino.core.decorator_app import map_app_class
 
 def get_swagger_description_tag( a_item):
-    return a_item["app"] + " " + a_item["plural"]
+    return map_app_class[a_item["_class"]] + " - " + a_item["plural"]
 
 
 def get_swagger_description_service_tag( a_service):
