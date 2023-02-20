@@ -10,12 +10,30 @@ from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalid
 _logger = logging.getLogger(__name__)
 
 
-@ComponentFactory('DeviceSender-Factory')
+@ComponentFactory('DeviceFetcher-Factory')
 @Provides(specifications=[IService.name, YCappuccino.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
-@Instantiate("deviceSender")
-class DeviceSender(IService):
+@Instantiate("deviceFetcher")
+class DeviceFetcher(IService):
 
     def __init__(self):
         pass
 
+    def get_name(self):
+        return "device-fetcher"
+
+    def is_sercure(self):
+        return True
+
+
+    def has_post(self):
+        return True
+
+    def has_put(self):
+        return True
+
+    def has_get(self):
+        return True
+
+    def has_delete(self):
+        return True
