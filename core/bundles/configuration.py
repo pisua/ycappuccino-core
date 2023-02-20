@@ -6,12 +6,15 @@ from pelix.ipopo.decorators import ComponentFactory, Provides, Validate, \
     Invalidate, Instantiate
 import shutil
 from ycappuccino.core.api import IConfiguration
+from ycappuccino.core.decorator_app import App
+
 FILE_NAME = {'key': 'file_name', 'default': "config.properties"}
 
 
 @ComponentFactory('Configuration-Factory')
 @Provides(IConfiguration.name, controller='_service_controller')
 @Instantiate("config")
+@App(name="ycappuccino.core")
 class Configuration(IConfiguration):
 
     def __init__(self):

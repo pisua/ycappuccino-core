@@ -2,6 +2,7 @@
 from ycappuccino.core.api import  IActivityLogger
 from ycappuccino.endpoints.api import IHandlerEndpoint
 from ycappuccino.storage.api import IManager, IItemManager
+from ycappuccino.core.decorator_app import App
 
 import uuid
 import os
@@ -25,6 +26,7 @@ from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_d
 @Requires("_item_manager", specification=IItemManager.name)
 @Requires("_managers", specification=IManager.name, aggregate=True, optional=True)
 @Requires("_jwt", specification=IJwt.name)
+@App(name='ycappuccino.endpoint-storage')
 class HandlerEndpointStorage(IHandlerEndpoint):
 
     def __init__(self):

@@ -4,6 +4,7 @@ from ycappuccino.core.api import  IActivityLogger, IConfiguration, YCappuccino, 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 import pelix.http
+from ycappuccino.core.decorator_app import App
 
 _logger = logging.getLogger(__name__)
 
@@ -15,6 +16,7 @@ _logger = logging.getLogger(__name__)
 @Property("_servlet_path", pelix.http.HTTP_SERVLET_PATH, "/proxy")
 @Requires('_components', YCappuccino.name,optional=True,aggregate=True)
 @Instantiate("serverProxy")
+@App(name="ycappuccino.core")
 class Proxy(object):
 
     def __init__(self):

@@ -2,6 +2,7 @@
 from ycappuccino.core.api import IActivityLogger, IService, YCappuccino
 from ycappuccino.storage.api import IManager
 from ycappuccino.endpoints.api import IJwt
+from ycappuccino.core.decorator_app import App
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate
@@ -25,6 +26,8 @@ _logger = logging.getLogger(__name__)
 @Requires("_organization_manager", IManager.name, spec_filter="'(item_id=organization)'")
 @Requires("_jwt", IJwt.name)
 @Instantiate("TenantTrigger")
+@App(name="ycappuccino.rest-app")
+
 class TenantTrigger(ITrigger,IFilter):
 
     def __init__(self):

@@ -8,6 +8,7 @@ import time
 from ycappuccino.core.executor_service import RunnableProcess, ThreadPoolExecutorCallable
 from uuid import uuid4
 import json
+from ycappuccino.core.decorator_app import App
 
 _logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ class ValidateStorageConnect(RunnableProcess):
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_config", IConfiguration.name)
 @Instantiate("MongoStorage")
+@App(name='ycappuccino.stprage-mongo')
 class MongoStorage(IStorage):
 
     def __init__(self):

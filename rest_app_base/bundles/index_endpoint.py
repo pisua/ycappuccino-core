@@ -9,6 +9,7 @@ import mimetypes
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Provides, Instantiate, Property, UnbindField
 import os
 from os import path
+from ycappuccino.core.decorator_app import App
 
 from pelix.ipopo.decorators import BindField
 from ycappuccino.endpoints.api import IClientIndexPath
@@ -28,6 +29,8 @@ COMPONENT_PROPERTY ="@Property"
 @Instantiate("IndexEndpoint")
 @Property("_servlet_path", pelix.http.HTTP_SERVLET_PATH, "/")
 @Property("_reject", pelix.remote.PROP_EXPORT_REJECT, pelix.http.HTTP_SERVLET)
+@App(name="ycappuccino.rest-app")
+
 class IndexEndpoint(object):
 
     """ bundle that allow to open index.html as root path of http endpoint and provide client bundle on path client """

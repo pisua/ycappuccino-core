@@ -2,6 +2,7 @@
 from pelix.ipopo.constants import use_ipopo
 from ycappuccino.core.api import IUploadManager, IActivityLogger, IStorage, ITrigger
 from ycappuccino.core.bundles.managers import AbsManager
+from ycappuccino.core.decorator_app import App
 
 import logging
 
@@ -12,6 +13,7 @@ _logger = logging.getLogger(__name__)
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_storage",IStorage.name,optional=True)
 @Requires('_list_trigger', ITrigger.name, aggregate=True, optional=True)
+@App(name="ycappuccino.storage")
 #@Instantiate("Manager-upload")
 class UploadManager(AbsManager):
 

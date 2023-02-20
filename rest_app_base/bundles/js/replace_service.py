@@ -5,6 +5,7 @@ from ycappuccino.rest_app_base.api import IClobReplaceService
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Provides, BindField, UnbindField, Instantiate
 from ycappuccino.storage.models.decorators import get_map_items
+from ycappuccino.core.decorator_app import App
 
 
 _logger = logging.getLogger(__name__)
@@ -15,6 +16,8 @@ _logger = logging.getLogger(__name__)
 @Requires("_services", specification=IService.name, aggregate=True, optional=True)
 @Provides(specifications=[IClobReplaceService.name, YCappuccino.name])
 @Instantiate("JSReplaceService")
+@App(name="ycappuccino.rest-app")
+
 class JSReplaceService(IClobReplaceService):
 
     def __init__(self):

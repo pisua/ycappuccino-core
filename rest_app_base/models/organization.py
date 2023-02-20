@@ -1,5 +1,6 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -10,8 +11,8 @@ def empty():
 
     return _empty
 
-
-@Item(collection="organizations", name="organization", plural="organizations", app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.rest-app")
+@Item(collection="organizations", name="organization", plural="organizations",  secure_write=True, secure_read=True)
 class Organization(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

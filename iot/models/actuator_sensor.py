@@ -1,5 +1,7 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty, Reference, ItemReference
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
+
 import os
 
 @Empty()
@@ -10,7 +12,8 @@ def empty():
     return _empty
 
 
-@Item(collection="actuatorSensors",name="actuatorSensor", plural="actuator-sensors", abstract=True,  app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.iot")
+@Item(collection="actuatorSensors",name="actuatorSensor", plural="actuator-sensors", abstract=True,  secure_write=True, secure_read=True)
 @ItemReference(from_name="actuatorSensor", field="channel", item="channel")
 @ItemReference(from_name="actuatorSensor", field="device", item="device")
 class ActuatorSensor(Model):

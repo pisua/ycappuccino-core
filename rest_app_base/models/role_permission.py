@@ -1,5 +1,6 @@
 from ycappuccino.storage.models.decorators  import Item, Reference, ItemReference, Empty
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -9,8 +10,8 @@ def empty():
     _empty.rights("test")
     return _empty
 
-
-@Item(collection="rolePermissions", name="rolePermission", plural="role-permissions", app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.rest-app")
+@Item(collection="rolePermissions", name="rolePermission", plural="role-permissions",  secure_write=True, secure_read=True)
 @ItemReference(from_name="rolePermission", field="permission", item="permission")
 @ItemReference(from_name="rolePermission",field="role", item="role")
 class RolePermission(Model):

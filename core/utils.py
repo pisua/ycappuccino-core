@@ -1,6 +1,7 @@
 #app="all"
 import sys
 import os.path, glob
+import re
 
 from threading import current_thread
 from importlib.abc import Loader, MetaPathFinder
@@ -21,19 +22,48 @@ def load_bundle(a_file, a_module_name,a_context):
                 content = f.read()
                 if "pelix" not in a_module_name and \
                         "@ComponentFactory" in content and \
-                        "pelix.ipopo.decorators" in content and \
-                        ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
-                          "app=\"all\"" in content or \
-                          ycappuccino.core.framework.app_name is None ) :
+                        "pelix.ipopo.decorators" in content :
+                    if ycappuccino.core.framework.app_name is None:
+                        bundle_loaded.append(a_module_name)
+                        a_context.install_bundle(a_module_name).start()
+                    else:
+                        w_app_patterns = []
+                        if not "," in ycappuccino.core.framework.app_name:
+                            w_app_patterns = [ycappuccino.core.framework.app_name]
+                        else:
+                            w_app_patterns = ycappuccino.core.framework.app_name.split(",")
+                        for w_app_pattern in w_app_patterns:
+                            w_app_pattern_applyed = "@App\(name=\""+w_app_pattern.replace("*",".*")
+                            w_app_pattern_applyed_2 = "@App\(name='" + w_app_pattern.replace("*", ".*")
+                            if re.search(w_app_pattern_applyed, content) or re.search(w_app_pattern_applyed_2, content):
+                                bundle_loaded.append(a_module_name)
+                                a_context.install_bundle(a_module_name).start()
+                                return None
 
-                    bundle_loaded.append(a_module_name)
-                    a_context.install_bundle(a_module_name).start()
-                if "@Item" in content and \
-                        ( "app=\"{}\"".format(ycappuccino.core.framework.app_name) in content or \
-                          "app=\"all\"" in content or \
-                          ycappuccino.core.framework.app_name is None ):
-                    # import this models
-                    return a_module_name
+                        if "@App(name=" not in content or "ycappuccino/core/utils" in a_file:
+                            bundle_loaded.append(a_module_name)
+                            a_context.install_bundle(a_module_name).start()
+                            return None
+
+                        print("module {} not loaded ".format(a_file))
+                if "@Item" in content :
+                    if ycappuccino.core.framework.app_name is None:
+                        return a_module_name
+                    else:
+                        w_app_patterns = []
+                        if not "," in ycappuccino.core.framework.app_name:
+                            w_app_patterns = [ycappuccino.core.framework.app_name]
+                        else:
+                            w_app_patterns = ycappuccino.core.framework.app_name.split(",")
+                        for w_app_pattern in w_app_patterns:
+                            w_app_pattern_applyed = "@App\(name=\""+w_app_pattern.replace("*",".*")
+                            w_app_pattern_applyed_2 = "@App\(name='" + w_app_pattern.replace("*", ".*")
+                            if re.search(w_app_pattern_applyed, content) or re.search(w_app_pattern_applyed_2, content):
+                                return a_module_name
+
+                        if "@App(name=" not in content or "ycappuccino/core/utils" in a_file:
+                            return a_module_name
+                        print("module {} not loaded ".format(a_file))
     except Exception as e:
         _logger.exception("fail to load bundle {}".format(repr(e)))
 

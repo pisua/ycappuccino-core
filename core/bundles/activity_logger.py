@@ -10,6 +10,7 @@ component that provide a activity logger
 # cohorte
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate, Property
 from ycappuccino.core.api import IActivityLogger, IConfiguration, YCappuccino
+from ycappuccino.core.decorator_app import App
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -36,6 +37,7 @@ ACTIVITY_NAME = {'key': "name", 'default': "default"}
 @Requires('_config', IConfiguration.name)
 @Property('_name', "name", "main")
 @Instantiate("logger")
+@App(name="ycappuccino.core")
 class ActivityLogger(logging.Logger):
 
     def __init__(self):

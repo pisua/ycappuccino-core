@@ -4,6 +4,7 @@ from ycappuccino.endpoints.api import IClientIndexPath
 
 import logging, os
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property,  Provides, Instantiate
+from ycappuccino.core.decorator_app import App
 
 import inspect
 import base64
@@ -20,6 +21,7 @@ _logger = logging.getLogger(__name__)
 @Property('_subpath', "subpath", "client")
 @Property('_secure', "secure", False)
 @Property('_priority', "priority", 0)
+@App(name="ycappuccino.endpoint")
 class ClientPath(IClientIndexPath):
 
     def __init__(self):
@@ -86,6 +88,7 @@ class ClientPath(IClientIndexPath):
 @Provides(specifications=[IClientIndexPath.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Instantiate("ClientPathSwagger")
+@App(name="ycappuccino.endpoint")
 class ClientPathSwagger(IClientIndexPath):
 
     def __init__(self):

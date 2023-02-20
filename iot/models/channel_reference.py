@@ -1,6 +1,7 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty, Reference, ItemReference
 from ycappuccino.storage.models.model import Model
 import os
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -9,8 +10,8 @@ def empty():
     _empty.name("admin")
     return _empty
 
-
-@Item(collection="referenceChannels",name="referenceChannel", plural="reference-channels", abstract=True, app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.iot")
+@Item(collection="referenceChannels",name="referenceChannel", plural="reference-channels", abstract=True,  secure_write=True, secure_read=True)
 @ItemReference(from_name="referenceChannel", field="channel", item="channel")
 class ReferenceChannel(Model):
     def __init__(self, a_dict=None):

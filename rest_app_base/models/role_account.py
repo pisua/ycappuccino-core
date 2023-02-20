@@ -1,5 +1,6 @@
 from ycappuccino.storage.models.decorators  import Item, Reference, ItemReference, Empty
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -10,8 +11,8 @@ def empty():
     _empty.organization("test")
     return _empty
 
-
-@Item(collection="roleAccounts", name="roleAccount", plural="role-accounts", app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.rest-app")
+@Item(collection="roleAccounts", name="roleAccount", plural="role-accounts", secure_write=True, secure_read=True)
 @ItemReference(from_name="roleAccounts", field="account", item="account")
 @ItemReference(from_name="roleAccounts",field="role", item="role")
 @ItemReference(from_name="roleAccounts",field="organization", item="organization")

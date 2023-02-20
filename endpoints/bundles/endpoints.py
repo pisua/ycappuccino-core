@@ -3,6 +3,8 @@ from ycappuccino.core.api import  IActivityLogger,   IService
 from ycappuccino.endpoints.api import IEndpoint, IHandlerEndpoint,  IJwt
 
 import pelix.http
+from ycappuccino.core.decorator_app import App
+
 import os
 import pelix.remote
 import logging
@@ -25,6 +27,7 @@ _logger = logging.getLogger(__name__)
 @Requires("_services", specification=IService.name, aggregate=True, optional=True)
 @Property("_servlet_path", pelix.http.HTTP_SERVLET_PATH, "/api")
 @Property("_reject", pelix.remote.PROP_EXPORT_REJECT, pelix.http.HTTP_SERVLET)
+@App(name="ycappuccino.endpoint")
 class Endpoint(IEndpoint):
 
     def __init__(self):

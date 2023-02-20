@@ -1,6 +1,7 @@
 #app="all"
 from ycappuccino.core.api import IActivityLogger,  YCappuccino
 from ycappuccino.storage.api import IManager, IBootStrap
+from ycappuccino.core.decorator_app import App
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate
@@ -29,6 +30,8 @@ _logger = logging.getLogger(__name__)
 @Requires("_jwt", IJwt.name)
 @Property("_id", "id", "core")
 @Instantiate("AccountBootStrap")
+@App(name="ycappuccino.rest-app")
+
 class AccountBootStrap(IBootStrap):
 
     def __init__(self):

@@ -2,6 +2,7 @@
 from ycappuccino.core.api import IActivityLogger,  IConfiguration
 from ycappuccino.core.executor_service import ThreadPoolExecutorCallable, RunnableProcess
 from ycappuccino.endpoints.api import IJwt
+from ycappuccino.core.decorator_app import App
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate
@@ -40,6 +41,7 @@ class PurgeToken(RunnableProcess):
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_config",IConfiguration.name)
 @Instantiate("jwt")
+@App(name="ycappuccino.endpoint")
 class Jwt(IJwt):
 
     def __init__(self):

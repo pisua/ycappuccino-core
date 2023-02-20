@@ -9,6 +9,7 @@ import json
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Property,  Invalidate, Provides, BindField, UnbindField, \
     Instantiate
+from ycappuccino.core.decorator_app import App
 
 from ycappuccino.storage.api import IFilter
 
@@ -524,6 +525,7 @@ class AbsManager(IManager):
 @Property('_item_id', "item_id", "models",)
 @Requires('_default_manager', IDefaultManager.name)
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
+@App(name="ycappuccino.storage")
 class ProxyManager(IManager, Proxy):
 
     def __init__(self):
@@ -559,6 +561,7 @@ class ProxyManager(IManager, Proxy):
 @Requires('_list_trigger', ITrigger.name, aggregate=True, optional=True)
 @Requires('_filters', IFilter.name, aggregate=True, optional=True)
 @Instantiate("Manager-default")
+@App(name="ycappuccino.storage")
 class DefaultManager(AbsManager):
 
     def __init__(self):

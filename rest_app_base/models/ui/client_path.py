@@ -1,10 +1,12 @@
 #app="all"
 from ycappuccino.storage.models.decorators  import Item, Property, ItemReference
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
+
 _empty = None
 
-
-@Item(collection="clientPaths", name="clientPath", plural="clientPaths", app="all")
+@App(name="ycappuccino.rest-app")
+@Item(collection="clientPaths", name="clientPath", plural="clientPaths")
 @ItemReference(from_name="clientPath",field="_layout_parent", item="layout")
 class ClientPath(Model):
     """ describe an account in the application """

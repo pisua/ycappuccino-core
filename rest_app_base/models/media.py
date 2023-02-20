@@ -1,5 +1,6 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -11,8 +12,8 @@ def empty():
 
     return _empty
 
-
-@Item(collection="medias", name="media", plural="medias", app="all", secure_write=True, secure_read=True,
+@App(name="ycappuccino.rest-app")
+@Item(collection="medias", name="media", plural="medias", secure_write=True, secure_read=True,
       multipart="path")
 class Media(Model):
     def __init__(self, a_dict=None):

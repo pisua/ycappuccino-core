@@ -1,6 +1,7 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty, Reference, ItemReference
 from ycappuccino.storage.models.model import Model
 import os
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -9,8 +10,8 @@ def empty():
     _empty.name("admin")
     return _empty
 
-
-@Item(collection="settings",name="setting", plural="settings", app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.iot")
+@Item(collection="settings",name="setting", plural="settings", secure_write=True, secure_read=True)
 @ItemReference(from_name="setting", field="actuator", item="actuator")
 class Setting(Model):
     def __init__(self, a_dict=None):

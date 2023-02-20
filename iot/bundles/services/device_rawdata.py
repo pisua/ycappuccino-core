@@ -5,6 +5,7 @@ from ycappuccino.core.api import IActivityLogger,  YCappuccino, IService
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate
+from ycappuccino.core.decorator_app import App
 
 
 _logger = logging.getLogger(__name__)
@@ -14,6 +15,8 @@ _logger = logging.getLogger(__name__)
 @Provides(specifications=[IService.name, YCappuccino.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Instantiate("DeviceRawData")
+@App(name="ycappuccino.iot")
+
 class DeviceRawData(IService):
 
     def __init__(self):

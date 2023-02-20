@@ -6,6 +6,7 @@ from ycappuccino.rest_app_base.api import IClientIndexPathFactory
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate, BindField, UnbindField
 from pelix.ipopo.constants import use_ipopo
+from ycappuccino.core.decorator_app import App
 
 _logger = logging.getLogger(__name__)
 
@@ -16,6 +17,8 @@ _logger = logging.getLogger(__name__)
 @Requires("_manager_client_path", IManager.name, spec_filter="'(item_id=clientPath)'")
 @Requires("_bootstraps", specification=IBootStrap.name, aggregate=True, optional=True)
 @Instantiate("ClientPathFactory")
+@App(name="ycappuccino.rest-app")
+
 class ClientPathFactory(IClientIndexPathFactory):
 
     def __init__(self):

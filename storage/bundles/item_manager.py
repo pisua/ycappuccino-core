@@ -4,6 +4,7 @@ from ycappuccino.storage.bundles.managers import AbsManager, ProxyManager
 from ycappuccino.storage.api import IItemManager,  IStorage,   IManager,  IDefaultManager
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
+from ycappuccino.core.decorator_app import App
 
 import ycappuccino.core.framework as framework
 
@@ -34,6 +35,7 @@ class CreateManagerProxy(object):
 @Requires("_proxies", specification=IProxyManager.name, aggregate=True, optional=True)
 @Requires("_default_manager", specification=IDefaultManager.name)
 @Instantiate("itemManager")
+@App(name="ycappuccino.storage")
 class ItemManager(IItemManager, AbsManager):
 
     def __init__(self):

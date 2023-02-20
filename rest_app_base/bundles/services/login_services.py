@@ -5,6 +5,7 @@ from ycappuccino.core.api import IActivityLogger, IService, YCappuccino
 from ycappuccino.storage.api import IManager
 from ycappuccino.endpoints.api import IJwt
 from ycappuccino.rest_app_base.api import ILoginService
+from ycappuccino.core.decorator_app import App
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate
@@ -72,6 +73,8 @@ class AbsService(IService, ILoginService):
 @Requires("_manager_role_account", IManager.name, spec_filter="'(item_id=roleAccount)'")
 @Requires("_jwt", IJwt.name)
 @Instantiate("LoginService")
+@App(name="ycappuccino.rest-app")
+
 class LoginService(AbsService):
 
     def __init__(self):
@@ -124,6 +127,8 @@ class LoginService(AbsService):
 @Requires("_manager_login", IManager.name, spec_filter="'(item_id=login)'")
 @Requires("_jwt", IJwt.name)
 @Instantiate("ChangePasswordService")
+@App(name="ycappuccino.rest-app")
+
 class ChangePasswordService(AbsService):
 
     def __init__(self):
@@ -183,6 +188,8 @@ class ChangePasswordService(AbsService):
 @Requires("_manager_role_account", IManager.name, spec_filter="'(item_id=roleAccount)'")
 @Requires("_jwt", IJwt.name)
 @Instantiate("LoginCookieService")
+@App(name="ycappuccino.rest-app")
+
 class LoginCookieService(AbsService):
 
     def __init__(self):

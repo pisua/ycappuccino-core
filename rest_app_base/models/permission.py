@@ -1,5 +1,6 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -9,8 +10,8 @@ def empty():
     _empty.permission("tout")
     return _empty
 
-
-@Item(collection="permissions", name="permission", plural="permissions", app="all", secure_write=True,
+@App(name="ycappuccino.rest-app")
+@Item(collection="permissions", name="permission", plural="permissions", secure_write=True,
       secure_read=True)
 class Permission(Model):
     def __init__(self, a_dict=None):

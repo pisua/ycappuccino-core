@@ -1,5 +1,6 @@
 from ycappuccino.storage.models.decorators  import Item, Property, Empty
 from ycappuccino.storage.models.model import Model
+from ycappuccino.core.decorator_app import App
 
 @Empty()
 def empty():
@@ -8,8 +9,8 @@ def empty():
     _empty.name("test")
     return _empty
 
-
-@Item(collection="roles", name="role", plural="roles", app="all", secure_write=True, secure_read=True)
+@App(name="ycappuccino.rest-app")
+@Item(collection="roles", name="role", plural="roles",  secure_write=True, secure_read=True)
 class Role(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)
