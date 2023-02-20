@@ -3,6 +3,7 @@
 from threading import Semaphore, current_thread
 from concurrent.futures.thread import ThreadPoolExecutor
 import logging
+import time
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +76,6 @@ def _run(a_runnable):
 class ThreadPoolExecutorCallable(object):
     def __init__(self, name, a_max_worker=1):
         self._name = name
-
         self._executor = ThreadPoolExecutor(max_workers=a_max_worker)
 
     def submit(self, a_runnable):
@@ -84,3 +84,39 @@ class ThreadPoolExecutorCallable(object):
     def shutdown(self):
         self._executor.shutdown();
 
+def new_executor(name, a_max_worker=1):
+    return ThreadPoolExecutorCallable(name,a_max_worker)
+
+
+class ScheduleRunnable(RunnableProcess):
+    def __init__(self, a_executor, a_timer,  a_log):
+        super(ScheduleRunnable, self).__init__("ScheduleRunnable", a_log)
+        self._timer = a_timer
+        self._executor = a_executor
+
+    def process(self):
+        """ abstract run class"""
+        for a_runnable in self._executor.get_runnable():
+            a_runnable.run()
+        time.sleep(self._timer)
+
+class SchedulerExecutorCallable(object):
+    def __init__(self, name, a_timer):
+        self._name = name
+        self._executor = ThreadPoolExecutor(max_workers=1)
+        self._runnable = []
+        self._runnable_main = ScheduleRunnable(self,a_timer)
+        self._future = None
+    def submit(self, a_runnable):
+        self._runnable.append(a_runnable)
+        if self._future is None:
+            self._future = self._executor.submit(_run, self._runnable_main)
+        return self._future;
+
+    def get_runnable(self):
+        return self._runnable
+    def shutdown(self):
+        self._executor.shutdown();
+
+def new_executor( name, a_timer):
+    return SchedulerExecutorCallable(name, a_timer)

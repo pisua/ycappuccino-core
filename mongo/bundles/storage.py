@@ -5,7 +5,9 @@ import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, Instantiate
 from pymongo import MongoClient
 import time
-from ycappuccino.core.executor_service import RunnableProcess, ThreadPoolExecutorCallable
+from ycappuccino.core.executor_service import RunnableProcess
+from ycappuccino.core import executor_service
+
 from uuid import uuid4
 import json
 from ycappuccino.core.decorator_app import App
@@ -170,7 +172,7 @@ class MongoStorage(IStorage):
             self.load_configuration()
             self._client = MongoClient(self._host, int(self._port))
             self._db = self._client[self._db_name]
-            _threadExecutor = ThreadPoolExecutorCallable("validateConnectionStorage")
+            _threadExecutor = executor_service.new_executor("validateConnectionStorage")
             _callable = ValidateStorageConnect(self)
             _callable.set_activate(True)
             _threadExecutor.submit(_callable);
