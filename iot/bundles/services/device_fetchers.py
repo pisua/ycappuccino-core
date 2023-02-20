@@ -38,6 +38,8 @@ class DeviceFetcher(IService):
     def has_delete(self):
         return True
 
+    def has_root_path(self):
+        return False
     def get_extra_path(self):
         """ return the list of extra path that are manage by service """
         return {

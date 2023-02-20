@@ -25,6 +25,8 @@ class DeviceSender(IService):
     def is_sercure(self):
         return True
 
+    def has_root_path(self):
+        return False
     def has_post(self):
         return True
 

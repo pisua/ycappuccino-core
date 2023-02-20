@@ -72,6 +72,9 @@ class IService(object):
     def has_delete(self):
         return False
 
+    def has_root_path(self):
+        return True
+
     def get_name(self):
         pass
 
