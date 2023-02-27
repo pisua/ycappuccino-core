@@ -36,11 +36,12 @@ class Model(YDict):
             elif isinstance(self._dict[key] ,list) :
                 self._mongo_model[key] = []
                 for w_elem in self._dict[key]:
-                    if "_item_id" in w_elem.keys():
-                        w_subitem = get_item(w_elem["_item_id"])
-                        w_instance_subitem = w_subitem["_class_obj"](w_elem)
-                        w_instance_subitem.on_read(a_aggregate);
-                        self._mongo_model[key].append(w_instance_subitem._mongo_model)
+                    if isinstance(w_elem,dict):
+                        if "_item_id" in w_elem.keys():
+                            w_subitem = get_item(w_elem["_item_id"])
+                            w_instance_subitem = w_subitem["_class_obj"](w_elem)
+                            w_instance_subitem.on_read(a_aggregate);
+                            self._mongo_model[key].append(w_instance_subitem._mongo_model)
 
             # TODO add lookup field
 

@@ -80,27 +80,29 @@ class Jwt(IJwt):
         # tody manage right / account / tenant
         seconds = int(round(time.time()))
         exp = int(round(time.time()))+self._timeout
-
-        w_token = jwt.encode({'sub': account._id, "tid": role_account._organization["ref"], "iat": seconds, "exp" : exp }, self._key , algorithm='HS256')
-
-
-        self._token_decoded[w_token] = {
+        w_token_decode = {
             'sub': account._id,
             "tid": role_account._organization["ref"],
             "iat": seconds,
             "exp" : exp,
-            "permissions": role_permissions._permissions
+            "permissions": role_permissions[0]._dict["permissions"]
         }
+        w_token = jwt.encode(w_token_decode, self._key , algorithm='HS256')
+
+
+        self._token_decoded[w_token] = w_token_decode
         return w_token
 
     def is_authorized(self, a_token, a_url_path):
         """ return true if it's authorized, else false"""
 
-        w_action = [ a_url_path.get_method(), a_url_path.get_url_no_query(), a_url_path.get_url_query() ].join(":")
+        w_action = ":".join([ a_url_path.get_method(), a_url_path.get_url_no_query(), a_url_path.get_url_query() ])
         w_token_decoded = self.get_token_decoded(a_token)
-        for w_perm in  w_token_decoded["permissions"]:
-            if re.search(w_perm, w_action) :
-                return True
+        if "permissions" in w_token_decoded.keys():
+            for w_perm in  w_token_decoded["permissions"]:
+                if re.search(w_perm.replace("*",".*"), w_action) :
+                    return True
+
         return False
 
 
@@ -111,6 +113,7 @@ class Jwt(IJwt):
                 seconds = int(round(time.time()))
                 if w_res is not None and "exp" in w_res and w_res["exp"] > seconds:
                     self._token_decoded[a_token] = w_res
+
                     return True
                 if a_token in self._token_decoded.keus():
                     del self._token_decoded[a_token]

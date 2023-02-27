@@ -4,7 +4,7 @@ _logger = logging.getLogger(__name__)
 
 
 def check_header( a_jwt , a_headers):
-    w_token = _get_token_from_header(a_headers)
+    w_token = get_token_from_header(a_headers)
     if w_token is None:
         return False
     return a_jwt.verify(w_token)
