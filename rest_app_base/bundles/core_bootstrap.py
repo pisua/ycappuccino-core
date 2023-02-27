@@ -73,7 +73,7 @@ class AccountBootStrap(IBootStrap):
         w_admin_role_permission = RolePermission({})
         w_admin_role_permission.id("superadmin")
         w_admin_role_permission.role("superadmin")
-        w_admin_role_permission.permissions(["*:*:*"])
+        w_admin_role_permission.rights(["*:*:*"])
 
         w_admin_role_account = RoleAccount({})
         w_admin_role_account.id("superadmin")

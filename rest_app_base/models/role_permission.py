@@ -1,4 +1,4 @@
-from ycappuccino.storage.models.decorators  import Item, Reference, ItemReference, Empty
+from ycappuccino.storage.models.decorators  import Item, Reference, ItemReference, Empty, Property
 from ycappuccino.storage.models.model import Model
 from ycappuccino.core.decorator_app import App
 
@@ -25,7 +25,7 @@ class RolePermission(Model):
     def role(self, a_value):
         self._role = a_value
 
-    @Reference(name="permissions")
+    @Property(name="permissions")
     def rights(self, a_values):
         """ list of right permission """
         self._permissions = a_values

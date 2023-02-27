@@ -96,7 +96,7 @@ class Jwt(IJwt):
     def is_authorized(self, a_token, a_url_path):
         """ return true if it's authorized, else false"""
 
-        w_action = [a_url_path.get_type(), a_url_path.get_method(), a_url_path.get_url_no_query(), a_url_path.get_url_query() ].join(":")
+        w_action = [ a_url_path.get_method(), a_url_path.get_url_no_query(), a_url_path.get_url_query() ].join(":")
         w_token_decoded = self.get_token_decoded(a_token)
         for w_perm in  w_token_decoded["permissions"]:
             if re.search(w_perm, w_action) :
