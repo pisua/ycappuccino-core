@@ -16,7 +16,7 @@ from ycappuccino.endpoints.api import IJwt
 _logger = logging.getLogger(__name__)
 
 from ycappuccino.endpoints.bundles import util_swagger
-from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_decoded
+from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_decoded, get_token_from_header
 
 
 @ComponentFactory('EndpointStorage-Factory')
@@ -68,19 +68,38 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             return self._jwt.verify(w_token)
 
     def get_token(self, a_headers):
+        w_token = None
+        if "authorization" in a_headers:
+            w_authorization = a_headers["authorization"]
+            if w_authorization is not None and "Bearer" in w_authorization:
+                w_token = w_authorization[len("Bearer "):]
+        elif "Cookie" in a_headers:
+            w_cookies = a_headers["Cookie"]
+            if ";" in w_cookies:
+                w_arr = w_cookies.split(";")
+                for w_cookie in w_arr:
+                    if "_ycappuccino" in w_cookie:
+                        w_token = w_cookie.split("=")[1]
+            else:
+                w_token = w_cookies.split("=")[1]
 
-        return self._jwt.verify(w_token)
-
+        return w_token
 
     def upload_media(self, a_path, a_headers,  a_content):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("put",a_path)
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item["secureWrite"] and not check_header(self._jwt, a_headers):
-                    return EndpointResponse(401)
+                if w_item["secureWrite"]:
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
 
                 w_id = w_url_path.get_params()["id"]
                 if w_url_path.is_draft():
@@ -104,14 +123,20 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                 return EndpointResponse(405)
 
     def post(self,a_path, a_headers, a_body):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("post",a_path)
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item["secureWrite"] and not  check_header(self._jwt, a_headers):
-                    return EndpointResponse(401)
+                if w_item["secureWrite"]:
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
                 if "id" in a_body:
                     w_id = a_body["id"]
                 else:
@@ -132,15 +157,21 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(400)
 
     def put(self, a_path, a_headers, a_body):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("put",a_path)
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
+                if w_item["secureWrite"]:
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
 
-                if w_item["secureWrite"] and not  check_header(self._jwt, a_headers):
-                    return EndpointResponse(401)
                 if w_url_path.get_params() is not None and w_url_path.get_params()["id"] is not None:
                     w_id = w_url_path.get_params()["id"]
                     if w_url_path.is_draft():
@@ -170,7 +201,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(200, None, None, a_swagger)
 
     def get(self, a_path, a_headers):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("get",a_path)
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             if w_item_plural == "items":
@@ -180,10 +211,15 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
 
-                if w_item["secureRead"] and not  check_header(self._jwt, a_headers):
-                    self._log.info("failed authorization service ")
+                if w_item["secureRead"]:
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
 
-                    return EndpointResponse(401)
                 if w_url_path.get_params() is not None and "id" in w_url_path.get_params():
                     w_id = w_url_path.get_params()["id"]
                     if w_url_path.is_draft():
@@ -264,14 +300,20 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(400)
 
     def delete(self, a_path, a_headers):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("delete",a_path)
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
-                if w_item.secureWrite and not  check_header(self._jwt, a_headers):
-                    return EndpointResponse(401)
+                if w_item["secureWrite"]:
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
                 w_meta = {
                     "type": "array",
                     "size": 1

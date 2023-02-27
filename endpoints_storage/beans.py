@@ -2,6 +2,7 @@
 import json
 from urllib.parse import parse_qsl, urlsplit
 from ycappuccino.storage.models.model import Model
+import ycappuccino.endpoints.beans
 
 
 class EndpointResponse(object):
@@ -51,34 +52,27 @@ class EndpointResponse(object):
     def get_status(self):
         return self._status
 
-class UrlPath(object):
+class UrlPath(ycappuccino.endpoints.beans.UrlPath):
 
-    def __init__(self, a_url):
+    def __init__(self, a_method , a_url):
         """ need status"""
-        self._url = a_url
-        w_url_no_query = a_url
-        self._query_param = None
-        if "?" in a_url:
-            self._query_param = dict(parse_qsl(urlsplit(a_url).query))
-            w_url_no_query = w_url_no_query.split("?")[0]
-        w_split_url = w_url_no_query.split("api/")[1].split("/")
-        self._type = w_split_url[0][1:]
+        super().__init__(a_method, a_url)
 
-        self._is_schema = "$schema" in w_split_url
-        self._is_multipart = "$multipart" in w_split_url
 
-        self._is_empty = "$empty" in w_split_url
+        self._is_schema = "$schema" in self.get_split_url()
+        self._is_multipart = "$multipart" in self.get_split_url()
 
-        if len(w_split_url)>1:
-            self._item_plural_id = w_split_url[1]
-            if len(w_split_url)>2:
+        self._is_empty = "$empty" in self.get_split_url()
+
+        if len(self.get_split_url())>1:
+            self._item_plural_id = self.get_split_url()[1]
+            if len(self.get_split_url())>2:
                 # an id is specified
                 if self._query_param is None:
                     self._query_param = {}
-                self._query_param["id"] = w_split_url[2]
+                self._query_param["id"] = self.get_split_url()[2]
 
-    def get_type(self):
-        return self._type
+
 
     def is_crud(self):
         return  not self._is_schema and not self._is_empty and not self._is_multipart
@@ -101,8 +95,5 @@ class UrlPath(object):
     def get_item_plural_id(self):
         return self._item_plural_id
 
-    def get_service_name(self):
-        return self._service_name
 
-    def get_params(self):
-        return self._query_param
+

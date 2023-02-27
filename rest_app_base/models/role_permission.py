@@ -25,7 +25,7 @@ class RolePermission(Model):
     def role(self, a_value):
         self._role = a_value
 
-    @Reference(name="permission")
+    @Reference(name="permissions")
     def rights(self, a_values):
         """ list of right permission """
         self._permissions = a_values

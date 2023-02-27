@@ -19,6 +19,13 @@ class IJwt(object):
     def __init__(self):
         """ abstract constructor """
         pass
+class IJwtRightAccess(object):
+    """ interface of YCappuccino component """
+    name = CFQCN.build("IJwtRightAccess")
+
+    def __init__(self):
+        """ abstract constructor """
+        pass
 
 
 class IEndpoint(object):

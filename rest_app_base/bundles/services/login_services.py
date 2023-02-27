@@ -56,12 +56,15 @@ class AbsService(IService, ILoginService):
             w_filter = json.dumps({"account.ref":w_account[0]._id})
 
             w_role_account = self._manager_role_account.get_many( "roleAccount", a_params={"filter":w_filter})
+            w_filter = json.dumps({"role.ref":w_role_account[0]._id})
+
+            w_role_permissions = self._manager_role_account.get_many( "rolePermission", a_params={"filter":w_filter})
 
             w_concat = "{}{}".format(w_login._salt, a_password).encode("utf-8")
             result = hashlib.md5(w_concat).hexdigest()
 
             if w_login._password == result:
-                w_token = self._jwt.generate(w_account[0], w_role_account[0])
+                w_token = self._jwt.generate(w_account[0], w_role_account[0], w_role_permissions)
                 return w_token
         return None
 

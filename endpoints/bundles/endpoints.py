@@ -12,7 +12,7 @@ import json
 from ycappuccino.endpoints.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate, Property
 from ycappuccino.endpoints.bundles import util_swagger
-from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_decoded
+from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_decoded, get_token_from_header
 _logger = logging.getLogger(__name__)
 
 
@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 
 @ComponentFactory('Endpoint-Factory')
 @Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
-@Requires("_jwt",IJwt.name)
+@Requires("_jwt",IJwt.name,optional=True)
 @Provides(specifications=[pelix.http.HTTP_SERVLET])
 @Instantiate("endpoints")
 @Requires("_handler_endpoints", specification=IHandlerEndpoint.name, aggregate=True, optional=True)
@@ -38,6 +38,7 @@ class Endpoint(IEndpoint):
         self._services = None
         self._map_services = {}
         self._file_dir = None
+        self._jwt = None
 
     def do_GET(self, request, response):
         """  """
@@ -97,12 +98,16 @@ class Endpoint(IEndpoint):
         response.send_content(w_resp.get_status(), w_resp.get_json(), "application/json")
 
     def get_tenant(self, a_headers):
+        if self._jwt is not None:
+            return None
         w_token = self._get_token_from_header(a_headers)
         if w_token is None:
             return None
         return self._jwt.decode(w_token)
 
     def get_account(self, a_headers):
+        if self._jwt is not None:
+            return None
         w_token = self.__get_token_from_header(a_headers)
         if w_token is None:
             return None
@@ -115,14 +120,22 @@ class Endpoint(IEndpoint):
         return self._map_services[a_service_name]
 
     def post(self,a_path, a_headers, a_body):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("post",a_path)
         if w_url_path.is_service():
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_service(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    self._log.info("failed authorization service ")
-                    return EndpointResponse(401)
+                if w_service.is_secure() :
+                    if self._jwt is not None:
+                        self._log.info("service authorization service not available")
+                        return EndpointResponse(500)
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token,w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
                 else:
                     w_header, w_body = w_service.post(a_headers, w_url_path, a_body)
                     w_meta = {
@@ -138,16 +151,24 @@ class Endpoint(IEndpoint):
         return EndpointResponse(400)
 
     def put(self, a_path, a_headers, a_body):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("put",a_path)
 
         if w_url_path.is_service():
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    self._log.info("failed authorization service ")
+                if w_service.is_secure():
+                    if self._jwt is not None:
+                        self._log.info("service authorization service not available")
+                        return EndpointResponse(500)
 
-                    return EndpointResponse(401)
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
                 else:
                     w_header, w_body = w_service.put(a_headers, w_url_path, a_body)
                     w_meta = {
@@ -182,16 +203,23 @@ class Endpoint(IEndpoint):
         return EndpointResponse(200, None, None, w_swagger)
 
     def get(self, a_path, a_headers):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("get",a_path)
 
         if w_url_path.is_service():
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    self._log.info("failed authorization service ")
-
-                    return EndpointResponse(401)
+                if w_service.is_secure():
+                    if self._jwt is not None:
+                        self._log.info("service authorization service not available")
+                        return EndpointResponse(500)
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
                 else:
                     w_header, w_body = w_service.get(a_headers, w_url_path)
                     w_meta = {
@@ -204,14 +232,25 @@ class Endpoint(IEndpoint):
             return w_handler_endpoint.get(a_path, a_headers)
         return EndpointResponse(400)
 
+
+
     def delete(self, a_path, a_headers):
-        w_url_path = UrlPath(a_path)
+        w_url_path = UrlPath("delete",a_path)
         if w_url_path.is_service():
             w_service_name = w_url_path.get_service_name()
             w_service = self.find_services(w_service_name)
             if w_service is not None:
-                if w_service.is_secure() and not check_header(self._jwt, a_headers):
-                    return EndpointResponse(401)
+                if w_service.is_secure():
+                    if self._jwt is not None:
+                        self._log.info("service authorization service not available")
+                        return EndpointResponse(500)
+                    if not check_header(self._jwt, a_headers):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(401)
+                    w_token = get_token_from_header(a_headers)
+                    if not self._jwt.is_authorized(w_token, w_url_path):
+                        self._log.info("failed authorization service ")
+                        return EndpointResponse(403)
                 else:
                     w_header, w_body =  w_service.delete(a_headers, w_url_path)
                     w_meta = {

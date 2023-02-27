@@ -118,5 +118,5 @@ class SchedulerExecutorCallable(object):
     def shutdown(self):
         self._executor.shutdown();
 
-def new_executor( name, a_timer):
+def new_schedule_executor( name, a_timer):
     return SchedulerExecutorCallable(name, a_timer)

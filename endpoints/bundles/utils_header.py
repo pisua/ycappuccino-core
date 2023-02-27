@@ -11,11 +11,12 @@ def check_header( a_jwt , a_headers):
 
 
 def get_token_decoded(a_jwt, a_headers):
-    w_token = _get_token_from_header(a_headers)
+    w_token = get_token_from_header(a_headers)
     if w_token is None:
         return False
     return a_jwt.get_token_decoded(w_token)
-def _get_token_from_header(a_headers):
+
+def get_token_from_header(a_headers):
     if "authorization" in a_headers:
         w_authorization = a_headers["authorization"]
         if w_authorization is not None and "Bearer" in w_authorization:

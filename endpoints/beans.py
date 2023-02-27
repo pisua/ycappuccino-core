@@ -47,20 +47,38 @@ class EndpointResponse(object):
 
 class UrlPath(object):
 
-    def __init__(self, a_url):
+    def __init__(self, a_method,  a_url):
         """ need status"""
         self._url = a_url
         w_url_no_query = a_url
+        w_url_query = a_url
+        self._method = a_method
         self._query_param = None
         if "?" in a_url:
             self._query_param = dict(parse_qsl(urlsplit(a_url).query))
             w_url_no_query = w_url_no_query.split("?")[0]
-        w_split_url = w_url_no_query.split("api/")[1].split("/")
-        self._type = w_split_url[0][1:]
-        self._is_service = "$service" in w_split_url
+            w_url_query = w_url_query.split("?")[1]
+
+        self._split_url = w_url_no_query.split("api/")[1].split("/")
+        self._type = self._split_url[0][1:]
+        self._is_service = "$service" in self._split_url
 
         if self._is_service :
-            self._service_name = w_split_url[1]
+            self._service_name = self._split_url[1]
+        self._url_no_query = w_url_no_query.split("api/")[1]
+        self._url_param = w_url_query
+
+
+    def get_split_url(self):
+        return self._split_url
+    def get_url_no_query(self):
+        return self._url_no_query
+
+    def get_url_query(self):
+        return self._url_param
+
+    def get_method(self):
+        return self._method
 
     def get_type(self):
         return self._type
