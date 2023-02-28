@@ -25,7 +25,7 @@ class DeviceSender(IService):
     def get_name(self):
         return "device-sender"
 
-    def is_sercure(self):
+    def is_secure(self):
         return True
 
     def has_root_path(self):

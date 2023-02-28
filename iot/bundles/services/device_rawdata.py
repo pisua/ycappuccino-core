@@ -25,7 +25,7 @@ class DeviceRawData(IService):
     def get_name(self):
         return "device-rawdata"
 
-    def is_sercure(self):
+    def is_secure(self):
         return True
 
     def has_post(self):

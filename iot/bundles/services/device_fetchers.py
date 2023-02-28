@@ -25,7 +25,7 @@ class DeviceFetcher(IService):
     def get_name(self):
         return "device-fetcher"
 
-    def is_sercure(self):
+    def is_secure(self):
         return True
 
 
