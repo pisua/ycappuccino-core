@@ -51,21 +51,21 @@ def get_swagger_description_schema( a_item, a_path):
             }
         }
     }
-
-    a_path["/$multipart/" + a_item["plural"] ] = {
-        "get": {
-            "tags": [get_swagger_description_tag(a_item)],
-            "operationId": "multipart_" + a_item["plural"],
-            "consumes": ["application/json"],
-            "produces": ["application/json"],
-            "parameters": [],
-            "responses": {
-                "default": {
-                    "description": "successful operation"
+    if a_item["multipart"] :
+        a_path["/$multipart/" + a_item["plural"] ] = {
+            "get": {
+                "tags": [get_swagger_description_tag(a_item)],
+                "operationId": "multipart_" + a_item["plural"],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
                 }
             }
         }
-    }
 
 
 
@@ -80,12 +80,10 @@ def get_params(a_path):
         for w_elem in w_path_params:
             if w_elem[0] == "{" and w_elem[-1] == "}":
                 w_params.append({
-                    "in": w_elem[1:-2],
-                    "name": w_elem[1:-2],
+                    "name": w_elem[1:-1],
                     "required": True,
-                    "schema": {
-                        "type": "string"
-                    }
+                    "in": "path",
+                    "type": "string"
                 })
     return w_params
 
@@ -103,12 +101,11 @@ def get_query_params(a_path):
         for w_elem in w_querys:
             if w_elem[0] == "{" and w_elem[-1] == "}":
                 w_params.append({
-                    "in": w_elem[1:-2],
+                    "in": "query",
                     "name": w_elem[1:-2],
                     "required": True,
-                    "schema": {
-                        "type": "string"
-                    }
+                    "type": "string"
+
                 })
     return w_params
 
@@ -151,14 +148,7 @@ def get_swagger_description_service( a_service, a_path):
                     "operationId": "post_service_" + a_service.get_name()+"/"+w_path,
                     "consumes": ["application/json"],
                     "produces": ["application/json"],
-                    "parameters": [{
-                        "in": "body",
-                        "name": "body",
-                        "required": True,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }],
+                    "parameters": w_params,
                     "responses": {
                         "default": {
                             "description": "successful operation"
@@ -343,7 +333,7 @@ def get_swagger_description( a_item, a_path):
         }
     }
     if a_item["multipart"] :
-        a_path[get_swagger_description_path(a_item, True)+"/blob"] = {
+        a_path[get_swagger_description_path(a_item, False)+"/blob"] = {
             "post": {
                 "tags": [get_swagger_description_tag(a_item)+"/blob"],
                 "operationId": "createBlob_" + a_item["id"],
@@ -362,6 +352,28 @@ def get_swagger_description( a_item, a_path):
                     "name": "attachmentName",
                     "description": "The attachment type.",
                     "required": False,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "default": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        }
+        a_path[get_swagger_description_path(a_item, False) + "/blob/base64"] = {
+            "post": {
+                "tags": [get_swagger_description_tag(a_item) + "/blob/base64"],
+                "operationId": "createBlob64_" + a_item["id"],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "file",
+                    "description": "file in base 64 and file name, extention etc",
+                    "required": True,
                     "schema": {
                         "type": "string"
                     }

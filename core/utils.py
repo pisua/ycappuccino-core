@@ -178,4 +178,4 @@ def run(a_runnable):
             current_thread().name = a_runnable._name
             return a_runnable.run()
     except Exception as e:
-        logger.exception(e)
+        pass

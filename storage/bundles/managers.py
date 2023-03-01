@@ -13,6 +13,8 @@ from ycappuccino.core.decorator_app import App
 
 from ycappuccino.storage.api import IFilter
 
+from ycappuccino.storage.api import IUploadManager
+
 _logger = logging.getLogger(__name__)
 
 
@@ -533,23 +535,57 @@ class ProxyManager(IManager, Proxy):
         self._item_id = None
         self._obj = None
         self._log = None
+
     @Validate
     def validate(self, context):
-        self._log.info("proxyManager {} validating".format(self._item_id))
+        self._log.info("ProxyManager {} validating".format(self._item_id))
         try:
             self._obj = self._default_manager
+            self._obj._objname = "proxy-{}".format(self._item_id)
+        except Exception as e:
+            self._log.error("ProxyManager Error default".format(e))
+            self._log.exception(e)
+
+        self._log.info("ProxyManager {} validated".format(self._item_id))
+
+    @Invalidate
+    def invalidate(self, context):
+        self._log.info("ProxyManager default invalidating")
+
+        self._log.info("ProxyManager default invalidated")
+
+
+@ComponentFactory('Manager-ProxyMedia-Factory')
+@Provides(specifications=IManager.name)
+@Property('_item_id', "item_id", "models",)
+@Requires('_upload_manager', IUploadManager.name)
+@Requires("_log",IActivityLogger.name, spec_filter="'(name=main)'")
+@App(name="ycappuccino.storage")
+class ProxyMediaManager(IManager, Proxy):
+
+    def __init__(self):
+        super(ProxyMediaManager, self).__init__()
+        self._item_id = None
+        self._obj = None
+        self._log = None
+
+    @Validate
+    def validate(self, context):
+        self._log.info("ProxyMediaManager {} validating".format(self._item_id))
+        try:
+            self._obj = self._upload_manager
             self._obj._objname = "proxy-{}".format(self._item_id)
         except Exception as e:
             self._log.error("Manager Error default".format(e))
             self._log.exception(e)
 
-        self._log.info("proxyManager {} validated".format(self._item_id))
+        self._log.info("ProxyMediaManager {} validated".format(self._item_id))
 
     @Invalidate
     def invalidate(self, context):
-        self._log.info("Manager default invalidating")
+        self._log.info("ProxyMediaManager  invalidating")
 
-        self._log.info("Manager default invalidated")
+        self._log.info("ManProxyMediaManagerager  invalidated")
 
 
 
@@ -572,12 +608,14 @@ class DefaultManager(AbsManager):
     def add_item(self, a_item, a_bundle_context):
         """ add item in map manage by the manager"""
         super(DefaultManager,self).add_item(a_item, a_bundle_context)
-        self.create_proxy_manager(a_item, a_bundle_context)
+        if not a_item["multipart"]:
+            self.create_proxy_manager(a_item, a_bundle_context)
 
     def remove_item(self, a_item, a_bundle_context):
         """ add item in map manage by the manager"""
         super(DefaultManager,self).remove_item(a_item, a_bundle_context)
-        self.remove_proxy_manager(a_item, a_bundle_context)
+        if not a_item["multipart"]:
+            self.remove_proxy_manager(a_item, a_bundle_context)
 
     def create_proxy_manager(self, a_item, a_bundle_context):
 
@@ -585,7 +623,8 @@ class DefaultManager(AbsManager):
             # use the iPOPO core service with the "ipopo" variable
             self._log.info("create proxy {}".format(a_item["id"]))
             ipopo.instantiate("Manager-Proxy-Factory", "Manager-Proxy-{}".format(a_item["id"]),
-                              {"item_id": a_item["id"]})
+                                  {"item_id": a_item["id"]})
+
             self._log.info("end create proxy {}".format(a_item["id"]))
 
 

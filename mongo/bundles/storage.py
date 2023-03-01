@@ -113,16 +113,16 @@ class MongoStorage(IStorage):
 
             return self._db[a_item["collection"]].update_one(w_filter, w_update, upsert=True)
         else:
-            a_new_dict["_id"] = a_id
             if "_mongo_model" in a_new_dict:
                 a_new_dict["_mongo_model"]["_cat"] = time.time()
                 a_new_dict["_mongo_model"]["_mat"] = a_new_dict["_mongo_model"]["_cat"]
                 a_new_dict["_mongo_model"]["_item_id"] = a_item["id"]
+                a_new_dict["_mongo_model"]["_id"] = a_id
 
                 w_update = a_new_dict["_mongo_model"]
 
             else:
-
+                a_new_dict["_id"] = a_id
                 a_new_dict["_mat"] = time.time()
                 a_new_dict["_cat"] = a_new_dict["_mat"]
                 a_new_dict["_item_id"] = a_item["id"]

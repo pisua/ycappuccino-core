@@ -86,7 +86,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return w_token
 
     def upload_media(self, a_path, a_headers,  a_content):
-        w_url_path = UrlPath("put",a_path)
+        w_url_path = UrlPath("put",a_path, self.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -123,7 +123,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                 return EndpointResponse(405)
 
     def post(self,a_path, a_headers, a_body):
-        w_url_path = UrlPath("post",a_path)
+        w_url_path = UrlPath("post",a_path, self.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -157,7 +157,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(400)
 
     def put(self, a_path, a_headers, a_body):
-        w_url_path = UrlPath("put",a_path)
+        w_url_path = UrlPath("put",a_path, self.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -201,7 +201,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(200, None, None, a_swagger)
 
     def get(self, a_path, a_headers):
-        w_url_path = UrlPath("get",a_path)
+        w_url_path = UrlPath("get",a_path, self.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             if w_item_plural == "items":
@@ -300,7 +300,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(400)
 
     def delete(self, a_path, a_headers):
-        w_url_path = UrlPath("delete",a_path)
+        w_url_path = UrlPath("delete",a_path, self.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -330,17 +330,19 @@ class HandlerEndpointStorage(IHandlerEndpoint):
 
     @BindField("_managers")
     def bind_manager(self, field, a_manager, a_service_reference):
-        w_item_plurals = a_manager.get_item_ids_plural()
-        for w_item_plural in w_item_plurals:
+        w_item_id = a_manager._item_id
+        w_item = ycappuccino.storage.models.decorators.get_item(w_item_id)
+        if w_item is not None:
+            w_item_plural = w_item["plural"]
             self._map_managers[w_item_plural] = a_manager
 
     @UnbindField("_managers")
     def unbind_manager(self, field, a_manager, a_service_reference):
-        w_item_plurals = a_manager.get_item_ids_plural()
-        for w_item_plural in w_item_plurals:
+        w_item_id = a_manager._item_id
+        w_item = ycappuccino.storage.models.decorators.get_item(w_item_id)
+        if w_item is not None:
+            w_item_plural = w_item["plural"]
             self._map_managers[w_item_plural] = None
-
-
 
     @Validate
     def validate(self, context):

@@ -9,6 +9,7 @@ def empty():
     _empty.file_name("test")
     _empty.extension("txt")
     _empty.content_type("txt")
+    _empty.path("path")
 
     return _empty
 
@@ -38,6 +39,15 @@ class Media(Model):
     @Property(name="content_type")
     def content_type(self, a_value):
         self._content_type = a_value
+
+    def get_file_name(self):
+        return self._file_name
+
+    def get_extension(self):
+        return self._extension
+
+    def get_path(self):
+        return self._path
 
 
 empty()

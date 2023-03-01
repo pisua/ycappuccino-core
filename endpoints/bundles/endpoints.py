@@ -1,6 +1,7 @@
 #app="all"
 from ycappuccino.core.api import  IActivityLogger,   IService
 from ycappuccino.endpoints.api import IEndpoint, IHandlerEndpoint,  IJwt
+import traceback
 
 import pelix.http
 from ycappuccino.core.decorator_app import App
@@ -66,7 +67,9 @@ class Endpoint(IEndpoint):
             print(w_data)
         else:
             w_str = w_data.decode()
-            w_json = json.loads(w_str)
+            w_json = None
+            if w_str is not None and w_str != "":
+                w_json = json.loads(w_str)
             self._log.info("post path={}, data={}".format(w_path, w_str))
 
             w_resp = self.post(w_path, w_header, w_json)
@@ -82,7 +85,9 @@ class Endpoint(IEndpoint):
         w_str = request.read_data().decode()
         w_path = request.get_path()
         w_header = request.get_headers()
-        w_json = json.loads(w_str)
+        w_json = None
+        if w_str is not None and w_str != "":
+            w_json = json.loads(w_str)
         self._log.info("put path={}, data={}".format(w_path, w_str))
 
         w_resp = self.put(w_path, w_header, w_json)
@@ -120,69 +125,101 @@ class Endpoint(IEndpoint):
         return self._map_services[a_service_name]
 
     def post(self,a_path, a_headers, a_body):
-        w_url_path = UrlPath("post",a_path)
-        if w_url_path.is_service():
-            w_service_name = w_url_path.get_service_name()
-            w_service = self.find_service(w_service_name)
-            if w_service is not None:
-                if w_service.is_secure() :
-                    if self._jwt is not None:
-                        self._log.info("service authorization service not available")
-                        return EndpointResponse(500)
-                    if not check_header(self._jwt, a_headers):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(401)
-                    w_token = get_token_from_header(a_headers)
-                    if not self._jwt.is_authorized(w_token,w_url_path):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(403)
-                else:
-                    w_header, w_body = w_service.post(a_headers, w_url_path, a_body)
-                    w_meta = {
-                        "type": "array"
-                    }
-                    if w_body is None:
-                        return EndpointResponse(401)
-                    else:
+        try:
+            w_url_path = UrlPath("post",a_path, self.get_swagger_descriptions())
+            if w_url_path.is_service():
+                w_service_name = w_url_path.get_service_name()
+                w_service = self.find_service(w_service_name)
+                if w_service is not None:
+                    if w_service.is_secure() :
+                        if self._jwt is  None:
+                            self._log.info("service authorization service not available")
+                            return EndpointResponse(500)
+                        if not check_header(self._jwt, a_headers):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(401)
+                        w_token = get_token_from_header(a_headers)
+                        if not self._jwt.is_authorized(w_token,w_url_path):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(403)
+
+                        w_header, w_body = w_service.post(a_headers, w_url_path, a_body)
+                        w_meta = {
+                            "type": "array"
+                        }
+
                         return EndpointResponse(200, w_header, w_meta, w_body)
-            if w_url_path.get_Type() in self._map_handler_endpoints.keys():
-                w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
+                    else:
+                        w_header, w_body = w_service.post(a_headers, w_url_path, a_body)
+                        w_meta = {
+                            "type": "array"
+                        }
+                        if w_body is None:
+                            return EndpointResponse(401)
+                        else:
+                            return EndpointResponse(200, w_header, w_meta, w_body)
+            if w_url_path.get_type() in self._map_handler_endpoints.keys():
+                w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_type()]
                 return w_handler_endpoint.post(a_path, a_headers, a_body)
-        return EndpointResponse(400)
+            return EndpointResponse(400)
+
+        except Exception as e:
+            w_body = {
+                "data": {
+                    "error": str(e),
+                    "stack": traceback.format_exc().split("\n")
+                }
+            }
+            return EndpointResponse(500, None, None,  w_body)
 
     def put(self, a_path, a_headers, a_body):
-        w_url_path = UrlPath("put",a_path)
+        try:
+            w_url_path = UrlPath("put",a_path, self.get_swagger_descriptions())
 
-        if w_url_path.is_service():
-            w_service_name = w_url_path.get_service_name()
-            w_service = self.find_services(w_service_name)
-            if w_service is not None:
-                if w_service.is_secure():
-                    if self._jwt is not None:
-                        self._log.info("service authorization service not available")
-                        return EndpointResponse(500)
+            if w_url_path.is_service():
+                w_service_name = w_url_path.get_service_name()
+                w_service = self.find_services(w_service_name)
+                if w_service is not None:
+                    if w_service.is_secure():
+                        if self._jwt is  None:
+                            self._log.info("service authorization service not available")
+                            return EndpointResponse(500)
 
-                    if not check_header(self._jwt, a_headers):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(401)
-                    w_token = get_token_from_header(a_headers)
-                    if not self._jwt.is_authorized(w_token, w_url_path):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(403)
-                else:
-                    w_header, w_body = w_service.put(a_headers, w_url_path, a_body)
-                    w_meta = {
-                        "type": "array"
-                    }
-                    return EndpointResponse(200, w_header, w_meta, w_body)
-            return EndpointResponse(501)
-        if w_url_path.get_Type() in self._map_handler_endpoints.keys():
-            w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-            return w_handler_endpoint.put(a_path, a_headers, a_body)
-        return EndpointResponse(400)
+                        if not check_header(self._jwt, a_headers):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(401)
+                        w_token = get_token_from_header(a_headers)
+                        if not self._jwt.is_authorized(w_token, w_url_path):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(403)
 
+                        w_header, w_body = w_service.put(a_headers, w_url_path, a_body)
+                        w_meta = {
+                            "type": "array"
+                        }
+                        return EndpointResponse(200, w_header, w_meta, w_body)
 
-    def get_swagger_descriptions(self, a_scheme):
+                    else:
+                        w_header, w_body = w_service.put(a_headers, w_url_path, a_body)
+                        w_meta = {
+                            "type": "array"
+                        }
+                        return EndpointResponse(200, w_header, w_meta, w_body)
+                return EndpointResponse(501)
+            if w_url_path.get_Type() in self._map_handler_endpoints.keys():
+                w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
+                return w_handler_endpoint.put(a_path, a_headers, a_body)
+            return EndpointResponse(400)
+        except Exception as e:
+            w_body = {
+                "data":{
+                    "error":str(e),
+                    "stack": traceback.format_exc().split("\n")
+                }
+            }
+            return EndpointResponse(500, None, None,  w_body)
+
+    def get_swagger_descriptions(self, a_scheme=None):
         w_path = {}
         w_tag = []
         w_swagger = {
@@ -203,64 +240,91 @@ class Endpoint(IEndpoint):
         return EndpointResponse(200, None, None, w_swagger)
 
     def get(self, a_path, a_headers):
-        w_url_path = UrlPath("get",a_path)
+        try:
+            w_url_path = UrlPath("get",a_path, self.get_swagger_descriptions())
 
-        if w_url_path.is_service():
-            w_service_name = w_url_path.get_service_name()
-            w_service = self.find_services(w_service_name)
-            if w_service is not None:
-                if w_service.is_secure():
-                    if self._jwt is not None:
-                        self._log.info("service authorization service not available")
-                        return EndpointResponse(500)
-                    if not check_header(self._jwt, a_headers):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(401)
-                    w_token = get_token_from_header(a_headers)
-                    if not self._jwt.is_authorized(w_token, w_url_path):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(403)
-                else:
-                    w_header, w_body = w_service.get(a_headers, w_url_path)
-                    w_meta = {
-                        "type": "array"
-                    }
-                    return EndpointResponse(200, w_header,  w_meta, w_body)
-            return EndpointResponse(501)
-        if w_url_path.get_type() in self._map_handler_endpoints.keys():
-            w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_type()]
-            return w_handler_endpoint.get(a_path, a_headers)
-        return EndpointResponse(400)
+            if w_url_path.is_service():
+                w_service_name = w_url_path.get_service_name()
+                w_service = self.find_services(w_service_name)
+                if w_service is not None:
+                    if w_service.is_secure():
+                        if self._jwt is not None:
+                            self._log.info("service authorization service not available")
+                            return EndpointResponse(500)
+                        if not check_header(self._jwt, a_headers):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(401)
+                        w_token = get_token_from_header(a_headers)
+                        if not self._jwt.is_authorized(w_token, w_url_path):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(403)
 
+                        w_header, w_body = w_service.get(a_headers, w_url_path)
+                        w_meta = {
+                            "type": "array"
+                        }
+                        if w_body is None:
+                            return EndpointResponse(401)
+                        else:
+                            return EndpointResponse(200, w_header, w_meta, w_body)
+                    else:
+                        w_header, w_body = w_service.get(a_headers, w_url_path)
+                        w_meta = {
+                            "type": "array"
+                        }
+                        return EndpointResponse(200, w_header,  w_meta, w_body)
+                return EndpointResponse(501)
+            if w_url_path.get_type() in self._map_handler_endpoints.keys():
+                w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_type()]
+                return w_handler_endpoint.get(a_path, a_headers)
+            return EndpointResponse(400)
+        except Exception as e:
+            w_body = {
+                "data": {
+                    "error": str(e),
+                    "stack": traceback.format_exc().split("\n")
+                }
+            }
+            return EndpointResponse(500, None, None,  w_body)
 
 
     def delete(self, a_path, a_headers):
-        w_url_path = UrlPath("delete",a_path)
-        if w_url_path.is_service():
-            w_service_name = w_url_path.get_service_name()
-            w_service = self.find_services(w_service_name)
-            if w_service is not None:
-                if w_service.is_secure():
-                    if self._jwt is not None:
-                        self._log.info("service authorization service not available")
-                        return EndpointResponse(500)
-                    if not check_header(self._jwt, a_headers):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(401)
-                    w_token = get_token_from_header(a_headers)
-                    if not self._jwt.is_authorized(w_token, w_url_path):
-                        self._log.info("failed authorization service ")
-                        return EndpointResponse(403)
-                else:
-                    w_header, w_body =  w_service.delete(a_headers, w_url_path)
-                    w_meta = {
-                        "type": "array"
-                    }
-                    return EndpointResponse(200,w_header, w_meta, w_body)
-        if w_url_path.get_Type() in self._map_handler_endpoints.keys():
-            w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
-            return w_handler_endpoint.delete(a_path, a_headers)
-        return EndpointResponse(400)
+        try:
+            w_url_path = UrlPath("delete",a_path, self.get_swagger_descriptions())
+            if w_url_path.is_service():
+                w_service_name = w_url_path.get_service_name()
+                w_service = self.find_services(w_service_name)
+                if w_service is not None:
+                    if w_service.is_secure():
+                        if self._jwt is not None:
+                            self._log.info("service authorization service not available")
+                            return EndpointResponse(500)
+                        if not check_header(self._jwt, a_headers):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(401)
+                        w_token = get_token_from_header(a_headers)
+                        if not self._jwt.is_authorized(w_token, w_url_path):
+                            self._log.info("failed authorization service ")
+                            return EndpointResponse(403)
+                    else:
+                        w_header, w_body =  w_service.delete(a_headers, w_url_path)
+                        w_meta = {
+                            "type": "array"
+                        }
+                        return EndpointResponse(200,w_header, w_meta, w_body)
+            if w_url_path.get_Type() in self._map_handler_endpoints.keys():
+                w_handler_endpoint = self._map_handler_endpoints[w_url_path.get_Type()]
+                return w_handler_endpoint.delete(a_path, a_headers)
+            return EndpointResponse(400)
+
+        except Exception as e:
+            w_body = {
+                "data": {
+                    "error": str(e),
+                    "stack": traceback.format_exc().split("\n")
+                }
+            }
+            return EndpointResponse(500, None, None,  w_body)
 
     @BindField("_handler_endpoints")
     def bind_manager(self, field, a_handler_endpoint, a_service_reference):

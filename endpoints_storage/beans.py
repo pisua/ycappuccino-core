@@ -54,9 +54,9 @@ class EndpointResponse(object):
 
 class UrlPath(ycappuccino.endpoints.beans.UrlPath):
 
-    def __init__(self, a_method , a_url):
+    def __init__(self, a_method , a_url, a_api_description):
         """ need status"""
-        super().__init__(a_method, a_url)
+        super().__init__(a_method, a_url, a_api_description)
 
 
         self._is_schema = "$schema" in self.get_split_url()
@@ -64,13 +64,7 @@ class UrlPath(ycappuccino.endpoints.beans.UrlPath):
 
         self._is_empty = "$empty" in self.get_split_url()
 
-        if len(self.get_split_url())>1:
-            self._item_plural_id = self.get_split_url()[1]
-            if len(self.get_split_url())>2:
-                # an id is specified
-                if self._query_param is None:
-                    self._query_param = {}
-                self._query_param["id"] = self.get_split_url()[2]
+
 
 
 

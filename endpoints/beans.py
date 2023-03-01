@@ -1,7 +1,6 @@
 #app="all"
-import json
+import json, re
 from urllib.parse import parse_qsl, urlsplit
-
 
 class EndpointResponse(object):
 
@@ -47,7 +46,7 @@ class EndpointResponse(object):
 
 class UrlPath(object):
 
-    def __init__(self, a_method,  a_url):
+    def __init__(self, a_method,  a_url, a_api_description):
         """ need status"""
         self._url = a_url
         w_url_no_query = a_url
@@ -67,6 +66,22 @@ class UrlPath(object):
             self._service_name = self._split_url[1]
         self._url_no_query = w_url_no_query.split("api/")[1]
         self._url_param = w_url_query
+        if len(self.get_split_url()) > 1:
+            self._item_plural_id = self.get_split_url()[1]
+        # retrieve description url
+        for w_path in a_api_description._body["paths"].keys():
+            w_path_pattern = re.sub("\{.*\}",".*", w_path).replace("/","\/").replace("$","\$")+"$"
+            if re.search(w_path_pattern,"/"+self._url_no_query):
+                w_path_split = w_path[1:].split("/")
+                i=0
+                for w_part in w_path_split:
+                    if w_part[0] == "{" and w_part[-1] == "}":
+                        if self._query_param is None:
+                            self._query_param = {}
+                        self._query_param[w_part[1:-1]] = self.get_split_url()[i]
+                    i=i+1
+
+
 
 
     def get_split_url(self):
