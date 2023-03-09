@@ -92,8 +92,7 @@ class ScriptInterpreter(IService):
             w_line = f.readline()
             if "//@Require" in w_line:
                 w_split_line = w_line.split(" ")
-                w_class_name = None
-                w_variable_name = None
+
                 w_ldap_filter = None
                 if len(w_split_line)>2:
                     w_class_name = w_split_line[1]

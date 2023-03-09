@@ -18,7 +18,6 @@ _logger = logging.getLogger(__name__)
 @Requires("_bootstraps", specification=IBootStrap.name, aggregate=True, optional=True)
 @Instantiate("ClientPathFactory")
 @App(name="ycappuccino.rest-app")
-
 class ClientPathFactory(IClientIndexPathFactory):
 
     def __init__(self):

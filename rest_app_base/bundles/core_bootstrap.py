@@ -102,7 +102,7 @@ class AccountBootStrap(IBootStrap):
         w_client_path_swagger = ClientPath()
         w_client_path_swagger.id("simpleform")
         w_client_path_swagger.path("/simpleform")
-        w_client_path_swagger.subpath("simpleform")
+        w_client_path_swagger.subpath("endpoints_storage/simpleform")
         w_client_path_swagger.priority(1)
 
         w_client_path_swagger.secure(False)

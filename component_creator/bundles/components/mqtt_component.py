@@ -1,0 +1,81 @@
+#app="all"
+from ycappuccino.core.api import IActivityLogger, IService, YCappuccino
+from ycappuccino.storage.api import IManager
+from ycappuccino.endpoints.api import IJwt
+from ycappuccino.core.decorator_app import App
+
+import logging
+from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
+import hashlib
+
+from ycappuccino.rest_app_base.api import ITenantTrigger
+from ycappuccino.storage.api import ITrigger
+
+from ycappuccino.component_creator.api import IComponentServiceFactoryFactory, IComponentServiceFactory
+from ycappuccino.component_creator.bundles.components.api import IMqtt
+# Import smtplib for the actual sending function
+import smtplib
+
+# Import the email modules we'll need
+from email.message import EmailMessage
+_logger = logging.getLogger(__name__)
+
+
+@ComponentFactory('ComponentMqttFactory-Factory')
+@Provides(specifications=[YCappuccino.name, IComponentServiceFactoryFactory.name])
+@Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
+@Instantiate("ComponentMqttFactory")
+@App(name="ycappuccino.component_creator")
+class ComponentMqttFactory(IComponentServiceFactoryFactory):
+    def __init__(self):
+        super(IComponentServiceFactoryFactory, self).__init__();
+        self._factory_id = "ComponentHttpFactory"
+        self._name = "mqtt"
+        self._configuration_schema = {
+
+        }
+    @Validate
+    def validate(self, context):
+        self._log.info("ComponentHttpFactory validating")
+        super().validate(context)
+        self._log.info("ComponentHttpFactory validated")
+
+    @Invalidate
+    def invalidate(self, context):
+        self._log.info("ComponentHttpFactory invalidating")
+        super().invalidate(context)
+        self._log.info("ComponentHttpFactory invalidated")
+
+
+@ComponentFactory('ComponentHttpFactory')
+@Provides(specifications=[YCappuccino.name, IMqtt.name, IComponentServiceFactory.name])
+@Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
+@App(name="ycappuccino.component_creator")
+class ComponentMqtt(IMqtt):
+    def __init__(self):
+        super(IMqtt, self).__init__();
+        self._host = None
+        self._port = None
+
+    def send(self, a_subject, a_from, a_to, a_mail):
+
+        msg = EmailMessage()
+        msg.set_content(a_mail)
+
+        # me == the sender's email address
+        # you == the recipient's email address
+        msg['Subject'] = a_subject
+        msg['From'] = a_from
+        msg['To'] = a_to
+        #TODO test with TLS etc...
+        with smtplib.SMTP("{}:{}".format(self.host, self.port)) as s:
+            s.send_message(msg)
+    @Validate
+    def validate(self, context):
+        self._log.info("ComponentMail validating")
+        self._log.info("ComponentMail validated")
+
+    @Invalidate
+    def invalidate(self, context):
+        self._log.info("ComponentMail invalidating")
+        self._log.info("ComponentMail invalidated")

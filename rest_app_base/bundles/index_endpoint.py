@@ -211,7 +211,7 @@ class IndexEndpoint(object):
                         return None
                 if w_id in w_file_path:
                     for w_path in self._path_client[w_prio][w_id].get_path() :
-                        w_file_path = w_path + a_file_path.replace(self._path_client[w_prio][w_id].get_subpath()+"/","")
+                        w_file_path = w_path + a_file_path.replace(self._path_client[w_prio][w_id].get_ui_path()+"/","/")
                         if path.exists(w_file_path):
                             w_in_known_path = True
                             break

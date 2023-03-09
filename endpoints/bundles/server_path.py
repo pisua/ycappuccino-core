@@ -48,6 +48,8 @@ class ClientPath(IClientIndexPath):
     def get_subpath(self):
         return self._subpath
 
+    def get_ui_path(self):
+        return self._id
     def is_auth(self):
         return self._secure
 
