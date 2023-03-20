@@ -15,16 +15,16 @@ from ycappuccino.component_creator.api import IComponentServiceList
 _logger = logging.getLogger(__name__)
 
 
-@ComponentFactory('TenantTrigger-Factory')
+@ComponentFactory('ComponentServiceTrigger-Factory')
 @Provides(specifications=[YCappuccino.name, ITrigger.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_component_services_list", IComponentServiceList.name)
 @Requires("_jwt", IJwt.name)
-@Instantiate("TenantTrigger")
+@Instantiate("ComponentServiceTrigger")
 @App(name="ycappuccino.component_creator")
 class ComponentServiceTrigger(ITrigger):
     def __init__(self):
-        super(ComponentServiceTrigger, self).__init__("tenantTrigger", "component", ["upsert", "delete"], a_synchronous=True,a_post=True);
+        super(ComponentServiceTrigger, self).__init__("ComponentServiceTrigger", "component", ["upsert", "delete"], a_synchronous=True,a_post=True);
         self._component_services = {}
         self._component_services_list = None
 

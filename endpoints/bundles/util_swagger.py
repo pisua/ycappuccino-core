@@ -311,8 +311,10 @@ def get_swagger_description( a_item, a_path):
                     "description": "successful operation"
                 }
             }
-        },
-        "post": {
+        }
+    }
+    if a_item["isWritable"]:
+        a_path[get_swagger_description_path(a_item, False)]["post"] = {
             "tags": [get_swagger_description_tag(a_item)],
             "operationId": "create_" + a_item["id"],
             "consumes": ["application/json"],
@@ -331,7 +333,7 @@ def get_swagger_description( a_item, a_path):
                 }
             }
         }
-    }
+
     if a_item["multipart"] :
         a_path[get_swagger_description_path(a_item, False)+"/blob"] = {
             "post": {
@@ -406,8 +408,10 @@ def get_swagger_description( a_item, a_path):
                     "description": "successful operation"
                 }
             }
-        },
-        "put": {
+        }
+    }
+    if a_item["isWritable"]:
+        a_path[get_swagger_description_path(a_item, False)]["put"] = {
             "tags": [get_swagger_description_tag(a_item)],
             "operationId": "update_" + a_item["id"],
             "consumes": ["application/json"],
@@ -431,7 +435,7 @@ def get_swagger_description( a_item, a_path):
                 }
             }
         }
-    }
+
     get_swagger_description_empty(a_item, a_path)
     get_swagger_description_schema(a_item, a_path)
 

@@ -10,7 +10,7 @@ def empty():
     return _empty
 
 @App(name="ycappuccino.component_creator")
-@Item(collection="component_factories",name="component_factory", plural="component_factories",  secure_write=True, secure_read=True)
+@Item(collection="component_factories",name="component_factory", plural="component_factories",  secure_write=True, is_writable=False, secure_read=True)
 class ComponentFactory(Model):
     def __init__(self, a_dict=None):
         super().__init__(a_dict)

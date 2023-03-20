@@ -61,7 +61,7 @@ def get_sons_item_id(a_item_id):
 class Item(object):
     # Make copy of original __init__, so we can call it without recursion
     def __init__(self, collection, name, plural, abstract=False,  module="system", app="core", secure_read=False,
-                 secure_write=False, multipart=None):
+                 secure_write=False, is_writable=True, multipart=None):
         self._meta_name = name
         self._meta_collection = collection
         self._meta_module = module
@@ -73,6 +73,7 @@ class Item(object):
             "plural": plural,
             "secureRead": secure_read,
             "secureWrite": secure_write,
+            "isWritable" : is_writable,
             "app":app,
             "multipart":multipart,
             "schema":{
@@ -111,6 +112,7 @@ class Item(object):
         map_item[w_id]["father"] = self._item["father"]
         map_item[w_id]["schema"] = self._item["schema"]
         map_item[w_id]["multipart"] = self._item["multipart"]
+        map_item[w_id]["isWritable"] = self._item["isWritable"]
 
         # create empty
 

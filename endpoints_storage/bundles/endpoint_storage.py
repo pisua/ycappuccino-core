@@ -129,6 +129,9 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
+                if not w_item["isWritable"]:
+                    self._log.info("failed authorization service ")
+                    return EndpointResponse(403)
                 if w_item["secureWrite"]:
                     if not check_header(self._jwt, a_headers):
                         self._log.info("failed authorization service ")
@@ -163,6 +166,9 @@ class HandlerEndpointStorage(IHandlerEndpoint):
             w_manager = self.find_manager(w_item_plural)
             if w_manager is not None:
                 w_item = w_manager.get_item_from_id_plural(w_item_plural)
+                if not w_item["isWritable"]:
+                    self._log.info("failed authorization service ")
+                    return EndpointResponse(403)
                 if w_item["secureWrite"]:
                     if not check_header(self._jwt, a_headers):
                         self._log.info("failed authorization service ")
