@@ -13,49 +13,6 @@ from ycappuccino.component_creator.bundles.components.api import IHttp
 _logger = logging.getLogger(__name__)
 
 
-@ComponentFactory('ComponentHttpFactory-Factory')
-@Provides(specifications=[YCappuccino.name, IComponentServiceFactoryFactory.name])
-@Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
-@Instantiate("ComponentHttpFactory")
-@App(name="ycappuccino.component_creator")
-class ComponentHttpFactory(IComponentServiceFactoryFactory):
-    def __init__(self):
-        super(IComponentServiceFactoryFactory, self).__init__();
-        self._factory_id = "ComponentHttpFactory"
-        self._name = "http"
-        self._configuration_schema = {
-            "host":{
-                "type": "string"
-            },
-            "port":{
-                "type": "number"
-            },
-            "scheme":{
-                "type": "string"
-            },
-            "path":{
-                "type": "string"
-            },
-            "headers":{
-                "type": "array",
-                "items": {
-                    "type": "object"
-                }
-            }
-        }
-
-    @Validate
-    def validate(self, context):
-        self._log.info("ComponentHttpFactory validating")
-        super().validate(context)
-        self._log.info("ComponentHttpFactory validated")
-
-    @Invalidate
-    def invalidate(self, context):
-        self._log.info("ComponentHttpFactory invalidating")
-        super().invalidate(context)
-        self._log.info("ComponentHttpFactory invalidated")
-
 
 @ComponentFactory('ComponentHttpFactory')
 @Provides(specifications=[YCappuccino.name, IHttp.name, IComponentServiceFactory.name])

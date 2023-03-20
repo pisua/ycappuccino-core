@@ -21,46 +21,6 @@ from email.message import EmailMessage
 _logger = logging.getLogger(__name__)
 
 
-@ComponentFactory('ComponentMailFactory-Factory')
-@Provides(specifications=[YCappuccino.name, IComponentServiceFactoryFactory.name])
-@Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
-@Instantiate("ComponentMailFactory")
-@App(name="ycappuccino.component_creator")
-class ComponentMailFactory(IComponentServiceFactoryFactory):
-    def __init__(self):
-        super(IComponentServiceFactoryFactory, self).__init__();
-        self._factory_id = "ComponentHttpFactory"
-        self._name = "mail"
-        self._configuration_schema = {
-            "host":{
-                "type":"string"
-            },
-            "port":{
-                "type": "number"
-            },
-            "tls":{
-                "type": "boolean"
-            },
-            "user":{
-                "type": "string"
-
-            },
-            "password":{
-                "type": "string"
-            }
-        }
-    @Validate
-    def validate(self, context):
-        self._log.info("ComponentHttpFactory validating")
-        super().validate(context)
-        self._log.info("ComponentHttpFactory validated")
-
-    @Invalidate
-    def invalidate(self, context):
-        self._log.info("ComponentHttpFactory invalidating")
-        super().invalidate(context)
-        self._log.info("ComponentHttpFactory invalidated")
-
 
 @ComponentFactory('ComponentHttpFactory')
 @Provides(specifications=[YCappuccino.name, IMail.name, IComponentServiceFactory.name])

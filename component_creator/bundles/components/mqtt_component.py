@@ -21,32 +21,6 @@ from email.message import EmailMessage
 _logger = logging.getLogger(__name__)
 
 
-@ComponentFactory('ComponentMqttFactory-Factory')
-@Provides(specifications=[YCappuccino.name, IComponentServiceFactoryFactory.name])
-@Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
-@Instantiate("ComponentMqttFactory")
-@App(name="ycappuccino.component_creator")
-class ComponentMqttFactory(IComponentServiceFactoryFactory):
-    def __init__(self):
-        super(IComponentServiceFactoryFactory, self).__init__();
-        self._factory_id = "ComponentHttpFactory"
-        self._name = "mqtt"
-        self._configuration_schema = {
-
-        }
-    @Validate
-    def validate(self, context):
-        self._log.info("ComponentHttpFactory validating")
-        super().validate(context)
-        self._log.info("ComponentHttpFactory validated")
-
-    @Invalidate
-    def invalidate(self, context):
-        self._log.info("ComponentHttpFactory invalidating")
-        super().invalidate(context)
-        self._log.info("ComponentHttpFactory invalidated")
-
-
 @ComponentFactory('ComponentHttpFactory')
 @Provides(specifications=[YCappuccino.name, IMqtt.name, IComponentServiceFactory.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")

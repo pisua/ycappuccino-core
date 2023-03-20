@@ -26,6 +26,8 @@ class ComponentFactory(Model):
     def factory_id(self, a_value):
         self._factory_id = a_value
 
+    def get_factory_id(self):
+        return self._factory_id
     @Property(name="configuration_schema")
     def configuration_schema(self, a_value):
         self._configuration_schema = a_value

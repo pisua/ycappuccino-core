@@ -40,13 +40,12 @@ class ComponentServiceTrigger(ITrigger):
         elif a_action == "get":
             return a_component_service
         if w_factory_id is not None:
-            w_factory = self._component_services_list.get_factory(w_factory_id)
             if w_name in self._component_services.keys():
                 # TDOO detroy
-                w_component = w_factory.delete_component(a_component_service)
+                w_component = self._component_services_list.delete_component(a_component_service)
                 del self._component_services[w_name]
             if w_active :
-                w_component = w_factory.create_component(a_component_service)
+                w_component = self._component_services_list.create_component(a_component_service)
                 self._component_services[w_name] = w_component
             return a_component_service
     @Validate

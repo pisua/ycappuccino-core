@@ -110,6 +110,9 @@ class ClientPathSwagger(IClientIndexPath):
 
         return w_path
 
+    def get_ui_path(self):
+        return self._id
+
     def get_priority(self):
         return self._priority
 

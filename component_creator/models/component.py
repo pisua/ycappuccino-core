@@ -26,6 +26,9 @@ class ExternalService(Model):
     def factory_id(self, a_value):
         self._factory_id = a_value
 
+    def get_factory_id(self):
+        return self._factory_id
+
     @Property(name="filter")
     def filter(self, a_value):
         self._filter = a_value
