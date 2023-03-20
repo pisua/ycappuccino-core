@@ -7,14 +7,14 @@ import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Property, Provides, Instantiate, BindField, UnbindField
 import httpx
 
-from ycappuccino.component_creator.api import IComponentServiceFactoryFactory, IComponentServiceFactory
+from ycappuccino.component_creator.api import  IComponentServiceFactory
 from ycappuccino.component_creator.bundles.components.api import IHttp
 
 _logger = logging.getLogger(__name__)
 
 
 
-@ComponentFactory('ComponentHttpFactory')
+@ComponentFactory('Http')
 @Provides(specifications=[YCappuccino.name, IHttp.name, IComponentServiceFactory.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @App(name="ycappuccino.component_creator")

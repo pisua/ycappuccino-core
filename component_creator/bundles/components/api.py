@@ -1,6 +1,6 @@
 #app="all"
 from ycappuccino.core.api import CFQCN
-from ycappuccino.component_creator.api import IComponentServiceFactoryFactory, IComponentServiceFactory
+from ycappuccino.component_creator.api import  IComponentServiceFactory
 
 
 

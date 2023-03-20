@@ -9,7 +9,7 @@ class CFQCN(object):
     """
     @staticmethod
     def build(aClassName):
-        wFQCN =  '.'.join([CFQCN.__module__, aClassName])
+        wFQCN =  '.'.join(["ycappuccino.api",aClassName])
         wLog = logging.getLogger(__name__)
         wLog.info("FQCN '{0}' ...".format(wFQCN))
         return wFQCN

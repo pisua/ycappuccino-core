@@ -41,6 +41,7 @@ def set_item_manager(a_item_manager):
     item_manager  = a_item_manager
 
 subsystem = []
+listener_factory= None
 
 def init_subsystem(a_path):
     global context
@@ -49,11 +50,42 @@ def init_subsystem(a_path):
 
 app_name = None
 
+class ListenerFactories():
+    def __init__(self, a_context):
+        self._context = a_context
+        self._factory_by_spec = {}
+        with use_ipopo(context) as ipopo:
+            ipopo.add_listener(self)
+        self._notifier_by_spec = {}
+    def handle_ipopo_event(self, event):
+        '''
+        event: A IPopoEvent object
+        '''
+        # ...
+        with use_ipopo(self._context) as ipopo:
+            w_description = ipopo.get_factory_details(event.get_factory_name())
+            for w_service_spec in w_description["services"][0]:
+                if w_service_spec not in self._factory_by_spec:
+                    self._factory_by_spec[w_service_spec] = []
+                self._factory_by_spec[w_service_spec].append(w_description["name"])
+                if w_service_spec in self._notifier_by_spec:
+                    for w_notifier in self._notifier_by_spec[w_service_spec]:
+                        w_notifier.notify(w_description["name"])
+
+    def subscribe_notifier(self, a_service_spec, a_notifier):
+        if a_service_spec not in self._notifier_by_spec:
+            self._notifier_by_spec[a_service_spec] = []
+        self._notifier_by_spec[a_service_spec].append(a_notifier)
+
+    def get_factories_by_service_specification(self, a_service_spec):
+        if a_service_spec in self._factory_by_spec.keys():
+            return self._factory_by_spec[a_service_spec]
+        return []
 def init(root_dir=None, app=None, port=9000):
     """ """
     global item_manager
     global context
-    global app_name
+    global app_name, listener_factory
     app_name = app
     # Create the Pelix framework
     framework = create_framework((
@@ -89,7 +121,7 @@ def init(root_dir=None, app=None, port=9000):
     context = framework.get_bundle_context()
 
     # retrieve item_manager
-
+    listener_factory = ListenerFactories(context)
     # install custom
     # load ycappuccino
     w_root =""

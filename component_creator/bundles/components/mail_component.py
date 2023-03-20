@@ -11,7 +11,7 @@ import hashlib
 from ycappuccino.rest_app_base.api import ITenantTrigger
 from ycappuccino.storage.api import ITrigger
 
-from ycappuccino.component_creator.api import IComponentServiceFactoryFactory, IComponentServiceFactory
+from ycappuccino.component_creator.api import  IComponentServiceFactory
 from ycappuccino.component_creator.bundles.components.api import IMail
 # Import smtplib for the actual sending function
 import smtplib
@@ -22,7 +22,7 @@ _logger = logging.getLogger(__name__)
 
 
 
-@ComponentFactory('ComponentHttpFactory')
+@ComponentFactory('Mail')
 @Provides(specifications=[YCappuccino.name, IMail.name, IComponentServiceFactory.name])
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @App(name="ycappuccino.component_creator")
