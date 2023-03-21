@@ -8,9 +8,9 @@ from ycappuccino.core.decorator_app import App
 def empty():
     _empty = Account()
     _empty.id("test")
-    _empty.login("admin")
-    _empty.name("admin")
-    _empty.role("admin")
+    _empty.login("client_admin")
+    _empty.name("client_admin")
+    _empty.role("client_admin")
 
     return _empty
 

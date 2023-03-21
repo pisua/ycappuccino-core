@@ -50,7 +50,7 @@ class MongoStorage(IStorage):
     def load_configuration(self):
         self._host = self._config.get("storage.mongo.db.host", "localhost")
         self._port = self._config.get("storage.mongo.db.port", 27017)
-        self._username = self._config.get("storage.mongo.db.username", "admin")
+        self._username = self._config.get("storage.mongo.db.username", "client_admin")
         self._password = self._config.get("storage.mongo.db.password", "ycappuccino")
         self._db_name = self._config.get("storage.mongo.db.name", "ycappuccino")
 

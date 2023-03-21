@@ -7,8 +7,8 @@ from ycappuccino.core.decorator_app import App
 @Empty()
 def empty():
     _empty = Login()
-    _empty.id("admin")
-    _empty.password("admin")
+    _empty.id("client_admin")
+    _empty.password("client_admin")
     return _empty
 
 @App(name="ycappuccino.rest-app")

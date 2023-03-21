@@ -57,7 +57,7 @@ class AccountBootStrap(IBootStrap):
         w_admin_login = Login()
         w_admin_login.id("superadmin")
         w_admin_login.login("superadmin")
-        w_admin_login.password("admin")
+        w_admin_login.password("client_admin")
 
         w_admin_role = Role()
         w_admin_role.id("superadmin")
@@ -100,14 +100,14 @@ class AccountBootStrap(IBootStrap):
 
 
         w_client_path_swagger = ClientPath()
-        w_client_path_swagger.id("simpleform")
-        w_client_path_swagger.path("/simpleform")
-        w_client_path_swagger.subpath("endpoints_storage/simpleform")
+        w_client_path_swagger.id("admin")
+        w_client_path_swagger.path("/admin")
+        w_client_path_swagger.subpath("endpoints_storage/client_admin")
         w_client_path_swagger.priority(1)
 
         w_client_path_swagger.secure(False)
 
-        self._manager_client_path.up_sert_model("simpleform", w_client_path_swagger, w_subject)
+        self._manager_client_path.up_sert_model("client_admin", w_client_path_swagger, w_subject)
 
     @Validate
     def validate(self, context):

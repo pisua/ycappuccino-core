@@ -78,7 +78,7 @@ def find_and_install_bundle(a_root, a_module_name, a_context):
             if os.path.exists(w_file) and \
                     "pelix" not in w_file and \
                     "pelix" not in a_module_name and \
-                    "client" not in a_module_name and \
+                    ".client" not in a_module_name and \
                     "framework" not in w_file:
                 w_module_name = ""
 

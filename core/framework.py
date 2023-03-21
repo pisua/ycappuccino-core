@@ -116,7 +116,7 @@ def init(root_dir=None, app=None, port=9000):
 
     # Instantiate EventAdmin
     with use_ipopo(framework.get_bundle_context()) as ipopo:
-        ipopo.instantiate(pelix.services.FACTORY_EVENT_ADMIN, 'event-admin', {})
+        ipopo.instantiate(pelix.services.FACTORY_EVENT_ADMIN, 'event-client_admin', {})
 
     context = framework.get_bundle_context()
 

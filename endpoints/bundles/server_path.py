@@ -58,7 +58,7 @@ class ClientPath(IClientIndexPath):
 
     def load_configuration(self):
         if self._secure :
-            self._user = self._config.get(self._id+".login", "admin")
+            self._user = self._config.get(self._id+".login", "client_admin")
             self._pass = self._config.get(self._id+".password", "1234")
 
     def check_auth(self, a_authorization):
@@ -102,7 +102,7 @@ class ClientPathSwagger(IClientIndexPath):
         self._pass =None
         self._id = "/swagger"
         self._priority = 0
-        self._subpath = "swagger"
+        self._subpath = "client_swagger"
         self._config = None
 
     def get_path(self):
@@ -127,7 +127,7 @@ class ClientPathSwagger(IClientIndexPath):
 
     def load_configuration(self):
         if self._secure :
-            self._user = self._config.get(self._id+".login", "admin")
+            self._user = self._config.get(self._id+".login", "client_admin")
             self._pass = self._config.get(self._id+".password", "1234")
 
     def check_auth(self, a_authorization):

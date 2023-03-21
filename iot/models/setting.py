@@ -6,8 +6,8 @@ from ycappuccino.core.decorator_app import App
 @Empty()
 def empty():
     _empty = Setting()
-    _empty.id("admin")
-    _empty.name("admin")
+    _empty.id("client_admin")
+    _empty.name("client_admin")
     return _empty
 
 @App(name="ycappuccino.iot")
