@@ -92,7 +92,7 @@ def init(root_dir=None, app=None, port=9000):
         # iPOPO
         'pelix.ipopo.core',
 
-        # Shell bundles
+        # Shell ycappuccino
         'pelix.shell.core',
         'pelix.shell.console',
         'pelix.shell.remote',
@@ -116,7 +116,7 @@ def init(root_dir=None, app=None, port=9000):
 
     # Instantiate EventAdmin
     with use_ipopo(framework.get_bundle_context()) as ipopo:
-        ipopo.instantiate(pelix.services.FACTORY_EVENT_ADMIN, 'event-client_admin', {})
+        ipopo.instantiate(pelix.services.FACTORY_EVENT_ADMIN, 'event-client_pyscript_core', {})
 
     context = framework.get_bundle_context()
 

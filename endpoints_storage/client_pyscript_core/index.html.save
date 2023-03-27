@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>PyScript Hello World</title>
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <py-config>
+        packages = ["ipopo"]
+
+        [[fetch]]
+        files = ["./api.py", "./bundles/test.py", "./bundles/test2.py", "./bundles/test_main.py",  "./bundles/list_component.py"]
+    </py-config>
+  </head>
+
+  <body>
+
+
+    <div id="main"> </div>
+    <script>
+        function on_click(a_comp_name, a_method ){
+            pyscript.runtime.run(
+               "list_component.call(\""+a_comp_name+"\",\""+a_method+"\")\n"
+            );
+        }
+    </script>
+    <py-script>
+
+
+        from pelix.framework import create_framework
+        import sys,threading
+        from pelix.ipopo.constants import use_ipopo
+        import pelix
+        import bundles.test_main
+        context = None
+
+
+
+        framework = create_framework((
+            # iPOPO
+            'pelix.ipopo.core',
+            # Shell bundles
+            'pelix.shell.core',
+            'pelix.shell.remote',
+            'pelix.shell.ipopo',
+            # ConfigurationAdmin
+            'pelix.services.configadmin',
+            'pelix.shell.configadmin',
+            'bundles.test',
+            'bundles.test2',
+            'bundles.test_main',
+            'bundles.list_component',
+            # EventAdmin,
+            'pelix.services.eventadmin'
+
+        ))
+
+        # Start the framework
+        framework.start()
+
+        # Instantiate EventAdmin
+        with use_ipopo(framework.get_bundle_context()) as ipopo:
+            ipopo.instantiate(pelix.services.FACTORY_EVENT_ADMIN, 'event-admin', {})
+
+        context = framework.get_bundle_context()
+
+        from bundles.list_component import list_component
+
+
+
+    </py-script>
+  </body>
+</html>
+Footer

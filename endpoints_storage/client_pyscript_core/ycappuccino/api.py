@@ -24,26 +24,3 @@ class IListComponent(object):
     def __init__(self):
         """ abstract constructor """
         pass
-class ITest1(object):
-    """ interface of YCappuccino component """
-    name = CFQCN.build("ITest1")
-
-    def __init__(self):
-        """ abstract constructor """
-        pass
-
-class ITest2(object):
-    """ interface of YCappuccino component """
-    name = CFQCN.build("ITest2")
-
-    def __init__(self):
-        """ abstract constructor """
-        pass
-
-class ITestMain(object):
-    """ interface of YCappuccino component """
-    name = CFQCN.build("ITestMain")
-
-    def __init__(self):
-        """ abstract constructor """
-        pass

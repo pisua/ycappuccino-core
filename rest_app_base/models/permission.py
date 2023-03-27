@@ -5,8 +5,8 @@ from ycappuccino.core.decorator_app import App
 @Empty()
 def empty():
     _empty = Permission()
-    _empty.id("client_admin")
-    _empty.name("client_admin")
+    _empty.id("client_pyscript_core")
+    _empty.name("client_pyscript_core")
     _empty.permission("tout")
     return _empty
 

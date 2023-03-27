@@ -47,7 +47,7 @@ class Endpoint(IEndpoint):
         w_header = request.get_headers()
         self._log.info("get path={}".format( w_path))
 
-        if "client_swagger.json" in w_path:
+        if "swagger.json" in w_path:
             w_resp = self.get_swagger_descriptions(["https","http"])
         else:
             w_resp = self.get(w_path, w_header)
@@ -223,7 +223,7 @@ class Endpoint(IEndpoint):
         w_path = {}
         w_tag = []
         w_swagger = {
-            "client_swagger":"2.0",
+            "swagger":"2.0",
             "info":{},
             "basePath":"/api/",
             "tags":w_tag,

@@ -1,7 +1,7 @@
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Instantiate, BindField, \
     UnbindField, Provides
 from pyscript import Element
-from api import IListComponent,YCappuccino
+from ycappuccino.api import IListComponent,YCappuccino
 
 list_component = None
 @ComponentFactory('ListComponent-Factory')

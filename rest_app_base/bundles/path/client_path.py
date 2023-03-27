@@ -47,10 +47,10 @@ class ClientPathFactory(IClientIndexPathFactory):
                 # use the iPOPO core service with the "ipopo" variable
                 if "_subpath" in a_model.__dict__.keys():
                     ipopo.instantiate("ClientPath-Factory", "ClientPath-{}".format(a_model._id),
-                                      {"id": a_model._path,"subpath":a_model._subpath,"priority":a_model._priority,  "secure": a_model._secure} )
+                                      {"id": a_model._path,"subpath":a_model._subpath,"priority":a_model._priority, "type":a_model.get_type(), "core":a_model.is_core(),  "secure": a_model._secure} )
                 else:
                     ipopo.instantiate("ClientPath-Factory", "ClientPath-{}".format(a_model._id),
-                                      {"id": a_model._path, "subpath": "","priority":a_model._priority, "secure": a_model._secure})
+                                      {"id": a_model._path, "subpath": "","priority":a_model._priority, "type":a_model.get_type(), "core":a_model.is_core(), "secure": a_model._secure})
                 self._map_client_path[a_model._id] = True
 
     def create_client_paths(self):

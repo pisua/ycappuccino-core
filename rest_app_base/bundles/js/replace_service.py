@@ -27,7 +27,7 @@ class JSReplaceService(IClobReplaceService):
     def extension(self):
         return ".js.mdl"
 
-    def replace_content(self, a_in):
+    def replace_content(self, a_in, a_path, a_client_path):
         """ return out string with applyance of replacement """
         # replace angularjs rest api
         w_replace_angularjs = "{}s: $resource(current_url+'/{}s'),\n".format("item", "item")

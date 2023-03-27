@@ -16,6 +16,8 @@ class ClientPath(Model):
         self._path = None
         self._subpath = ""
         self._priority = ""
+        self._type = ""
+        self._core = False
 
     @Property(name="path")
     def path(self, a_value):
@@ -24,6 +26,20 @@ class ClientPath(Model):
     @Property(name="subpath")
     def subpath(self, a_value):
         self._subpath = a_value
+
+    @Property(name="type")
+    def type(self, a_value):
+        self._type = a_value
+
+    @Property(name="core")
+    def core(self, a_value):
+        self._core = a_value
+
+    def get_type(self):
+        return self._type
+
+    def is_core(self):
+        return self._core
 
     @Property(name="priority")
     def priority(self, a_value):

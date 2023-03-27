@@ -57,7 +57,7 @@ class AccountBootStrap(IBootStrap):
         w_admin_login = Login()
         w_admin_login.id("superadmin")
         w_admin_login.login("superadmin")
-        w_admin_login.password("client_admin")
+        w_admin_login.password("client_pyscript_core")
 
         w_admin_role = Role()
         w_admin_role.id("superadmin")
@@ -99,15 +99,16 @@ class AccountBootStrap(IBootStrap):
         self._manager_client_path.up_sert_model("default", w_client_path_default, w_subject)
 
 
-        w_client_path_swagger = ClientPath()
-        w_client_path_swagger.id("admin")
-        w_client_path_swagger.path("/admin")
-        w_client_path_swagger.subpath("endpoints_storage/client_admin")
-        w_client_path_swagger.priority(1)
+        w_client_path_pyscript_core = ClientPath()
+        w_client_path_pyscript_core.id("client_pyscript_core")
+        w_client_path_pyscript_core.path("/pyscriptcore")
+        w_client_path_pyscript_core.subpath("endpoints_storage/client_pyscript_core")
+        w_client_path_pyscript_core.priority(1)
+        w_client_path_pyscript_core.type("pyscript")
+        w_client_path_pyscript_core.core(True)
+        w_client_path_pyscript_core.secure(False)
 
-        w_client_path_swagger.secure(False)
-
-        self._manager_client_path.up_sert_model("client_admin", w_client_path_swagger, w_subject)
+        self._manager_client_path.up_sert_model("client_pyscript_core", w_client_path_pyscript_core, w_subject)
 
     @Validate
     def validate(self, context):

@@ -50,7 +50,7 @@ class MongoStorage(IStorage):
     def load_configuration(self):
         self._host = self._config.get("storage.mongo.db.host", "localhost")
         self._port = self._config.get("storage.mongo.db.port", 27017)
-        self._username = self._config.get("storage.mongo.db.username", "client_admin")
+        self._username = self._config.get("storage.mongo.db.username", "client_pyscript_core")
         self._password = self._config.get("storage.mongo.db.password", "ycappuccino")
         self._db_name = self._config.get("storage.mongo.db.name", "ycappuccino")
 
@@ -110,7 +110,8 @@ class MongoStorage(IStorage):
                     "$set": a_new_dict
                 }
                 model.update(a_new_dict)
-
+            if "_id" in w_update["$set"].keys():
+                del w_update["$set"]["_id"]
             return self._db[a_item["collection"]].update_one(w_filter, w_update, upsert=True)
         else:
             if "_mongo_model" in a_new_dict:

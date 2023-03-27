@@ -18,24 +18,28 @@ _logger = logging.getLogger(__name__)
 @Requires("_log", IActivityLogger.name, spec_filter="'(name=main)'")
 @Requires("_config", IConfiguration.name)
 @Property('_id', "id", "default")
+@Property('_type', "type", "default")
 @Property('_subpath', "subpath", "client")
 @Property('_secure', "secure", False)
+@Property('_core', "core", False)
 @Property('_priority', "priority", 0)
 @App(name="ycappuccino.endpoint")
 class ClientPath(IClientIndexPath):
 
     def __init__(self):
         super(IClientIndexPath, self).__init__();
-        self.path_core = inspect.getmodule(self).__file__.replace("endpoints{0}bundles{0}server_path.py".format(os.path.sep), "")
-        self.path_app = inspect.getmodule(self).__file__.replace("ycappuccino{0}endpoints{0}bundles{0}server_path.py".format(os.path.sep), "")
+        self.path_core = inspect.getmodule(self).__file__.replace("endpoints{0}bundles{0}client_path.py".format(os.path.sep), "")
+        self.path_app = inspect.getmodule(self).__file__.replace("ycappuccino{0}endpoints{0}bundles{0}client_path.py".format(os.path.sep), "")
         self._log =None
         self._secure =None
         self._user = None
         self._pass =None
         self._id = None
+        self._type = None
         self._priority = None
         self._subpath = None
         self._config = None
+        self._core = None
 
     def get_path(self):
         w_path =[self.path_app+self._subpath,self.path_core+self._subpath]
@@ -45,6 +49,11 @@ class ClientPath(IClientIndexPath):
     def get_priority(self):
         return self._priority
 
+    def get_type(self):
+        return self._type
+
+    def is_core(self):
+        return self._core
     def get_subpath(self):
         return self._subpath
 
@@ -58,7 +67,7 @@ class ClientPath(IClientIndexPath):
 
     def load_configuration(self):
         if self._secure :
-            self._user = self._config.get(self._id+".login", "client_admin")
+            self._user = self._config.get(self._id+".login", "client_pyscript_core")
             self._pass = self._config.get(self._id+".password", "1234")
 
     def check_auth(self, a_authorization):
@@ -95,7 +104,7 @@ class ClientPathSwagger(IClientIndexPath):
 
     def __init__(self):
         super(IClientIndexPath, self).__init__();
-        self.path_core = inspect.getmodule(self).__file__.replace("bundles{0}server_path.py".format(os.path.sep), "")
+        self.path_core = inspect.getmodule(self).__file__.replace("ycappuccino{0}server_path.py".format(os.path.sep), "")
         self._log =None
         self._secure = False
         self._user = None
@@ -125,9 +134,14 @@ class ClientPathSwagger(IClientIndexPath):
     def get_id(self):
         return self._id
 
+    def get_type(self):
+        return "swagger"
+
+    def is_core(self):
+        return True
     def load_configuration(self):
         if self._secure :
-            self._user = self._config.get(self._id+".login", "client_admin")
+            self._user = self._config.get(self._id+".login", "client_pyscript_core")
             self._pass = self._config.get(self._id+".password", "1234")
 
     def check_auth(self, a_authorization):

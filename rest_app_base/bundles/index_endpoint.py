@@ -33,7 +33,7 @@ COMPONENT_PROPERTY ="@Property"
 
 class IndexEndpoint(object):
 
-    """ bundle that allow to open index.html as root path of http endpoint and provide client bundle on path client """
+    """ bundle that allow to open index.html.save as root path of http endpoint and provide client bundle on path client """
     def __init__(self):
         self._path_core = os.getcwd()+"/ycappuccino"
         self._path_app = os.getcwd()
@@ -44,6 +44,7 @@ class IndexEndpoint(object):
         self._map_python_file = {}
         self._list_replace_clob = []
         self._replace_clob = {}
+        self._pyscript_core_client_path = None
         self._log = None
 
     @BindField("_list_path_client")
@@ -55,6 +56,8 @@ class IndexEndpoint(object):
         else:
             self._path_client[a_client_path.get_priority()][a_client_path.get_id()] = a_client_path
 
+        if a_client_path.is_core() and a_client_path.get_type() == "pyscript":
+            self._pyscript_core_client_path = a_client_path
 
     @UnbindField("_list_path_client")
     def unbind_client_path(self, field, a_client_path, a_service_reference):
@@ -72,6 +75,7 @@ class IndexEndpoint(object):
 
     def manage_python(self, a_path):
         """ manage python component client"""
+
         with open(a_path) as f:
             w_lines = f.readlines()
             w_lines_str = ""
@@ -89,7 +93,7 @@ class IndexEndpoint(object):
                 w_list.append(self._replace_clob[key])
         return w_list
 
-    def manage_clob(self, a_path):
+    def manage_clob(self, a_path, a_client_path):
         """ return the content of the file and include html trick if needed """
         w_extension = a_path[a_path.index("."):]
         with open(a_path) as f:
@@ -99,9 +103,10 @@ class IndexEndpoint(object):
                 w_line = self._manage_html_file(w_line)
 
                 w_lines_str = "".join([w_lines_str, w_line])
+
             w_replace_services = self.get_replace_clob_from_extension(a_path)
             for w_replace_service in w_replace_services:
-                w_lines_str = w_replace_service.replace_content(w_lines_str)
+                w_lines_str = w_replace_service.replace_content(w_lines_str, a_path, a_client_path)
 
             return w_lines_str
 
@@ -188,14 +193,14 @@ class IndexEndpoint(object):
 
 
     def _manage_html_file(self, a_line):
-        """ manage add brython script on header and onload on body"""
+        """ manage add client_pyscript_yblues script on header and onload on body"""
 
         return a_line
 
     def _get_path(self, a_header, a_base_path, a_file_path):
         """ return the effective file path """
         w_path = a_base_path
-
+        w_client_path = None
 
         w_file_path = a_file_path
 
@@ -210,11 +215,21 @@ class IndexEndpoint(object):
                     if not self._path_client[w_prio][w_id].check_auth(w_authorization):
                         return None
                 if w_id in w_file_path:
-                    for w_path in self._path_client[w_prio][w_id].get_path() :
-                        w_file_path = w_path + a_file_path.replace(self._path_client[w_prio][w_id].get_ui_path()+"/","/")
+                    w_client_path  =self._path_client[w_prio][w_id]
+                    for w_path in w_client_path.get_path() :
+                        w_file_path = w_path + a_file_path.replace(w_client_path.get_ui_path()+"/","/")
                         if path.exists(w_file_path):
                             w_in_known_path = True
+                            w_client_path = self._path_client[w_prio][w_id]
                             break
+                    if not w_in_known_path and w_client_path.get_type() == "pyscript":
+                        for w_path in self._pyscript_core_client_path.get_path():
+                            w_file_path = w_path +"/"+ "/".join(a_file_path.split("/")[2:]).replace(self._pyscript_core_client_path.get_ui_path() + "/", "/")
+                            if path.exists(w_file_path):
+                                w_client_path = self._path_client[w_prio][w_id]
+                                w_in_known_path = True
+                                break
+
                 if w_in_known_path :
                     break
             if w_in_known_path:
@@ -224,8 +239,13 @@ class IndexEndpoint(object):
 
         if a_file_path.endswith("/"):
             w_file_path = w_file_path + "index.html"
+            if not os.path.exists(w_file_path) and w_client_path.get_type() == "pyscript":
+                for w_path in self._pyscript_core_client_path.get_path():
+                    w_file_path = w_path+"/index.html"
+                    if os.path.exists(w_file_path) :
+                        break
 
-        return w_file_path
+        return w_file_path, w_client_path
 
     def _get_path_core(self, a_header,  a_file_path):
         """ return file path for core client  """
@@ -255,7 +275,7 @@ class IndexEndpoint(object):
         w_file = w_req_path.split("?")[0]
         is_clob = False
         is_blob = False
-        w_path = self._get_path_app(w_header,w_file)
+        w_path, w_client_path = self._get_path_app(w_header,w_file)
         if w_path is None:
             response.send_content(404, "", "text/plain")
             return
@@ -279,7 +299,7 @@ class IndexEndpoint(object):
             if is_python:
                 w_lines_str = self.manage_python(w_path)
             if is_clob or is_python:
-                w_lines_str = self.manage_clob(w_path)
+                w_lines_str = self.manage_clob(w_path, w_client_path)
             elif is_blob:
                 w_lines_str = self.manage_blob(w_path)
             if w_lines_str is None:

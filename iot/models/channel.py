@@ -6,8 +6,8 @@ from ycappuccino.core.decorator_app import App
 @Empty()
 def empty():
     _empty = Channel()
-    _empty.id("client_admin")
-    _empty.name("client_admin")
+    _empty.id("client_pyscript_core")
+    _empty.name("client_pyscript_core")
     return _empty
 @App(name="ycappuccino.iot")
 @Item(collection="channels",name="channel", plural="channels",  secure_write=True, secure_read=True)
