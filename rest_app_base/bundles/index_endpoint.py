@@ -14,6 +14,8 @@ from ycappuccino.core.decorator_app import App
 from pelix.ipopo.decorators import BindField
 from ycappuccino.endpoints.api import IClientIndexPath
 
+from ycappuccino.core.utils import bundle_models_loaded_path_by_name
+
 _logger = logging.getLogger(__name__)
 
 COMPONENT_FACTORY = "@ComponentFactory"
@@ -229,6 +231,12 @@ class IndexEndpoint(object):
                                 w_client_path = self._path_client[w_prio][w_id]
                                 w_in_known_path = True
                                 break
+                        if not w_in_known_path:
+                            ## it's a server bundle model that we have to load
+                            w_file = bundle_models_loaded_path_by_name[".".join(a_file_path.split("/")[2:]).replace(".py","")]
+                            if path.exists(w_file):
+                                w_file_path = w_file
+                                w_in_known_path = True
 
                 if w_in_known_path :
                     break
@@ -239,7 +247,7 @@ class IndexEndpoint(object):
 
         if a_file_path.endswith("/"):
             w_file_path = w_file_path + "index.html"
-            if not os.path.exists(w_file_path) and w_client_path.get_type() == "pyscript":
+            if not os.path.exists(w_file_path) and w_client_path is not None and w_client_path.get_type() == "pyscript":
                 for w_path in self._pyscript_core_client_path.get_path():
                     w_file_path = w_path+"/index.html"
                     if os.path.exists(w_file_path) :
@@ -285,7 +293,7 @@ class IndexEndpoint(object):
         # get date of file and put it as if-none-match
         w_exists_replace = len(self.get_replace_clob_from_extension(w_path))>0
 
-        if not w_exists_replace and "If-None-Match" in w_header and w_path in self._file_etag:
+        if  "If-None-Match" in w_header and w_path in self._file_etag:
             w_etag_header = w_header["If-None-Match"]
             if w_etag_header ==  str(os.path.getmtime(w_path)):
                 response.send_content(304, "", "")

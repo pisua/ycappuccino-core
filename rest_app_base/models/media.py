@@ -1,4 +1,4 @@
-from ycappuccino.storage.models.decorators  import Item, Property, Empty
+from ycappuccino.core.models.decorators  import Item, Property, Empty
 from ycappuccino.storage.models.model import Model
 from ycappuccino.core.decorator_app import App
 

@@ -1,12 +1,14 @@
 #app="all"
 # decorators to describe item and element to store in mongo if it's mongo element
 import functools
-from ycappuccino.storage.models.utils import YDict
+from ycappuccino.core.models.utils import YDict
 
 primitive = (int, str, bool, float, )
 
 # identified item by id
 map_item = {}
+# manage tree of item to have dependencies
+tree_item = {}
 # identified item by class name
 map_item_by_class = {}
 # identified list of ref by class name on source item
@@ -18,6 +20,29 @@ def get_item_by_class(a_class):
 def get_item(a_id):
     return map_item[a_id]
 
+def get_tree_item():
+    return tree_item
+
+def get_bundle_model_ordered():
+    w_root = tree_item["root"]
+    w_ordered_list = []
+    w_ordered_list.append("ycappuccino.core.models.decorators")
+    w_ordered_list.append("ycappuccino.core.models.utils")
+    w_ordered_list.append("ycappuccino.core.decorator_app")
+    for w_item in get_bundle_model(w_root):
+        w_ordered_list.append(w_item)
+
+    return w_ordered_list
+
+def get_bundle_model(a_tree_item):
+    w_ordered_list = []
+    w_ordered_list.append(a_tree_item["elem"]["_class_obj"].__module__)
+    if "sons" in a_tree_item.keys():
+        for w_item in a_tree_item["sons"]:
+            for w_son_module in get_bundle_model(w_item):
+                w_ordered_list.append(w_son_module)
+
+    return w_ordered_list
 def get_map_items():
     w_items = []
     for w_key in map_item:
@@ -31,6 +56,7 @@ def get_map_items_emdpoint():
     for w_key in map_item:
         w_dict = map_item[w_key].copy()
         del w_dict["_class"]
+        w_dict["python_module"] = w_dict["_class_obj"].__module__
         del w_dict["_class_obj"]
 
         w_items.append(w_dict)
@@ -114,8 +140,24 @@ class Item(object):
         map_item[w_id]["multipart"] = self._item["multipart"]
         map_item[w_id]["isWritable"] = self._item["isWritable"]
 
-        # create empty
+        if map_item[w_id]["_class"] not in tree_item.keys():
+            tree_item[map_item[w_id]["_class"]] = {}
 
+        tree_item[map_item[w_id]["_class"]]["elem"] = map_item[w_id]
+
+        if "father" in map_item[w_id].keys() and map_item[w_id]["father"] is not None:
+            if map_item[w_id]["father"] not in tree_item.keys() :
+                w_father = tree_item[map_item[w_id]["father"]] = {}
+            else:
+                w_father = tree_item[map_item[w_id]["father"]]
+
+            if "sons" not in w_father.keys():
+                w_father["sons"] = [tree_item[map_item[w_id]["_class"]]]
+            else:
+                w_father["sons"].append(tree_item[map_item[w_id]["_class"]])
+                # create empty
+        else:
+            tree_item["root"]= tree_item[map_item[w_id]["_class"]]
         return obj
 
 

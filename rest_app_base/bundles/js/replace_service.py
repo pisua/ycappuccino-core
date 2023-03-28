@@ -4,7 +4,7 @@ from ycappuccino.rest_app_base.api import IClobReplaceService
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Provides, BindField, UnbindField, Instantiate
-from ycappuccino.storage.models.decorators import get_map_items
+from ycappuccino.core.models.decorators import get_map_items
 from ycappuccino.core.decorator_app import App
 
 

@@ -11,7 +11,7 @@ import hashlib
 from ycappuccino.rest_app_base.api import ITenantTrigger
 from ycappuccino.storage.api import ITrigger, IFilter
 
-from ycappuccino.storage.models.utils import YDict
+from ycappuccino.core.models.utils import YDict
 
 from ycappuccino.rest_app_base.models.organization import Organization
 

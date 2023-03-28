@@ -8,10 +8,12 @@ from importlib.abc import Loader, MetaPathFinder
 from importlib.util import spec_from_file_location
 import ycappuccino.core.framework
 import logging
+
 _logger = logging.getLogger(__name__)
 
 bundle_loaded = []
 
+bundle_models_loaded_path_by_name = {}
 
 def load_bundle(a_file, a_module_name,a_context):
     """ return list of models to load . need to be load after component"""
@@ -46,8 +48,12 @@ def load_bundle(a_file, a_module_name,a_context):
                             return None
 
                         print("module {} not loaded ".format(a_file))
+                if a_module_name == "ycappuccino.core.models.decoratrs" or a_module_name == "ycappuccino.core.models.utils" or a_module_name == "ycappuccino.core.decorator_app":
+                    add_bundle_model(a_module_name, a_file)
                 if "@Item" in content :
                     if ycappuccino.core.framework.app_name is None:
+                        add_bundle_model(a_module_name, a_file)
+
                         return a_module_name
                     else:
                         w_app_patterns = []
@@ -59,13 +65,20 @@ def load_bundle(a_file, a_module_name,a_context):
                             w_app_pattern_applyed = "@App\(name=\""+w_app_pattern.replace("*",".*")
                             w_app_pattern_applyed_2 = "@App\(name='" + w_app_pattern.replace("*", ".*")
                             if re.search(w_app_pattern_applyed, content) or re.search(w_app_pattern_applyed_2, content):
+                                add_bundle_model(a_module_name,a_file)
                                 return a_module_name
 
                         if "@App(name=" not in content or "ycappuccino/core/utils" in a_file:
+                            add_bundle_model(a_module_name, a_file)
                             return a_module_name
                         print("module {} not loaded ".format(a_file))
     except Exception as e:
         _logger.exception("fail to load bundle {}".format(repr(e)))
+
+
+def add_bundle_model(a_module_name, a_file, a_cumul=False):
+    if not a_cumul and a_module_name not in bundle_models_loaded_path_by_name.keys():
+        bundle_models_loaded_path_by_name[a_module_name] = a_file
 
 
 def find_and_install_bundle(a_root, a_module_name, a_context):
@@ -94,6 +107,7 @@ def find_and_install_bundle(a_root, a_module_name, a_context):
                         w_model = load_bundle(w_file,w_module_name,a_context)
                         if w_model is not None:
                             w_list_model.append(w_model)
+
         # load models at the end of all component
         for w_model in w_list_model:
             a_context.install_bundle(w_model)

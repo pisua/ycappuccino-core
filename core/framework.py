@@ -154,7 +154,7 @@ def init(root_dir=None, app=None, port=9000):
     try:
         # Wait for the framework to stop
         framework.wait_for_stop()
-    except KeyboardInterrupt:
+    except Exception:
         print("Interrupted by user, shutting down")
         framework.stop()
         sys.exit(0)

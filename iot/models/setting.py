@@ -1,4 +1,4 @@
-from ycappuccino.storage.models.decorators  import Item, Property, Empty, Reference, ItemReference
+from ycappuccino.core.models.decorators  import Item, Property, Empty, Reference, ItemReference
 from ycappuccino.storage.models.model import Model
 import os
 from ycappuccino.core.decorator_app import App

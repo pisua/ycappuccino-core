@@ -104,7 +104,7 @@ class ClientPathSwagger(IClientIndexPath):
 
     def __init__(self):
         super(IClientIndexPath, self).__init__();
-        self.path_core = inspect.getmodule(self).__file__.replace("ycappuccino{0}server_path.py".format(os.path.sep), "")
+        self.path_core = inspect.getmodule(self).__file__.replace("bundles{0}client_path.py".format(os.path.sep), "")
         self._log =None
         self._secure = False
         self._user = None

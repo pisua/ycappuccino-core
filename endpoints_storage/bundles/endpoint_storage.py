@@ -9,9 +9,11 @@ import os
 import logging
 from ycappuccino.endpoints_storage.beans import UrlPath, EndpointResponse
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Invalidate, Provides, BindField, UnbindField, Instantiate
-import ycappuccino.storage.models.decorators
+import ycappuccino.core.models.decorators
 
 from ycappuccino.endpoints.api import IJwt
+
+from ycappuccino.endpoints.api import IEndpoint
 
 _logger = logging.getLogger(__name__)
 
@@ -25,6 +27,7 @@ from ycappuccino.endpoints.bundles.utils_header import check_header, get_token_d
 @Instantiate("handlerEndpointStorage")
 @Requires("_item_manager", specification=IItemManager.name)
 @Requires("_managers", specification=IManager.name, aggregate=True, optional=True)
+@Requires("_endpoint", specification=IEndpoint.name)
 @Requires("_jwt", specification=IJwt.name)
 @App(name='ycappuccino.endpoint-storage')
 class HandlerEndpointStorage(IHandlerEndpoint):
@@ -33,6 +36,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         super(IHandlerEndpoint, self).__init__();
         self._log = None
         self._managers = None
+        self._endpoint = None
         self._map_managers = {}
         self._item_manager = None
         self._file_dir = None
@@ -86,7 +90,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return w_token
 
     def upload_media(self, a_path, a_headers,  a_content):
-        w_url_path = UrlPath("put",a_path, self.get_swagger_descriptions())
+        w_url_path = UrlPath("put",a_path, self._endpoint.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -123,7 +127,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
                 return EndpointResponse(405)
 
     def post(self,a_path, a_headers, a_body):
-        w_url_path = UrlPath("post",a_path, self.get_swagger_descriptions())
+        w_url_path = UrlPath("post",a_path, self._endpoint.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -160,7 +164,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(400)
 
     def put(self, a_path, a_headers, a_body):
-        w_url_path = UrlPath("put",a_path, self.get_swagger_descriptions())
+        w_url_path = UrlPath("put",a_path, self._endpoint.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -199,7 +203,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
     def get_swagger_descriptions(self, a_tag, a_swagger, a_scheme):
 
         util_swagger.get_swagger_description_item(a_swagger["paths"])
-        for w_item in ycappuccino.storage.models.decorators.get_map_items():
+        for w_item in ycappuccino.core.models.decorators.get_map_items():
             if not w_item["abstract"]:
                 util_swagger.get_swagger_description(w_item, a_swagger["paths"])
                 a_tag.append({"name": util_swagger.get_swagger_description_tag(w_item)})
@@ -207,7 +211,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(200, None, None, a_swagger)
 
     def get(self, a_path, a_headers):
-        w_url_path = UrlPath("get",a_path, self.get_swagger_descriptions())
+        w_url_path = UrlPath("get",a_path, self._endpoint.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             if w_item_plural == "items":
@@ -306,7 +310,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
         return EndpointResponse(400)
 
     def delete(self, a_path, a_headers):
-        w_url_path = UrlPath("delete",a_path, self.get_swagger_descriptions())
+        w_url_path = UrlPath("delete",a_path, self._endpoint.get_swagger_descriptions())
         if w_url_path.is_crud():
             w_item_plural = w_url_path.get_item_plural_id()
             w_manager = self.find_manager(w_item_plural)
@@ -337,7 +341,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
     @BindField("_managers")
     def bind_manager(self, field, a_manager, a_service_reference):
         w_item_id = a_manager._item_id
-        w_item = ycappuccino.storage.models.decorators.get_item(w_item_id)
+        w_item = ycappuccino.core.models.decorators.get_item(w_item_id)
         if w_item is not None:
             w_item_plural = w_item["plural"]
             self._map_managers[w_item_plural] = a_manager
@@ -345,7 +349,7 @@ class HandlerEndpointStorage(IHandlerEndpoint):
     @UnbindField("_managers")
     def unbind_manager(self, field, a_manager, a_service_reference):
         w_item_id = a_manager._item_id
-        w_item = ycappuccino.storage.models.decorators.get_item(w_item_id)
+        w_item = ycappuccino.core.models.decorators.get_item(w_item_id)
         if w_item is not None:
             w_item_plural = w_item["plural"]
             self._map_managers[w_item_plural] = None

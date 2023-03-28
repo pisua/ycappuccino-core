@@ -444,7 +444,7 @@ def get_swagger_description( a_item, a_path):
 
 def get_swagger_description_item( a_path):
     """ return the path description for the item"""
-    a_path["/items"] = {
+    a_path["/$crud/items"] = {
         "get": {
             "tags": ["Core : Items"],
             "operationId": "getAll_Item",
@@ -457,7 +457,7 @@ def get_swagger_description_item( a_path):
             }
         }
     }
-    a_path["/items/{id}"] = {
+    a_path["/$crud/items/{id}"] = {
         "get": {
             "tags": ["Core : Items"],
             "operationId": "getItem_item",

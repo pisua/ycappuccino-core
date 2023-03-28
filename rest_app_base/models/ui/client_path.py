@@ -1,5 +1,5 @@
 #app="all"
-from ycappuccino.storage.models.decorators  import Item, Property, ItemReference
+from ycappuccino.core.models.decorators  import Item, Property, ItemReference
 from ycappuccino.storage.models.model import Model
 from ycappuccino.core.decorator_app import App
 

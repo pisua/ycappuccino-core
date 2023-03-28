@@ -4,11 +4,13 @@ from ycappuccino.rest_app_base.api import IClobReplaceService
 
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Provides, BindField, UnbindField, Instantiate
-from ycappuccino.storage.models.decorators import get_map_items
 from ycappuccino.core.decorator_app import App
 import glob
+from ycappuccino.core.models.decorators import get_bundle_model_ordered
 
 _logger = logging.getLogger(__name__)
+
+
 
 
 @ComponentFactory('PyScriptIndexReplaceService-Factory')
@@ -40,6 +42,13 @@ class PyScriptIndexReplaceService(IClobReplaceService):
                     w_in_index_path =w_file.replace(w_client_path,".")
                     list_python_files.append(w_in_index_path)
                     list_python_bundles.append(w_in_index_path.replace("/",".")[2:].replace(".py",""))
+
+        w_bundle_models_loaded = get_bundle_model_ordered()
+
+        for w_bundle_model_loaded in w_bundle_models_loaded:
+            list_python_files.append(w_bundle_model_loaded.replace(".","/")+".py")
+            list_python_bundles.append(w_bundle_model_loaded)
+
         w_joint_list_python = "\",\"".join(list_python_files)
         w_joint_list_python_bundles = "\",\"".join(list_python_bundles)
         if w_joint_list_python != "":
@@ -50,7 +59,7 @@ class PyScriptIndexReplaceService(IClobReplaceService):
         if w_joint_list_python_bundles != "":
             w_out = w_out.replace("${list_python_bundles}",w_joint_list_python_bundles)
         else:
-            w_out = w_out.replace("\"${list_python_bundles}\",","")
+            w_out = w_out.replace("${list_python_bundles}","")
 
         return w_out
 

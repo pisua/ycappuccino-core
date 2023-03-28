@@ -3,8 +3,8 @@ from pelix.ipopo.constants import use_ipopo
 from ycappuccino.core.api import  IActivityLogger
 from ycappuccino.storage.api import IManager, IStorage, ITrigger, IDefaultManager, IOrganizationManager
 from ycappuccino.storage.models.model import Model
-from ycappuccino.storage.models.decorators import get_sons_item, get_sons_item_id
-from ycappuccino.storage.models.utils import Proxy
+from ycappuccino.core.models.decorators import get_sons_item, get_sons_item_id
+from ycappuccino.core.models.utils import Proxy
 import json
 import logging
 from pelix.ipopo.decorators import ComponentFactory, Requires, Validate, Property,  Invalidate, Provides, BindField, UnbindField, \
